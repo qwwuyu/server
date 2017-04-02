@@ -1,4 +1,2 @@
-/target
+﻿/target
 /logs
-#git update-index --assume-unchanged jdbc.properties(不加入提交队列)
-#git update-index --no-assume-unchanged jdbc.properties(加入提交队列)
