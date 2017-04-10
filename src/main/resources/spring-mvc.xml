@@ -47,7 +47,8 @@
 		<!-- 内存中的最大值 -->
 		<property name="maxInMemorySize" value="40960" />
 	</bean>
-
+	
+	<mvc:resources mapping="/html/**" location="/WEB-INF/html/" order="0"/>
 	<mvc:resources mapping="/res/**" location="/WEB-INF/res/" cache-period="10" order="0"/>
 	<mvc:annotation-driven />
 <!-- 	<mvc:default-servlet-handler default-servlet-name="default"/> -->
