@@ -1,0 +1,20 @@
+* {
+	padding: 0px;
+	margin: 0px;
+}
+
+html {
+	background: #FFF;
+}
+
+p {
+	color: #F00;
+}
+
+#id {
+	font-size: 20px;
+}
+
+.cl {
+	background-color: #ccc;
+}

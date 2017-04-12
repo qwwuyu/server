@@ -1,0 +1,3 @@
+function hint() {
+	alert("a");
+}
