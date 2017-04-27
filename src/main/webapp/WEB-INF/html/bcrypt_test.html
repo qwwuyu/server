@@ -15,7 +15,11 @@
 <script type="text/javascript">
 	$(function() {
 		$('#testme').click(function() {
-			alert("test");
+			var bcrypt = dcodeIO.bcrypt;
+			var salt = bcrypt.genSaltSync(10);
+			var hash = bcrypt.hashSync("testpassword", salt);
+			alert(bcrypt.compareSync("testpassword", hash));
+			alert(bcrypt.compareSync("not_bacon", hash));
 		});
 	});
 </script>
