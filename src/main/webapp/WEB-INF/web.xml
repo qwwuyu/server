@@ -1,7 +1,4 @@
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-	version="3.0"
->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
 	<!-- Spring和mybatis的配置文件 -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
@@ -27,6 +24,15 @@
 	<filter-mapping>
 		<filter-name>encodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter>
+		<description>ip过滤器</description>
+		<filter-name>IpFilter</filter-name>
+		<filter-class>com.qwwuyu.server.filter.IpFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>IpFilter</filter-name>
+		<url-pattern>/i/*</url-pattern>
 	</filter-mapping>
 	<!-- 过滤器配置结束 -->
 

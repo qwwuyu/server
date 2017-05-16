@@ -14,7 +14,7 @@ public class JavaRunUtil {
 		try {
 			file = FileUtil.nextFile();
 			String handCode = handCode(code);
-			writeFile(code, file);
+			writeFile(handCode, file);
 			return runFile(file);
 		} catch (Exception e) {
 			return "服务器内部错误";

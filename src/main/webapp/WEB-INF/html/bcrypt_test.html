@@ -8,21 +8,10 @@
 <link href="/res/img/qwwuyu.ico" type="image/x-icon" rel="shortcut icon" />
 <meta name="keywords" content="qwwuyu,www.qwwuyu.com" />
 <meta name="description" content="qwwuyu" />
-<link href="/res/css/test.css" type="text/css" rel="stylesheet" media="screen" />
 <script src="/res/js/jquery-3.2.1.min.js"></script>
 <script src="/res/js/test.js"></script>
+<script src="/res/js/jsencrypt.min.js"></script>
 <script src="/res/js/bcrypt.min.js"></script>
-<script type="text/javascript">
-	$(function() {
-		$('#testme').click(function() {
-			var bcrypt = dcodeIO.bcrypt;
-			var salt = bcrypt.genSaltSync(10);
-			var hash = bcrypt.hashSync("testpassword", salt);
-			alert(bcrypt.compareSync("testpassword", hash));
-			alert(bcrypt.compareSync("not_bacon", hash));
-		});
-	});
-</script>
 </head>
 <body>
 	<input id="testme" type="button" value="Test Me!!!" />

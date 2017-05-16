@@ -11,15 +11,13 @@ import com.qwwuyu.server.bean.Test;
 import com.qwwuyu.server.service.ITestService;
 
 @Controller
-@RequestMapping("/test")
-public class TestCtrl {
+public class IndexCtrl {
 	@Resource
 	private ITestService service;
 
 	@RequestMapping("")
 	public String toWelcome(HttpServletRequest request, Model model) {
-		Test test = this.service.getTestById(1);
-		model.addAttribute("test", test.getContent());
+		model.addAttribute("test", "index");
 		return "/WEB-INF/jsp/index.jsp";
 	}
 

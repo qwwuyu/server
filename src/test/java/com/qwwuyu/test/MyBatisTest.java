@@ -9,7 +9,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.alibaba.fastjson.JSON;
-import com.qwwuyu.server.service.ITestService;
+import com.qwwuyu.server.bean.User;
+import com.qwwuyu.server.service.IUserService;
 
 //表示继承了SpringJUnit4ClassRunner类
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -17,11 +18,16 @@ import com.qwwuyu.server.service.ITestService;
 public class MyBatisTest {
 	private static Logger logger = Logger.getLogger(MyBatisTest.class);
 	@Resource
-	private ITestService service = null;
+	private IUserService service = null;
 
 	@Test
 	public void test1() {
-		com.qwwuyu.server.bean.Test test = service.getTestById(1);
-		logger.info(JSON.toJSONString(test));
+		try {
+			service.insert(new User(null, "qwwuyu2", "123456", "qwwuyu2", "", 2));
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		User user = service.selectByName("qwwuyu2");
+		logger.info(JSON.toJSONString(user));
 	}
 }

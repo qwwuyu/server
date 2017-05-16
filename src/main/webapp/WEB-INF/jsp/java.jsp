@@ -10,7 +10,7 @@
 <meta name="description" content="qwwuyu" />
 <link href="/res/css/2.css" type="text/css" rel="stylesheet" />
 <link href="/res/css/1.css" type="text/css" rel="stylesheet" />
-<script src="/res/js/jquery-min-1.11.1.js" type="text/javascript"></script>
+<script src="/res/js/jquery-3.2.1.min.js" type="text/javascript"></script>
 <script src="/res/js/editor.js" type="text/javascript"></script>
 <script src="/res/js/js-cookie.js" type="text/javascript"></script>
 <title>java程序</title>
