@@ -43,8 +43,8 @@ CREATE TABLE user(
   id int unsigned NOT NULL AUTO_INCREMENT,
   name varchar(20) NOT NULL,
   pwd varchar(100) NOT NULL,
-  nick varchar(20) NOT NULL,
-  token varchar(100),
+  nick varchar(40) NOT NULL,
+  token varchar(1000),
   auth int,
   PRIMARY KEY (id),
   UNIQUE (name)

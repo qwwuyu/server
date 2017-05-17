@@ -3,8 +3,9 @@ var login_pwd = "";
 var register_nick = "";
 $.ajaxSetup({
 	timeout : 5000,
-	type : "POST",
+	type : 'POST',
 	cache : false,
+	dataType : "json",
 });
 $(document).ready(function() {
 	// 处理认证dialog关闭
@@ -152,15 +153,21 @@ function check(acc, nick, pwd) {
 	}
 	return false;
 }
-// 处理登录消息
-function handLogin(data) {
-	console.log(data);
-	// location.reload(true);
-}
 // 处理注册消息
 function handRegister(data) {
-	console.log(data);
-	// location.reload(true);
+	handLogin(data);
+}
+// 处理登录消息
+function handLogin(data) {
+	if (1 == data.statu) {
+		Cookies.set('auth', data.data, {
+			expires : 60
+		});
+		location.reload(true);
+		// var info = JSON.parse(BASE64.decode(data.data));
+	} else if (typeof (data.info) != "undefined") {
+		showErr(data.info);
+	}
 }
 // 处理请求失败
 function handErr(textStatus) {
@@ -171,7 +178,7 @@ function handErr(textStatus) {
 	} else if ("abort" == textStatus) {
 		showErr("请求取消");
 	} else if ("parsererror" == textStatus) {
-		showErr("解析错误");
+		showErr("解析数据出错");
 	} else {
 		showErr("请求失败");
 	}
@@ -196,3 +203,15 @@ function bcrypt(acc, pwd) {
 	salt = "$2a$10$" + salt.replace("_", "/");
 	return dcodeIO.bcrypt.hashSync(pwd, salt);
 }
+// 处理认证
+function handAuth() {
+	var auth = Cookies.get('auth');
+	if ('string' == typeof (auth)) {
+		var info = JSON.parse(BASE64.decode(auth));
+		$('.header-anth-y').css("display", "block");
+		$('#user_nick').text(info.nick);
+	} else {
+		$('.header-anth').css("display", "block");
+	}
+}
+handAuth();

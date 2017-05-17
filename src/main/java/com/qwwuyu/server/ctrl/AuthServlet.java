@@ -22,7 +22,6 @@ public class AuthServlet {
 
 	@RequestMapping("/login")
 	public void login(HttpServletRequest request, HttpServletResponse response) {
-		System.out.println("login");
 		String acc = request.getParameter("acc");
 		String pwd = request.getParameter("pwd");
 		if (J2EEUtil.isNull(response, acc, pwd)) {
@@ -36,7 +35,6 @@ public class AuthServlet {
 
 	@RequestMapping("/register")
 	public void register(HttpServletRequest request, HttpServletResponse response) {
-		System.out.println("register");
 		String acc = request.getParameter("acc");
 		String nick = request.getParameter("nick").trim().replaceAll("\\s{2,}", " ");
 		String pwd = request.getParameter("pwd");
@@ -73,7 +71,7 @@ public class AuthServlet {
 		}
 		user.setToken(J2EEUtil.getToken(user));
 		service.updateByPrimaryKeySelective(user);
-		ResponseUtil.render(response, ResponseBean.getSuccessBean().setObject(user.getToken()));
+		ResponseUtil.render(response, ResponseBean.getSuccessBean().setData(user.getToken()));
 	}
 
 	private String check(String acc, String nick, String pwd) {

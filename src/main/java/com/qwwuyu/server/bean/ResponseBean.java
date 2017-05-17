@@ -9,17 +9,17 @@ public class ResponseBean {
 	/** 返回消息 */
 	private String info;
 	/** 返回数据 */
-	private Object object;
+	private Object data;
 
 	public ResponseBean() {
 		super();
 	}
 
-	public ResponseBean(int statu, String info, Object object) {
+	public ResponseBean(int statu, String info, Object data) {
 		super();
 		this.statu = statu;
 		this.info = info;
-		this.object = object;
+		this.data = data;
 	}
 
 	public int getStatu() {
@@ -40,12 +40,12 @@ public class ResponseBean {
 		return this;
 	}
 
-	public Object getObject() {
-		return object;
+	public Object getData() {
+		return data;
 	}
 
-	public ResponseBean setObject(Object object) {
-		this.object = object;
+	public ResponseBean setData(Object data) {
+		this.data = data;
 		return this;
 	}
 

@@ -1,7 +1,10 @@
 package com.qwwuyu.server.utils;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -65,6 +68,8 @@ public class J2EEUtil {
 		map.put("nick", user.getNick());
 		map.put("auth", user.getAuth());
 		map.put("id", user.getId());
-		return JSON.toJSONString(map);
+		map.put("time", System.currentTimeMillis());
+		map.put("uuid", UUID.randomUUID());
+		return new String(Base64.getEncoder().encode(JSON.toJSONString(map).getBytes(StandardCharsets.UTF_8)));
 	}
 }

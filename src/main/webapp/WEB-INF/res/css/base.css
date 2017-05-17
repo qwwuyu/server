@@ -143,6 +143,12 @@ a:active {
 
 .header-anth {
 	float: right;
+	display: none;
+}
+
+.header-anth-y {
+	float: right;
+	display: none;
 }
 
 .top-h {
@@ -160,6 +166,11 @@ a:active {
 
 .header li span {
 	padding: 0 12px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	max-width: 100px;
+	display: block;
 }
 /*---------- content ---------*/
 /*---------- footer ---------*/

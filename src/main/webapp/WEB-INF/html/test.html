@@ -10,12 +10,10 @@
 <link href="/res/css/ionicons.min.css" type="text/css" rel="stylesheet" media="screen" />
 <link href="/res/css/base.css" type="text/css" rel="stylesheet" media="screen" />
 <script src="/res/js/jquery-3.2.1.min.js"></script>
+<script src="/res/js/js.cookie.js"></script>
 <script src="/res/js/jsencrypt.min.js"></script>
 <script src="/res/js/bcrypt.min.js"></script>
-<script src="/res/js/base.js"></script>
-<script type="text/javascript">
-	
-</script>
+<script src="/res/js/base64.min.js"></script>
 </head>
 <body>
 	<div class="header">
@@ -29,6 +27,11 @@
 				<ul>
 					<li id="login"><span>登录</span></li>
 					<li id="register"><span>注册</span></li>
+				</ul>
+			</div>
+			<div class="header-anth-y top-h">
+				<ul>
+					<li id="user"><span id="user_nick"></span></li>
 				</ul>
 			</div>
 		</div>
@@ -65,5 +68,6 @@
 			</div>
 		</form>
 	</div>
+	<script src="/res/js/auth.js"></script>
 </body>
 </html>
