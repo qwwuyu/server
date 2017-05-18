@@ -48,10 +48,11 @@ $(document).ready(function() {
 // 转为注册dialog
 function toRegister() {
 	$('.dialog_anth .content').css({
-		"height" : "291px",
-		"margin-top" : "-165px"
+		"height" : "330px",
+		"margin-top" : "-185px"
 	});
 	$('#nick').parent().css("display", "block");
+	$('#pwd2').parent().css("display", "block");
 	$('.dialog_anth .title').text("注册");
 	$('#complete').text("注册");
 	$('.prompt-box').children().not('#switch').css("display", "none");
@@ -59,6 +60,7 @@ function toRegister() {
 	login_pwd = $('#pwd').val()
 	$('#nick').val(register_nick);
 	$('#pwd').val("");
+	$('#pwd2').val("");
 }
 // 转为登录dialog
 function toLogin() {
@@ -67,6 +69,7 @@ function toLogin() {
 		"margin-top" : "-135px"
 	});
 	$('#nick').parent().css("display", "none");
+	$('#pwd2').parent().css("display", "none");
 	$('.dialog_anth .title').text("登录");
 	$('#complete').text("登录");
 	$('.prompt-box').children().not('#switch').css("display", "inline");
@@ -78,6 +81,7 @@ function toLogin() {
 function clearAnth() {
 	$('#acc').val("");
 	$('#pwd').val("");
+	$('#pwd2').val("");
 	$('#nick').val("");
 	register_nick = "";
 	login_pwd = "";
@@ -86,7 +90,7 @@ function clearAnth() {
 function login() {
 	var acc = $('#acc').val();
 	var pwd = $('#pwd').val();
-	if (!check(acc, "aa", pwd))
+	if (!check(acc, "aa", pwd, pwd))
 		return;
 	pwd = bcrypt(acc, pwd);
 	var request = $.ajax({
@@ -115,7 +119,8 @@ function register() {
 	var acc = $('#acc').val();
 	var nick = $('#nick').val().replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
 	var pwd = $('#pwd').val();
-	if (!check(acc, nick, pwd))
+	var pwd2 = $('#pwd2').val();
+	if (!check(acc, nick, pwd, pwd2))
 		return;
 	pwd = rsaEncrypt(pwd);
 	var request = $.ajax({
@@ -141,13 +146,15 @@ function register() {
 	});
 }
 // 检查数据
-function check(acc, nick, pwd) {
+function check(acc, nick, pwd, pwd2) {
 	if (!new RegExp("[\\w]{4,}").test(acc)) {
-		showErr("帐号不低于4位的单词字符");
+		showErr("帐号4~20位单词字符");
 	} else if (nick.length < 2) {
-		showErr("昵称不低于2位");
+		showErr("昵称2~20位");
 	} else if (pwd.length < 6) {
-		showErr("密码不低于6位");
+		showErr("密码6~20位");
+	} else if (pwd != pwd2) {
+		showErr("两次密码不一致");
 	} else {
 		return true;
 	}
@@ -185,7 +192,11 @@ function handErr(textStatus) {
 }
 // 提醒
 function showErr(err) {
-	alert(err);
+	var alertTxt = $('<div class="alert"></div>').text(err);
+	$('.alert-list').append(alertTxt);
+	setTimeout(function() {
+		alertTxt.remove();
+	}, 3000);
 }
 // rsa加密s
 function rsaEncrypt(str) {

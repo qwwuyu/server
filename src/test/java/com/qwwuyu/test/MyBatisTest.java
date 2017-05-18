@@ -8,9 +8,9 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.alibaba.fastjson.JSON;
 import com.qwwuyu.server.bean.User;
 import com.qwwuyu.server.service.IUserService;
+import com.qwwuyu.server.utils.J2EEUtil;
 
 //表示继承了SpringJUnit4ClassRunner类
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -22,12 +22,9 @@ public class MyBatisTest {
 
 	@Test
 	public void test1() {
-		try {
-			service.insert(new User(null, "qwwuyu2", "123456", "qwwuyu2", "", 2));
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-		User user = service.selectByName("qwwuyu2");
-		logger.info(JSON.toJSONString(user));
+		long time = System.currentTimeMillis();
+		User user = service.selectByUser(new User(-1, "qwwuyu", null, null, null, -1));
+		logger.info(J2EEUtil.parseToken(user.getToken()));
+		System.out.println(System.currentTimeMillis() - time);
 	}
 }

@@ -14,11 +14,6 @@ public class IUserServiceImpl implements IUserService {
 	private UserMapper userMapper;
 
 	@Override
-	public User selectByPrimaryKey(int id) {
-		return userMapper.selectByPrimaryKey(id);
-	}
-
-	@Override
 	public void insert(User user) {
 		userMapper.insert(user);
 	}
@@ -29,12 +24,7 @@ public class IUserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public User selectByName(String name) {
-		return userMapper.selectByName(name);
-	}
-
-	@Override
-	public User selectByNick(String nick) {
-		return userMapper.selectByNick(nick);
+	public User selectByUser(User user) {
+		return userMapper.selectByUser(user);
 	}
 }

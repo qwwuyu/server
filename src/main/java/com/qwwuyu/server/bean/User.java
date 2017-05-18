@@ -1,19 +1,19 @@
 package com.qwwuyu.server.bean;
 
 public class User {
-    private Integer id;
+	private Integer id = -1;
 
-    private String name;
+	private String name;
 
-    private String pwd;
+	private String pwd;
 
-    private String nick;
+	private String nick;
 
-    private String token;
+	private String token;
 
-    private Integer auth;
-    
-    public User(Integer id, String name, String pwd, String nick, String token, Integer auth) {
+	private Integer auth = -1;
+
+	public User(Integer id, String name, String pwd, String nick, String token, Integer auth) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -28,50 +28,56 @@ public class User {
 	}
 
 	public Integer getId() {
-        return id;
-    }
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public User setId(Integer id) {
+		this.id = id;
+		return this;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
+	public User setName(String name) {
+		this.name = name == null ? null : name.trim();
+		return this;
+	}
 
-    public String getPwd() {
-        return pwd;
-    }
+	public String getPwd() {
+		return pwd;
+	}
 
-    public void setPwd(String pwd) {
-        this.pwd = pwd == null ? null : pwd.trim();
-    }
+	public User setPwd(String pwd) {
+		this.pwd = pwd == null ? null : pwd.trim();
+		return this;
+	}
 
-    public String getNick() {
-        return nick;
-    }
+	public String getNick() {
+		return nick;
+	}
 
-    public void setNick(String nick) {
-        this.nick = nick == null ? null : nick.trim();
-    }
+	public User setNick(String nick) {
+		this.nick = nick == null ? null : nick.trim();
+		return this;
+	}
 
-    public String getToken() {
-        return token;
-    }
+	public String getToken() {
+		return token;
+	}
 
-    public void setToken(String token) {
-        this.token = token == null ? null : token.trim();
-    }
+	public User setToken(String token) {
+		this.token = token == null ? null : token.trim();
+		return this;
+	}
 
-    public Integer getAuth() {
-        return auth;
-    }
+	public Integer getAuth() {
+		return auth;
+	}
 
-    public void setAuth(Integer auth) {
-        this.auth = auth;
-    }
+	public User setAuth(Integer auth) {
+		this.auth = auth;
+		return this;
+	}
 }

@@ -1,116 +1,130 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.qwwuyu.server.dao.UserMapper" >
-  <resultMap id="BaseResultMap" type="com.qwwuyu.server.bean.User" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="pwd" property="pwd" jdbcType="VARCHAR" />
-    <result column="nick" property="nick" jdbcType="VARCHAR" />
-    <result column="token" property="token" jdbcType="VARCHAR" />
-    <result column="auth" property="auth" jdbcType="INTEGER" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    id, name, pwd, nick, token, auth
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from user
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from user
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.qwwuyu.server.bean.User" >
-    insert into user (id, name, pwd, 
-      nick, token, auth)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, 
-      #{nick,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR}, #{auth,jdbcType=INTEGER})
-  </insert>
-  <insert id="insertSelective" parameterType="com.qwwuyu.server.bean.User" >
-    insert into user
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="name != null" >
-        name,
-      </if>
-      <if test="pwd != null" >
-        pwd,
-      </if>
-      <if test="nick != null" >
-        nick,
-      </if>
-      <if test="token != null" >
-        token,
-      </if>
-      <if test="auth != null" >
-        auth,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="name != null" >
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="pwd != null" >
-        #{pwd,jdbcType=VARCHAR},
-      </if>
-      <if test="nick != null" >
-        #{nick,jdbcType=VARCHAR},
-      </if>
-      <if test="token != null" >
-        #{token,jdbcType=VARCHAR},
-      </if>
-      <if test="auth != null" >
-        #{auth,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.qwwuyu.server.bean.User" >
-    update user
-    <set >
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="pwd != null" >
-        pwd = #{pwd,jdbcType=VARCHAR},
-      </if>
-      <if test="nick != null" >
-        nick = #{nick,jdbcType=VARCHAR},
-      </if>
-      <if test="token != null" >
-        token = #{token,jdbcType=VARCHAR},
-      </if>
-      <if test="auth != null" >
-        auth = #{auth,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.qwwuyu.server.bean.User" >
-    update user
-    set name = #{name,jdbcType=VARCHAR},
-      pwd = #{pwd,jdbcType=VARCHAR},
-      nick = #{nick,jdbcType=VARCHAR},
-      token = #{token,jdbcType=VARCHAR},
-      auth = #{auth,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from user
-    where name = #{name,jdbcType=VARCHAR}
-  </select>
-  <select id="selectByNick" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from user
-    where nick = #{nick,jdbcType=VARCHAR}
-  </select>
+<mapper namespace="com.qwwuyu.server.dao.UserMapper">
+	<resultMap id="BaseResultMap" type="com.qwwuyu.server.bean.User">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="pwd" property="pwd" jdbcType="VARCHAR" />
+		<result column="nick" property="nick" jdbcType="VARCHAR" />
+		<result column="token" property="token" jdbcType="VARCHAR" />
+		<result column="auth" property="auth" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, name, pwd, nick, token, auth
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from user
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.qwwuyu.server.bean.User">
+		insert into user (id, name, pwd,
+		nick, token, auth)
+		values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR},
+		#{nick,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR}, #{auth,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.qwwuyu.server.bean.User">
+		insert into user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="pwd != null">
+				pwd,
+			</if>
+			<if test="nick != null">
+				nick,
+			</if>
+			<if test="token != null">
+				token,
+			</if>
+			<if test="auth != null">
+				auth,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="pwd != null">
+				#{pwd,jdbcType=VARCHAR},
+			</if>
+			<if test="nick != null">
+				#{nick,jdbcType=VARCHAR},
+			</if>
+			<if test="token != null">
+				#{token,jdbcType=VARCHAR},
+			</if>
+			<if test="auth != null">
+				#{auth,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.qwwuyu.server.bean.User">
+		update user
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="pwd != null">
+				pwd = #{pwd,jdbcType=VARCHAR},
+			</if>
+			<if test="nick != null">
+				nick = #{nick,jdbcType=VARCHAR},
+			</if>
+			<if test="token != null">
+				token = #{token,jdbcType=VARCHAR},
+			</if>
+			<if test="auth != null">
+				auth = #{auth,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.qwwuyu.server.bean.User">
+		update user
+		set name = #{name,jdbcType=VARCHAR},
+		pwd = #{pwd,jdbcType=VARCHAR},
+		nick = #{nick,jdbcType=VARCHAR},
+		token = #{token,jdbcType=VARCHAR},
+		auth = #{auth,jdbcType=INTEGER}
+		where id =
+		#{id,jdbcType=INTEGER}
+	</update>
+	<select id="selectByUser" resultMap="BaseResultMap" parameterType="com.qwwuyu.server.bean.User">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		<where>
+			<if test="id != -1">
+				and id = #{id}
+			</if>
+			<if test="name != null">
+				and name = #{name}
+			</if>
+			<if test="pwd != null">
+				and pwd = #{pwd}
+			</if>
+			<if test="nick != null">
+				and nick = #{nick}
+			</if>
+			<if test="token != null">
+				and token = #{token}
+			</if>
+			<if test="auth != -1">
+				and auth = #{auth}
+			</if>
+		</where>
+	</select>
 </mapper>

@@ -220,3 +220,26 @@ a:active {
 	margin: 12px 0 0;
 	color: #8b9196;
 }
+
+.alert-list {
+	position: fixed;
+	top: 44px;
+	right: 24px;
+	z-index: 100;
+}
+
+.alert-list .alert {
+	margin-bottom: 12px;
+	padding: 12px 24px;
+	width: 160px;
+	font-size: 14px;
+	color: #007bff;
+	background-color: #e6f3ff;
+	box-shadow: 0 1px 1px 0 hsla(0, 0%, 80%, .5);
+	border: 1px solid #b3d0ef;
+	border-radius: 2px;
+	cursor: default;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}

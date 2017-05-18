@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.qwwuyu.server.bean.ResponseBean;
 import com.qwwuyu.server.bean.User;
 
@@ -62,6 +63,7 @@ public class J2EEUtil {
 		return BCrypt.hashpw(pwd, salt);
 	}
 
+	/** 获取token */
 	public static String getToken(User user) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("acc", user.getName());
@@ -71,5 +73,15 @@ public class J2EEUtil {
 		map.put("time", System.currentTimeMillis());
 		map.put("uuid", UUID.randomUUID());
 		return new String(Base64.getEncoder().encode(JSON.toJSONString(map).getBytes(StandardCharsets.UTF_8)));
+	}
+
+	public static Map<String, Object> parseToken(String token) {
+		try {
+			return JSON.parseObject(new String(Base64.getDecoder().decode(token.getBytes()), StandardCharsets.UTF_8),
+					new TypeReference<Map<String, Object>>() {
+					});
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

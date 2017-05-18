@@ -1,5 +1,7 @@
 package com.qwwuyu.server.ctrl;
 
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,11 +52,11 @@ public class AuthServlet {
 		if (J2EEUtil.renderInfo(response, check(acc, nick, pwd))) {
 			return;
 		}
-		if (service.selectByName(acc) != null) {
+		if (service.selectByUser(new User().setName(acc)) != null) {
 			ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("帐号已存在").setStatu(2));
 			return;
 		}
-		if (service.selectByNick(nick) != null) {
+		if (service.selectByUser(new User().setNick(nick)) != null) {
 			ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("昵称已存在").setStatu(2));
 			return;
 		}
@@ -64,8 +66,8 @@ public class AuthServlet {
 	}
 
 	private void login(HttpServletResponse response, String acc, String pwd) {
-		User user = service.selectByName(acc);
-		if (null == user || !pwd.equals(user.getPwd())) {
+		User user = service.selectByUser(new User().setName(acc).setPwd(pwd));
+		if (null == user) {
 			J2EEUtil.renderInfo(response, "帐号不存在或密码错误");
 			return;
 		}
@@ -84,5 +86,34 @@ public class AuthServlet {
 		} else {
 			return null;
 		}
+	}
+
+	public void checkToken(HttpServletRequest request, HttpServletResponse response) {
+		String token = request.getParameter("token");
+		if (J2EEUtil.isNull(response, token)) {
+			return;
+		}
+		Map<String, Object> datas = J2EEUtil.parseToken(token);
+		if (null == datas || null == datas.get("time")) {
+			ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("参数不正确").setStatu(-1));
+			return;
+		}
+		try {
+			long time = (long) datas.get("time");
+			if (System.currentTimeMillis() - time > 60 * 1000) {
+				ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("验证已过期").setStatu(2));
+				return;
+			}
+		} catch (Exception e) {
+			ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("参数不正确").setStatu(-1));
+		}
+		User user = service.selectByUser(new User().setToken(token));
+		if (null == user) {
+			ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("帐号在其他地方登录").setStatu(3));
+			return;
+		}
+		user.setToken(J2EEUtil.getToken(user));
+		service.updateByPrimaryKeySelective(user);
+		ResponseUtil.render(response, ResponseBean.getSuccessBean().setData(user.getToken()));
 	}
 }
