@@ -13,8 +13,7 @@
 			<property name="suppressAllComments" value="true" />
 		</commentGenerator>
 		<!--数据库链接URL，用户名、密码 -->
-		<jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/hello"
-			userId="input" password="input" />
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/server" userId="root" password="input" />
 		<javaTypeResolver>
 			<property name="forceBigDecimals" value="false" />
 		</javaTypeResolver>
@@ -28,14 +27,10 @@
 			<property name="enableSubPackages" value="true" />
 		</sqlMapGenerator>
 		<!-- 生成DAO的包名和位置 -->
-		<javaClientGenerator type="XMLMAPPER" targetProject="../src/main/java"
-			targetPackage="com.qwwuyu.server.dao"
-		>
+		<javaClientGenerator type="XMLMAPPER" targetProject="../src/main/java" targetPackage="com.qwwuyu.server.dao">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
 		<!-- 要生成的表 tableName是数据库中的表名或视图名 domainObjectName是实体类名 -->
-		<table tableName="test" domainObjectName="Test" enableCountByExample="false"
-			enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
-			selectByExampleQueryId="false" />
+		<table tableName="user" domainObjectName="User" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />
 	</context>
 </generatorConfiguration> 

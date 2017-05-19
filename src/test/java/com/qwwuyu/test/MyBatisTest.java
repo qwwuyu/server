@@ -23,7 +23,7 @@ public class MyBatisTest {
 	@Test
 	public void test1() {
 		long time = System.currentTimeMillis();
-		User user = service.selectByUser(new User(-1, "qwwuyu", null, null, null, -1));
+		User user = service.selectByUser(new User().setName("qwwuyu"));
 		logger.info(J2EEUtil.parseToken(user.getToken()));
 		System.out.println(System.currentTimeMillis() - time);
 	}

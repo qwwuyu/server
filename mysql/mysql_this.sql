@@ -29,8 +29,12 @@ CREATE TABLE user(
   name varchar(20) NOT NULL,
   pwd varchar(100) NOT NULL,
   nick varchar(40) NOT NULL,
-  token varchar(1000),
   auth int,
+  ip varchar(100),
+  token varchar(1000),
+  apptoken varchar(1000),
+  time int,
+  apptime int,
   PRIMARY KEY (id),
   UNIQUE (name)
 );

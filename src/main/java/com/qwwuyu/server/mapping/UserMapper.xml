@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.qwwuyu.server.dao.UserMapper">
+
 	<resultMap id="BaseResultMap" type="com.qwwuyu.server.bean.User">
 		<id column="id" property="id" jdbcType="INTEGER" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="pwd" property="pwd" jdbcType="VARCHAR" />
 		<result column="nick" property="nick" jdbcType="VARCHAR" />
-		<result column="token" property="token" jdbcType="VARCHAR" />
 		<result column="auth" property="auth" jdbcType="INTEGER" />
+		<result column="ip" property="ip" jdbcType="VARCHAR" />
+		<result column="token" property="token" jdbcType="VARCHAR" />
+		<result column="apptoken" property="apptoken" jdbcType="VARCHAR" />
+		<result column="time" property="time" jdbcType="INTEGER" />
+		<result column="apptime" property="apptime" jdbcType="INTEGER" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, name, pwd, nick, token, auth
+		id, name, pwd, nick, auth, ip, token, apptoken, time, apptime
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
 		select
@@ -24,9 +29,14 @@
 	</delete>
 	<insert id="insert" parameterType="com.qwwuyu.server.bean.User">
 		insert into user (id, name, pwd,
-		nick, token, auth)
+		nick, auth, ip, token,
+		apptoken, time, apptime
+		)
 		values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR},
-		#{nick,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR}, #{auth,jdbcType=INTEGER})
+		#{nick,jdbcType=VARCHAR}, #{auth,jdbcType=INTEGER},
+		#{ip,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR},
+		#{apptoken,jdbcType=VARCHAR}, #{time,jdbcType=INTEGER}, #{apptime,jdbcType=INTEGER}
+		)
 	</insert>
 	<insert id="insertSelective" parameterType="com.qwwuyu.server.bean.User">
 		insert into user
@@ -43,11 +53,23 @@
 			<if test="nick != null">
 				nick,
 			</if>
+			<if test="auth != null">
+				auth,
+			</if>
+			<if test="ip != null">
+				ip,
+			</if>
 			<if test="token != null">
 				token,
 			</if>
-			<if test="auth != null">
-				auth,
+			<if test="apptoken != null">
+				apptoken,
+			</if>
+			<if test="time != null">
+				time,
+			</if>
+			<if test="apptime != null">
+				apptime,
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -63,11 +85,23 @@
 			<if test="nick != null">
 				#{nick,jdbcType=VARCHAR},
 			</if>
+			<if test="auth != null">
+				#{auth,jdbcType=INTEGER},
+			</if>
+			<if test="ip != null">
+				#{ip,jdbcType=VARCHAR},
+			</if>
 			<if test="token != null">
 				#{token,jdbcType=VARCHAR},
 			</if>
-			<if test="auth != null">
-				#{auth,jdbcType=INTEGER},
+			<if test="apptoken != null">
+				#{apptoken,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				#{time,jdbcType=INTEGER},
+			</if>
+			<if test="apptime != null">
+				#{apptime,jdbcType=INTEGER},
 			</if>
 		</trim>
 	</insert>
@@ -83,11 +117,23 @@
 			<if test="nick != null">
 				nick = #{nick,jdbcType=VARCHAR},
 			</if>
+			<if test="auth != null">
+				auth = #{auth,jdbcType=INTEGER},
+			</if>
+			<if test="ip != null">
+				ip = #{ip,jdbcType=VARCHAR},
+			</if>
 			<if test="token != null">
 				token = #{token,jdbcType=VARCHAR},
 			</if>
-			<if test="auth != null">
-				auth = #{auth,jdbcType=INTEGER},
+			<if test="apptoken != null">
+				apptoken = #{apptoken,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				time = #{time,jdbcType=INTEGER},
+			</if>
+			<if test="apptime != null">
+				apptime = #{apptime,jdbcType=INTEGER},
 			</if>
 		</set>
 		where id = #{id,jdbcType=INTEGER}
@@ -97,10 +143,14 @@
 		set name = #{name,jdbcType=VARCHAR},
 		pwd = #{pwd,jdbcType=VARCHAR},
 		nick = #{nick,jdbcType=VARCHAR},
-		token = #{token,jdbcType=VARCHAR},
-		auth = #{auth,jdbcType=INTEGER}
-		where id =
-		#{id,jdbcType=INTEGER}
+		auth = #{auth,jdbcType=INTEGER},
+		ip = #{ip,jdbcType=VARCHAR},
+		token =
+		#{token,jdbcType=VARCHAR},
+		apptoken = #{apptoken,jdbcType=VARCHAR},
+		time = #{time,jdbcType=INTEGER},
+		apptime = #{apptime,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<select id="selectByUser" resultMap="BaseResultMap" parameterType="com.qwwuyu.server.bean.User">
 		select
@@ -119,11 +169,14 @@
 			<if test="nick != null">
 				and nick = #{nick}
 			</if>
+			<if test="auth != -1">
+				and auth = #{auth}
+			</if>
 			<if test="token != null">
 				and token = #{token}
 			</if>
-			<if test="auth != -1">
-				and auth = #{auth}
+			<if test="apptoken != null">
+				and apptoken = #{apptoken}
 			</if>
 		</where>
 	</select>

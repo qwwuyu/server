@@ -9,22 +9,35 @@ public class User {
 
 	private String nick;
 
-	private String token;
-
 	private Integer auth = -1;
 
-	public User(Integer id, String name, String pwd, String nick, String token, Integer auth) {
+	private String ip;
+
+	private String token;
+
+	private String apptoken;
+
+	private Integer time = -1;
+
+	private Integer apptime = -1;
+
+	public User() {
+		super();
+	}
+
+	public User(Integer id, String name, String pwd, String nick, Integer auth, String ip, String token,
+			String apptoken, Integer time, Integer apptime) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.pwd = pwd;
 		this.nick = nick;
-		this.token = token;
 		this.auth = auth;
-	}
-
-	public User() {
-		super();
+		this.ip = ip;
+		this.token = token;
+		this.apptoken = apptoken;
+		this.time = time;
+		this.apptime = apptime;
 	}
 
 	public Integer getId() {
@@ -63,6 +76,24 @@ public class User {
 		return this;
 	}
 
+	public Integer getAuth() {
+		return auth;
+	}
+
+	public User setAuth(Integer auth) {
+		this.auth = auth;
+		return this;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public User setIp(String ip) {
+		this.ip = ip == null ? null : ip.trim();
+		return this;
+	}
+
 	public String getToken() {
 		return token;
 	}
@@ -72,12 +103,30 @@ public class User {
 		return this;
 	}
 
-	public Integer getAuth() {
-		return auth;
+	public String getApptoken() {
+		return apptoken;
 	}
 
-	public User setAuth(Integer auth) {
-		this.auth = auth;
+	public User setApptoken(String apptoken) {
+		this.apptoken = apptoken == null ? null : apptoken.trim();
+		return this;
+	}
+
+	public Integer getTime() {
+		return time;
+	}
+
+	public User setTime(Integer time) {
+		this.time = time;
+		return this;
+	}
+
+	public Integer getApptime() {
+		return apptime;
+	}
+
+	public User setApptime(Integer apptime) {
+		this.apptime = apptime;
 		return this;
 	}
 }

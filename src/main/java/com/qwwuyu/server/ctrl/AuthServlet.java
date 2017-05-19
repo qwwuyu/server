@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.qwwuyu.server.bean.ResponseBean;
 import com.qwwuyu.server.bean.User;
+import com.qwwuyu.server.configs.FieldConfig;
 import com.qwwuyu.server.service.IUserService;
 import com.qwwuyu.server.utils.J2EEUtil;
 import com.qwwuyu.server.utils.RSAUtil;
@@ -50,7 +51,7 @@ public class AuthServlet {
 			ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("昵称已存在").setStatu(2));
 			return;
 		}
-		User user = new User(null, acc, J2EEUtil.handPwd(acc, pwd), nick, "", 2);
+		User user = new User(null, acc, J2EEUtil.handPwd(acc, pwd), nick, 2, null, null, null, 0, 0);
 		service.insert(user);
 		login(response, acc, user.getPwd());
 	}
@@ -84,7 +85,7 @@ public class AuthServlet {
 		if (J2EEUtil.isNull(response, token)) return;
 		try {
 			long time = (long) J2EEUtil.parseToken(token).get("time");
-			if (System.currentTimeMillis() - time > 30 * 1000) {
+			if (System.currentTimeMillis() - time > FieldConfig.expiresValue) {
 				ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("验证已过期").setStatu(2));
 				return;
 			}

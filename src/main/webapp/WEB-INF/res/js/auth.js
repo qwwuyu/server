@@ -1,12 +1,14 @@
-var isLogin = true;
-var login_pwd = "";
-var register_nick = "";
+var expiresValue = 7 * 86400000;
 $.ajaxSetup({
 	timeout : 5000,
 	type : 'POST',
 	cache : false,
 	dataType : "json",
 });
+
+var isLogin = true;
+var login_pwd = "";
+var register_nick = "";
 $(document).ready(function() {
 	// 处理认证dialog关闭
 	$('.dialog_anth .close').bind("click", function(event) {
@@ -168,10 +170,9 @@ function handRegister(data) {
 function handLogin(data) {
 	if (1 == data.statu) {
 		Cookies.set('auth', data.data, {
-			expires : 60
+			expires : expiresValue
 		});
 		location.reload(true);
-		// var info = JSON.parse(BASE64.decode(data.data));
 	} else if (typeof (data.info) != "undefined") {
 		showErr(data.info);
 	}
@@ -191,12 +192,12 @@ function handErr(textStatus) {
 	}
 }
 // 提醒
-function showErr(err) {
+function showErr(err, time) {
 	var alertTxt = $('<div class="alert"></div>').text(err);
 	$('.alert-list').append(alertTxt);
 	setTimeout(function() {
 		alertTxt.remove();
-	}, 3000);
+	}, 'number' == typeof (time) ? time : 3000);
 }
 // rsa加密s
 function rsaEncrypt(str) {
@@ -221,6 +222,25 @@ function handAuth() {
 		var info = JSON.parse(BASE64.decode(auth));
 		$('.header-anth-y').css("display", "block");
 		$('#user_nick').text(info.nick);
+		// var request = $.ajax({
+		// url : '/i/checkToken',
+		// data : {
+		// "token" : auth
+		// },
+		// });
+		// request.then(function(data) {
+		// if (1 == data.statu) {
+		// Cookies.set('auth', data.data, {
+		// expires : expiresValue
+		// });
+		// } else if (2 == data.statu || 3 == data.statu) {
+		// showErr(data.info, 5000);
+		// $('.header-anth').css("display", "block");
+		// $('.header-anth-y').css("display", "none");
+		// Cookies.remove('auth');
+		// }
+		// }, function(jqXHR, textStatus, errorThrown) {
+		// });
 	} else {
 		$('.header-anth').css("display", "block");
 	}
