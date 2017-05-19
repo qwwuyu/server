@@ -76,12 +76,8 @@ public class J2EEUtil {
 	}
 
 	public static Map<String, Object> parseToken(String token) {
-		try {
-			return JSON.parseObject(new String(Base64.getDecoder().decode(token.getBytes()), StandardCharsets.UTF_8),
-					new TypeReference<Map<String, Object>>() {
-					});
-		} catch (Exception e) {
-			return null;
-		}
+		return JSON.parseObject(new String(Base64.getDecoder().decode(token.getBytes()), StandardCharsets.UTF_8),
+				new TypeReference<Map<String, Object>>() {
+				});
 	}
 }

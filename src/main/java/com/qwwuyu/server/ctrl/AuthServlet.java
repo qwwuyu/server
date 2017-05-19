@@ -1,7 +1,5 @@
 package com.qwwuyu.server.ctrl;
 
-import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,12 +24,8 @@ public class AuthServlet {
 	public void login(HttpServletRequest request, HttpServletResponse response) {
 		String acc = request.getParameter("acc");
 		String pwd = request.getParameter("pwd");
-		if (J2EEUtil.isNull(response, acc, pwd)) {
-			return;
-		}
-		if (J2EEUtil.renderInfo(response, check(acc, null, null))) {
-			return;
-		}
+		if (J2EEUtil.isNull(response, acc, pwd)) return;
+		if (J2EEUtil.renderInfo(response, check(acc, null, null))) return;
 		login(response, acc, pwd);
 	}
 
@@ -40,18 +34,14 @@ public class AuthServlet {
 		String acc = request.getParameter("acc");
 		String nick = request.getParameter("nick").trim().replaceAll("\\s{2,}", " ");
 		String pwd = request.getParameter("pwd");
-		if (J2EEUtil.isNull(response, acc, nick, pwd)) {
-			return;
-		}
+		if (J2EEUtil.isNull(response, acc, nick, pwd)) return;
 		try {
 			pwd = RSAUtil.getDefault().decrypt(pwd);
 		} catch (Exception e) {
 			J2EEUtil.renderInfo(response, "服务器解密数据失败");
 			return;
 		}
-		if (J2EEUtil.renderInfo(response, check(acc, nick, pwd))) {
-			return;
-		}
+		if (J2EEUtil.renderInfo(response, check(acc, nick, pwd))) return;
 		if (service.selectByUser(new User().setName(acc)) != null) {
 			ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("帐号已存在").setStatu(2));
 			return;
@@ -88,19 +78,13 @@ public class AuthServlet {
 		}
 	}
 
+	@RequestMapping("/checkToken")
 	public void checkToken(HttpServletRequest request, HttpServletResponse response) {
 		String token = request.getParameter("token");
-		if (J2EEUtil.isNull(response, token)) {
-			return;
-		}
-		Map<String, Object> datas = J2EEUtil.parseToken(token);
-		if (null == datas || null == datas.get("time")) {
-			ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("参数不正确").setStatu(-1));
-			return;
-		}
+		if (J2EEUtil.isNull(response, token)) return;
 		try {
-			long time = (long) datas.get("time");
-			if (System.currentTimeMillis() - time > 60 * 1000) {
+			long time = (long) J2EEUtil.parseToken(token).get("time");
+			if (System.currentTimeMillis() - time > 30 * 1000) {
 				ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("验证已过期").setStatu(2));
 				return;
 			}

@@ -8,8 +8,7 @@
 <link href="/res/img/qwwuyu.ico" type="image/x-icon" rel="shortcut icon">
 <meta name="keywords" content="qwwuyu,www.qwwuyu.com" />
 <meta name="description" content="qwwuyu" />
-<link href="/res/css/2.css" type="text/css" rel="stylesheet" />
-<link href="/res/css/1.css" type="text/css" rel="stylesheet" />
+<link href="/res/css/textarea.css" type="text/css" rel="stylesheet" />
 <script src="/res/js/jquery-3.2.1.min.js" type="text/javascript"></script>
 <script src="/res/js/editor.js" type="text/javascript"></script>
 <script src="/res/js/js-cookie.js" type="text/javascript"></script>

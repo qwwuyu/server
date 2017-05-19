@@ -9,9 +9,17 @@
 <meta name="keywords" content="qwwuyu,www.qwwuyu.com" />
 <meta name="description" content="qwwuyu" />
 <script src="/res/js/jquery-3.2.1.min.js"></script>
-<script src="/res/js/test.js"></script>
-<script src="/res/js/jsencrypt.min.js"></script>
 <script src="/res/js/bcrypt.min.js"></script>
+<script type="text/javascript">
+	$(function() {
+		$('#testme').click(function() {
+			var bcrypt = dcodeIO.bcrypt;
+			var salt = "$2a$10$qwwuyu3000000000000000";
+			var hash = bcrypt.hashSync("123456", salt);
+			alert(hash);
+		});
+	});
+</script>
 </head>
 <body>
 	<input id="testme" type="button" value="Test Me!!!" />

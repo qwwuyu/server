@@ -22,21 +22,6 @@ CREATE database server;
 use server;
 
 --删除表
-DROP TABLE if exists test;
---创建表
-CREATE TABLE test(
-  id int unsigned NOT NULL AUTO_INCREMENT,
-  content varchar(100) NOT NULL,
-  PRIMARY KEY (id)
-);
---删除数据
-DELETE FROM test;
---插入数据
-INSERT INTO test (content) VALUES ('哈哈');
---查询数据
-SELECT * FROM test;
-
---删除表
 DROP TABLE if exists user;
 --创建表
 CREATE TABLE user(
