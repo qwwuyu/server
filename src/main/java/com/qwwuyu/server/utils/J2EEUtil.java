@@ -70,7 +70,6 @@ public class J2EEUtil {
 		map.put("nick", user.getNick());
 		map.put("auth", user.getAuth());
 		map.put("id", user.getId());
-		map.put("time", System.currentTimeMillis());
 		map.put("uuid", UUID.randomUUID());
 		return new String(Base64.getEncoder().encode(JSON.toJSONString(map).getBytes(StandardCharsets.UTF_8)));
 	}

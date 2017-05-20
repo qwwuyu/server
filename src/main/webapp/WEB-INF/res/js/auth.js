@@ -222,25 +222,25 @@ function handAuth() {
 		var info = JSON.parse(BASE64.decode(auth));
 		$('.header-anth-y').css("display", "block");
 		$('#user_nick').text(info.nick);
-		// var request = $.ajax({
-		// url : '/i/checkToken',
-		// data : {
-		// "token" : auth
-		// },
-		// });
-		// request.then(function(data) {
-		// if (1 == data.statu) {
-		// Cookies.set('auth', data.data, {
-		// expires : expiresValue
-		// });
-		// } else if (2 == data.statu || 3 == data.statu) {
-		// showErr(data.info, 5000);
-		// $('.header-anth').css("display", "block");
-		// $('.header-anth-y').css("display", "none");
-		// Cookies.remove('auth');
-		// }
-		// }, function(jqXHR, textStatus, errorThrown) {
-		// });
+		var request = $.ajax({
+			url : '/i/checkToken',
+			data : {
+				"token" : auth
+			},
+		});
+		request.then(function(data) {
+			if (1 == data.statu) {
+				Cookies.set('auth', auth, {
+					expires : expiresValue
+				});
+			} else if (2 == data.statu || 3 == data.statu) {
+				showErr(data.info, 5000);
+				$('.header-anth').css("display", "block");
+				$('.header-anth-y').css("display", "none");
+				Cookies.remove('auth');
+			}
+		}, function(jqXHR, textStatus, errorThrown) {
+		});
 	} else {
 		$('.header-anth').css("display", "block");
 	}

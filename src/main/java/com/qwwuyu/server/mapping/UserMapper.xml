@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.qwwuyu.server.dao.UserMapper">
-
 	<resultMap id="BaseResultMap" type="com.qwwuyu.server.bean.User">
 		<id column="id" property="id" jdbcType="INTEGER" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
@@ -11,8 +10,8 @@
 		<result column="ip" property="ip" jdbcType="VARCHAR" />
 		<result column="token" property="token" jdbcType="VARCHAR" />
 		<result column="apptoken" property="apptoken" jdbcType="VARCHAR" />
-		<result column="time" property="time" jdbcType="INTEGER" />
-		<result column="apptime" property="apptime" jdbcType="INTEGER" />
+		<result column="time" property="time" jdbcType="BIGINT" />
+		<result column="apptime" property="apptime" jdbcType="BIGINT" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		id, name, pwd, nick, auth, ip, token, apptoken, time, apptime
@@ -33,9 +32,8 @@
 		apptoken, time, apptime
 		)
 		values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR},
-		#{nick,jdbcType=VARCHAR}, #{auth,jdbcType=INTEGER},
-		#{ip,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR},
-		#{apptoken,jdbcType=VARCHAR}, #{time,jdbcType=INTEGER}, #{apptime,jdbcType=INTEGER}
+		#{nick,jdbcType=VARCHAR}, #{auth,jdbcType=INTEGER}, #{ip,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR},
+		#{apptoken,jdbcType=VARCHAR}, #{time,jdbcType=BIGINT}, #{apptime,jdbcType=BIGINT}
 		)
 	</insert>
 	<insert id="insertSelective" parameterType="com.qwwuyu.server.bean.User">
@@ -98,10 +96,10 @@
 				#{apptoken,jdbcType=VARCHAR},
 			</if>
 			<if test="time != null">
-				#{time,jdbcType=INTEGER},
+				#{time,jdbcType=BIGINT},
 			</if>
 			<if test="apptime != null">
-				#{apptime,jdbcType=INTEGER},
+				#{apptime,jdbcType=BIGINT},
 			</if>
 		</trim>
 	</insert>
@@ -130,10 +128,10 @@
 				apptoken = #{apptoken,jdbcType=VARCHAR},
 			</if>
 			<if test="time != null">
-				time = #{time,jdbcType=INTEGER},
+				time = #{time,jdbcType=BIGINT},
 			</if>
 			<if test="apptime != null">
-				apptime = #{apptime,jdbcType=INTEGER},
+				apptime = #{apptime,jdbcType=BIGINT},
 			</if>
 		</set>
 		where id = #{id,jdbcType=INTEGER}
@@ -145,11 +143,10 @@
 		nick = #{nick,jdbcType=VARCHAR},
 		auth = #{auth,jdbcType=INTEGER},
 		ip = #{ip,jdbcType=VARCHAR},
-		token =
-		#{token,jdbcType=VARCHAR},
+		token = #{token,jdbcType=VARCHAR},
 		apptoken = #{apptoken,jdbcType=VARCHAR},
-		time = #{time,jdbcType=INTEGER},
-		apptime = #{apptime,jdbcType=INTEGER}
+		time = #{time,jdbcType=BIGINT},
+		apptime = #{apptime,jdbcType=BIGINT}
 		where id = #{id,jdbcType=INTEGER}
 	</update>
 	<select id="selectByUser" resultMap="BaseResultMap" parameterType="com.qwwuyu.server.bean.User">

@@ -17,12 +17,12 @@
 <script src="/res/js/base64.min.js"></script>
 </head>
 <body>
-	<div class="header">
+	<div class="header" style="position: relative;">
 		<div class="header-mask-wrp">
 			<div class="header-mask-bg"></div>
 			<div class="header-mask"></div>
 		</div>
-		<div class="w960 center">
+		<div class="w960 center" style="position: relative;">
 			<span class="top-h">asd</span>
 			<div class="header-anth top-h">
 				<ul>
@@ -32,7 +32,7 @@
 			</div>
 			<div class="header-anth-y top-h">
 				<ul>
-					<li id="user"><span id="user_nick"></span></li>
+					<li id="user"><span id="user_nick"></span> <span class="user-state">123</span></li>
 				</ul>
 			</div>
 		</div>

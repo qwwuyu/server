@@ -51,7 +51,8 @@ public class AuthServlet {
 			ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("昵称已存在").setStatu(2));
 			return;
 		}
-		User user = new User(null, acc, J2EEUtil.handPwd(acc, pwd), nick, 2, null, null, null, 0, 0);
+		User user = new User(null, acc, J2EEUtil.handPwd(acc, pwd), nick, 2, J2EEUtil.getAddress(request), null, null,
+				0l, 0l);
 		service.insert(user);
 		login(response, acc, user.getPwd());
 	}
@@ -63,6 +64,7 @@ public class AuthServlet {
 			return;
 		}
 		user.setToken(J2EEUtil.getToken(user));
+		user.setTime(System.currentTimeMillis());
 		service.updateByPrimaryKeySelective(user);
 		ResponseUtil.render(response, ResponseBean.getSuccessBean().setData(user.getToken()));
 	}
@@ -83,22 +85,16 @@ public class AuthServlet {
 	public void checkToken(HttpServletRequest request, HttpServletResponse response) {
 		String token = request.getParameter("token");
 		if (J2EEUtil.isNull(response, token)) return;
-		try {
-			long time = (long) J2EEUtil.parseToken(token).get("time");
-			if (System.currentTimeMillis() - time > FieldConfig.expiresValue) {
-				ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("验证已过期").setStatu(2));
-				return;
-			}
-		} catch (Exception e) {
-			ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("参数不正确").setStatu(-1));
-		}
 		User user = service.selectByUser(new User().setToken(token));
 		if (null == user) {
 			ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("帐号在其他地方登录").setStatu(3));
 			return;
+		} else if (System.currentTimeMillis() - user.getTime() > FieldConfig.expiresValue) {
+			ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("验证已过期").setStatu(2));
+			return;
 		}
-		user.setToken(J2EEUtil.getToken(user));
+		user.setTime(System.currentTimeMillis());
 		service.updateByPrimaryKeySelective(user);
-		ResponseUtil.render(response, ResponseBean.getSuccessBean().setData(user.getToken()));
+		ResponseUtil.render(response, ResponseBean.getSuccessBean());
 	}
 }

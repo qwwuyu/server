@@ -17,16 +17,16 @@ public class User {
 
 	private String apptoken;
 
-	private Integer time = -1;
+	private Long time;
 
-	private Integer apptime = -1;
+	private Long apptime;
 
 	public User() {
 		super();
 	}
 
 	public User(Integer id, String name, String pwd, String nick, Integer auth, String ip, String token,
-			String apptoken, Integer time, Integer apptime) {
+			String apptoken, Long time, Long apptime) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -112,20 +112,20 @@ public class User {
 		return this;
 	}
 
-	public Integer getTime() {
+	public Long getTime() {
 		return time;
 	}
 
-	public User setTime(Integer time) {
+	public User setTime(Long time) {
 		this.time = time;
 		return this;
 	}
 
-	public Integer getApptime() {
+	public Long getApptime() {
 		return apptime;
 	}
 
-	public User setApptime(Integer apptime) {
+	public User setApptime(Long apptime) {
 		this.apptime = apptime;
 		return this;
 	}

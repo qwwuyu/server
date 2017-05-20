@@ -33,8 +33,8 @@ CREATE TABLE user(
   ip varchar(100),
   token varchar(1000),
   apptoken varchar(1000),
-  time int,
-  apptime int,
+  time bigint,
+  apptime bigint,
   PRIMARY KEY (id),
   UNIQUE (name)
 );
