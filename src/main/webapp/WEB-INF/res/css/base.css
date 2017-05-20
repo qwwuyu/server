@@ -140,37 +140,24 @@ a:active {
 	z-index: -50;
 }
 
-.header-anth {
-	float: right;
-	display: none;
-}
-
-.header-anth-y {
-	float: right;
-	display: none;
-}
-
 .top-h {
 	line-height: 42px;
 }
 
-.header li {
-	display: list-item;
+.header-anth,.header-anth-y {
+	float: right;
+	display: none;
+}
+
+.header-anth>ul>li,.header-anth-y>ul>li {
+	position: relative;
 	height: 42px;
 	line-height: 42px;
 	float: left;
 	cursor: pointer;
 }
 
-.header ul {
-	float: left;
-}
-
-.header li:hover {
-	background-color: rgba(255, 255, 255, 0.24);
-}
-
-.header li span {
+.header-anth>ul>li>span,.header-anth-y>ul>li>span {
 	display: block;
 	padding: 0 12px;
 	max-width: 100px;
@@ -179,18 +166,41 @@ a:active {
 	text-overflow: ellipsis;
 }
 
-.user-state {
+.header-anth>ul>li>span:hover,.header-anth-y>ul>li>span:hover {
+	background-color: rgba(255, 255, 255, 0.24);
+}
+
+.user-menu {
+	display: none;
 	position: absolute;
-	display: block;
 	top: 42px;
 	width: 110px;
-	height: 50px;
 	background-color: #fff;
 	border-radius: 0 0 4px 4px;
 	box-shadow: rgba(0, 0, 0, 0.16) 0 2px 4px;
 	text-align: center;
 	font-size: 14px;
 	z-index: 200;
+	top: 42px;
+}
+
+.user-menu li {
+	height: 42px;
+	line-height: 42px;
+	cursor: pointer;
+}
+
+.user-menu li span {
+	display: block;
+	color: #222;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.user-menu li span:hover {
+	color: #00a1d6;
+	background-color: #e5e9ef;
 }
 /*---------- content ---------*/
 .content {

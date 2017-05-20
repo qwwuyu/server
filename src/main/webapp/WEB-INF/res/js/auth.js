@@ -46,6 +46,16 @@ $(document).ready(function() {
 		isLogin ? login() : register();
 		return false;
 	});
+	// 用户菜单
+	$('#user').mouseover(function() {
+		$("#user-menu").stop().fadeIn(300);
+	});
+	$('#user').mouseout(function() {
+		$("#user-menu").stop().fadeOut(300);
+	});
+	$('#offline').bind("click", function(event) {
+		offline();
+	});
 });
 // 转为注册dialog
 function toRegister() {
@@ -177,6 +187,10 @@ function handLogin(data) {
 		showErr(data.info);
 	}
 }
+function offline() {
+	Cookies.remove('auth');
+	location.reload(true);
+}
 // 处理请求失败
 function handErr(textStatus) {
 	if ("timeout" == textStatus) {
@@ -246,3 +260,8 @@ function handAuth() {
 	}
 }
 handAuth();
+function handUI() {
+	var left = ($("#user-menu").parent().width() - $("#user-menu").width()) / 2;
+	$("#user-menu").css("left", left);
+}
+handUI();
