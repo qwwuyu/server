@@ -64,4 +64,12 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 	<!-- Servlet配置结束 -->
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/error500</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error404</location>
+	</error-page>
 </web-app>  

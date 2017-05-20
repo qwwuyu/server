@@ -13,8 +13,18 @@ public class IndexCtrl {
 		return "/WEB-INF/jsp/index.jsp";
 	}
 
-	@RequestMapping("/**")
-	public String toAll(HttpServletRequest request, Model model) {
+	@RequestMapping("/index.html")
+	public String toWelcome2(HttpServletRequest request, Model model) {
 		return "/WEB-INF/jsp/index.jsp";
+	}
+
+	@RequestMapping("/error500")
+	public String to500(HttpServletRequest request, Model model) {
+		return "/WEB-INF/jsp/500.jsp";
+	}
+
+	@RequestMapping("/error404")
+	public String to404(HttpServletRequest request, Model model) {
+		return "/WEB-INF/jsp/404.jsp";
 	}
 }

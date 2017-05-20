@@ -6,5 +6,5 @@ public class FieldConfig {
 	// {"ret":1,"start":-1,"end":-1,"country":"\u7f8e\u56fd","province":"\u52a0\u5229\u798f\u5c3c\u4e9a","city":"","district":"","isp":"","type":"","desc":""}
 	public static String url_find_ip2 = "http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip=119.137.52.75";
 
-	public final static long expiresValue = 7 * 86400000;
+	public final static long expiresValue = 7l * 86400000;
 }
