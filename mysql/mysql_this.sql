@@ -12,18 +12,12 @@ set collation_connection=utf8_general_ci;
 set collation_database=utf8_general_ci;
 set collation_server=utf8_general_ci;
 
---展示数据库
 show databases;
---删除数据库
 DROP database if exists server;
---创建数据库
 CREATE database server;
---使用数据库
 use server;
 
---删除表
 DROP TABLE if exists user;
---创建表
 CREATE TABLE user(
   id int unsigned NOT NULL AUTO_INCREMENT,
   name varchar(20) NOT NULL,
@@ -38,12 +32,37 @@ CREATE TABLE user(
   PRIMARY KEY (id),
   UNIQUE (name)
 );
---删除数据
 DELETE FROM user;
---插入数据
-INSERT INTO user (name,pwd,nick,token,auth) VALUES ('qwwuyu','123456','qwwuyu',null,1);
---查询数据
+INSERT INTO user (name,pwd,nick,token,auth) VALUES ('qwwuyu','$2a$10$qwwuyu000000000000000uxgJHtcXh1eNTNQKEv.iSpQVnashnBSK','qwwuyu',null,1);
 SELECT * FROM user;
+
+DROP TABLE if exists note;
+CREATE TABLE note(
+  id int unsigned NOT NULL AUTO_INCREMENT,
+  user_id int unsigned NOT NULL,
+  type int NOT NULL,
+  auth int NOT NULL,
+  nick varchar(40) NOT NULL,
+  title varchar(100) NOT NULL,
+  content varchar(1000) NOT NULL,
+  herf varchar(100) NOT NULL,
+  time bigint NOT NULL,
+  PRIMARY KEY (id),
+  constraint fk_user foreign key(user_id) references user(id)
+);
+DELETE FROM note;
+INSERT INTO note (user_id,type,auth,nick,title,content,herf,time) VALUES (1,1,2,'nick','title','content','herf',500);
+SELECT * FROM note;
 
 --显示所有表
 show tables;
+--基本结构
+desc user;
+--详细结构
+show create table user;
+--修改表名
+alter table user rename user2;
+--修改表结构
+alter table user change name name2 varchar(20);
+alter table user add tField varchar(20) after name;
+alter table user drop tField;

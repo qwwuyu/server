@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qwwuyu.server.dao.NoteMapper">
+	<resultMap id="BaseResultMap" type="com.qwwuyu.server.bean.Note">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="auth" property="auth" jdbcType="INTEGER" />
+		<result column="nick" property="nick" jdbcType="VARCHAR" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+		<result column="herf" property="herf" jdbcType="VARCHAR" />
+		<result column="time" property="time" jdbcType="BIGINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, user_id, type, auth, nick, title, content, herf, time
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from note
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from note
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.qwwuyu.server.bean.Note">
+		insert into note (id, user_id, type,
+		auth, nick, title,
+		content, herf, time)
+		values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{type,jdbcType=INTEGER},
+		#{auth,jdbcType=INTEGER}, #{nick,jdbcType=VARCHAR},
+		#{title,jdbcType=VARCHAR},
+		#{content,jdbcType=VARCHAR}, #{herf,jdbcType=VARCHAR}, #{time,jdbcType=BIGINT})
+	</insert>
+	<insert id="insertSelective" parameterType="com.qwwuyu.server.bean.Note">
+		insert into note
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="type != null">
+				type,
+			</if>
+			<if test="auth != null">
+				auth,
+			</if>
+			<if test="nick != null">
+				nick,
+			</if>
+			<if test="title != null">
+				title,
+			</if>
+			<if test="content != null">
+				content,
+			</if>
+			<if test="herf != null">
+				herf,
+			</if>
+			<if test="time != null">
+				time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="userId != null">
+				#{userId,jdbcType=INTEGER},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=INTEGER},
+			</if>
+			<if test="auth != null">
+				#{auth,jdbcType=INTEGER},
+			</if>
+			<if test="nick != null">
+				#{nick,jdbcType=VARCHAR},
+			</if>
+			<if test="title != null">
+				#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="content != null">
+				#{content,jdbcType=VARCHAR},
+			</if>
+			<if test="herf != null">
+				#{herf,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				#{time,jdbcType=BIGINT},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.qwwuyu.server.bean.Note">
+		update note
+		<set>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=INTEGER},
+			</if>
+			<if test="type != null">
+				type = #{type,jdbcType=INTEGER},
+			</if>
+			<if test="auth != null">
+				auth = #{auth,jdbcType=INTEGER},
+			</if>
+			<if test="nick != null">
+				nick = #{nick,jdbcType=VARCHAR},
+			</if>
+			<if test="title != null">
+				title = #{title,jdbcType=VARCHAR},
+			</if>
+			<if test="content != null">
+				content = #{content,jdbcType=VARCHAR},
+			</if>
+			<if test="herf != null">
+				herf = #{herf,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				time = #{time,jdbcType=BIGINT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.qwwuyu.server.bean.Note">
+		update note
+		set user_id = #{userId,jdbcType=INTEGER},
+		type = #{type,jdbcType=INTEGER},
+		auth = #{auth,jdbcType=INTEGER},
+		nick = #{nick,jdbcType=VARCHAR},
+		title = #{title,jdbcType=VARCHAR},
+		content =
+		#{content,jdbcType=VARCHAR},
+		herf = #{herf,jdbcType=VARCHAR},
+		time = #{time,jdbcType=BIGINT}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="selectByNote" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from note
+		<where>
+			<if test="note.id != -1">
+				and id = #{note.id}
+			</if>
+			<if test="note.userId != -1">
+				and user_id = #{note.userId}
+			</if>
+			<if test="note.type != -1">
+				and type = #{note.type}
+			</if>
+			<if test="note.auth != -1">
+				and auth = #{note.auth}
+			</if>
+		</where>
+		<if test="asc != null">
+			ORDER BY #{asc} ASC
+		</if>
+		<if test="asc == null and desc != null">
+			ORDER BY #{desc} DESC
+		</if>
+		<if test="limit != null and limit gt 0">
+			LIMIT #{offset},#{limit}
+		</if>
+	</select>
+</mapper>
