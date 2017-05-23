@@ -17,6 +17,7 @@
 <script src="/res/js/base64.min.js"></script>
 </head>
 <body>
+	<div style="position: fixed; width: 100%; height: 100%; background-color: rgba(0, 0, 0, .05); z-index: -1000"></div>
 	<div class="header">
 		<div class="header-mask-wrp">
 			<div class="header-mask-bg"></div>
@@ -43,8 +44,16 @@
 			</div>
 		</div>
 	</div>
-	<div class="content">
-		<div></div>
+	<div class="content w960 center">
+		<div class="nav">
+			<ul>
+				<li><a><i class="nav-ion ion-compose"></i><span class="nav-span">card</span></a></li>
+				<li><a><i class="nav-ion ion-clipboard"></i><span class="nav-span">note</span></a></li>
+				<li><a><i class="nav-ion ion-social-facebook-outline"></i><span class="nav-span">flag</span></a></li>
+				<li><a><i class="nav-ion ion-settings"></i><span class="nav-span">tool</span></a></li>
+			</ul>
+		</div>
+		<div class="content-main"></div>
 	</div>
 	<div class="footer">
 		<div></div>
@@ -76,7 +85,6 @@
 		</form>
 	</div>
 	<div class="alert-list"></div>
-	<div style="position: fixed; width: 100%; height: 100%; background-color: rgba(0, 0, 0, .05); z-index: -1000"></div>
 	<script src="/res/js/auth.js"></script>
 </body>
 </html>

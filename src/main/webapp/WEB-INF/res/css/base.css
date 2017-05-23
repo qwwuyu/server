@@ -28,24 +28,7 @@ img {
 	border: none;
 }
 
-a {
-	color: #256EB1;
-	text-decoration: none;
-}
-
-a:link {
-	
-}
-
-a:visited {
-	
-}
-
-a:hover {
-	
-}
-
-a:active {
+a,a:link,a:visited,a:hover,a:active {
 	
 }
 /*---------- body ---------*/
@@ -107,15 +90,16 @@ a:active {
 }
 /*---------- header ---------*/
 .header {
-	position: relative;
+	position: fixed;
+	width: 100%;
 	height: 42px;
-	box-shadow: rgba(0, 0, 0, 0.2) 0 2px 2px;
-	background-color: rgba(255, 255, 255);
 	color: #FFF;
 	font-size: 13px;
+	z-index: 100;
 }
 
 .header-mask-wrp {
+	box-shadow: rgba(0, 0, 0, 0.2) 0 2px 2px;
 	position: absolute;
 	width: 100%;
 	height: 100%;
@@ -204,7 +188,52 @@ a:active {
 }
 /*---------- content ---------*/
 .content {
-	
+	position: relative;
+	padding-top: 64px;
+}
+
+.nav {
+	width: 140px;
+	position: fixed;
+	top: 64px;
+}
+
+.nav>ul>li {
+	display: block;
+	width: 116px;
+	padding: 12px 12px;
+	font-weight: 500;
+	cursor: pointer;
+	color: #909090;
+}
+
+.nav>ul>li:hover {
+	background-color: hsla(0, 0%, 87%, .4);
+	color: #007fff;
+}
+
+.nav-active {
+	background-color: hsla(0, 0%, 87%, .4);
+	color: #007fff;
+	font-weight: 700;
+}
+
+.nav-ion {
+	display: inline-block;
+	font-size: 20px;
+	width: 15px;
+}
+
+.nav-span {
+	margin-left: 18px;
+	font-size: 18px;
+}
+
+.content-main {
+	width: 804px;
+	margin-left: 156px;
+	background: #FFF;
+	height: 2000px;
 }
 /*---------- footer ---------*/
 /*---------- dialog ---------*/
