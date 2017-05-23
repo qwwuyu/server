@@ -198,16 +198,17 @@ a,a:link,a:visited,a:hover,a:active {
 	top: 64px;
 }
 
-.nav>ul>li {
+.nav-a {
 	display: block;
 	width: 116px;
 	padding: 12px 12px;
 	font-weight: 500;
 	cursor: pointer;
 	color: #909090;
+	text-decoration: none;
 }
 
-.nav>ul>li:hover {
+.nav-a:hover {
 	background-color: hsla(0, 0%, 87%, .4);
 	color: #007fff;
 }
@@ -245,6 +246,7 @@ a,a:link,a:visited,a:hover,a:active {
 	right: 0;
 	background-color: rgba(0, 0, 0, .3);
 	display: none;
+	z-index: 1000;
 }
 
 .dialog .content {
