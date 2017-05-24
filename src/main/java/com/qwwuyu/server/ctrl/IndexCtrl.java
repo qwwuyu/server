@@ -8,12 +8,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class IndexCtrl {
-	@RequestMapping("")
+	@RequestMapping("/")
 	public String toWelcome(HttpServletRequest request, Model model) {
-		return "/WEB-INF/jsp/index.jsp";
+		if("/".equals(request.getRequestURI())){
+			return "/WEB-INF/jsp/index.jsp";
+		}else {
+			return "/WEB-INF/jsp/404.jsp";	
+		}
 	}
 
-	@RequestMapping("/index.html")
+	@RequestMapping("/{card|note|flag|tool}")
 	public String toWelcome2(HttpServletRequest request, Model model) {
 		return "/WEB-INF/jsp/index.jsp";
 	}

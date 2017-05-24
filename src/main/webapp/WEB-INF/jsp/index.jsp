@@ -47,10 +47,10 @@
 	<div class="content w960 center">
 		<div class="nav">
 			<ul>
-				<li><a id="card" href="card.html" class="nav-a"><i class="nav-ion ion-compose"></i><span class="nav-span">card</span></a></li>
-				<li><a id="note" href="note.html" class="nav-a"><i class="nav-ion ion-clipboard"></i><span class="nav-span">note</span></a></li>
-				<li><a id="flag" href="flag.html" class="nav-a"><i class="nav-ion ion-social-facebook-outline"></i><span class="nav-span">flag</span></a></li>
-				<li><a id="tool" href="tool.html" class="nav-a"><i class="nav-ion ion-settings"></i><span class="nav-span">tool</span></a></li>
+				<li><a id="card" href="/card" class="nav-a"><i class="nav-ion ion-compose"></i><span class="nav-span">card</span></a></li>
+				<li><a id="note" href="/note" class="nav-a"><i class="nav-ion ion-clipboard"></i><span class="nav-span">note</span></a></li>
+				<li><a id="flag" href="/flag" class="nav-a"><i class="nav-ion ion-social-facebook-outline"></i><span class="nav-span">flag</span></a></li>
+				<li><a id="tool" href="/tool" class="nav-a"><i class="nav-ion ion-settings"></i><span class="nav-span">tool</span></a></li>
 			</ul>
 		</div>
 		<div class="content-main"></div>
