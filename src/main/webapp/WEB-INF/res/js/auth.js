@@ -1,4 +1,4 @@
-var expiresValue = 7 * 86400000;
+var expiresValue = 7 * 86400;
 $.ajaxSetup({
 	timeout : 5000,
 	type : 'POST',

@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class IndexCtrl {
 	@RequestMapping("/")
 	public String toWelcome(HttpServletRequest request, Model model) {
-		if("/".equals(request.getRequestURI())){
+		if ("/".equals(request.getRequestURI())) {
 			return "/WEB-INF/jsp/index.jsp";
-		}else {
-			return "/WEB-INF/jsp/404.jsp";	
+		} else {
+			return "/WEB-INF/jsp/404.jsp";
 		}
 	}
 
