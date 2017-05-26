@@ -1,5 +1,6 @@
 var isHistoryApi = !!(window.history && history.pushState);
-var params = GetRequest();
+var info = authInfo();
+var auth = Cookies.get('auth');
 
 var opt = getOpt().addClass("nav-active");
 
@@ -35,5 +36,19 @@ $(document).ready(function() {
 });
 handContent(opt.attr("id"));
 function handContent(path) {
-	$(".content-main").text(path);
+	var params = GetRequest();
+	var request = $.ajax({
+		url : "/i/" + path,
+		data : {
+			"auth" : auth,
+			"page" : params.page,
+		},
+		beforeSend : function() {
+		},
+		complete : function() {
+		},
+	});
+	request.then(function(data) {
+	}, function(jqXHR, textStatus, errorThrown) {
+	});
 }

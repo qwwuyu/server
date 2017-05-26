@@ -13,3 +13,11 @@ function GetRequest() {
 function L(str) {
 	console.log(str);
 }
+function authInfo() {
+	var auth = Cookies.get('auth');
+	if ('string' == typeof (auth)) {
+		var info = JSON.parse(BASE64.decode(auth));
+		return info;
+	}
+	return JSON.parse("{}");
+}
