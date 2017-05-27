@@ -12,8 +12,8 @@ import com.qwwuyu.server.service.INoteService;
 import com.qwwuyu.server.service.IUserService;
 
 @Controller
-@RequestMapping("/i/note")
-public class NoteCtrl {
+@RequestMapping("/i/card")
+public class CardCtrl {
 	@Resource
 	private IUserService userService;
 	@Resource

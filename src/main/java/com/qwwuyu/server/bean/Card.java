@@ -1,6 +1,6 @@
 package com.qwwuyu.server.bean;
 
-public class Note {
+public class Card {
 	private Integer id = -1;
 
 	private Integer userId = -1;
@@ -9,15 +9,13 @@ public class Note {
 
 	private String title;
 
-	private String content;
-
 	private Long time;
 
 	public Integer getId() {
 		return id;
 	}
 
-	public Note setId(Integer id) {
+	public Card setId(Integer id) {
 		this.id = id;
 		return this;
 	}
@@ -26,7 +24,7 @@ public class Note {
 		return userId;
 	}
 
-	public Note setUserId(Integer userId) {
+	public Card setUserId(Integer userId) {
 		this.userId = userId;
 		return this;
 	}
@@ -35,7 +33,7 @@ public class Note {
 		return nick;
 	}
 
-	public Note setNick(String nick) {
+	public Card setNick(String nick) {
 		this.nick = nick == null ? null : nick.trim();
 		return this;
 	}
@@ -44,17 +42,8 @@ public class Note {
 		return title;
 	}
 
-	public Note setTitle(String title) {
+	public Card setTitle(String title) {
 		this.title = title == null ? null : title.trim();
-		return this;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public Note setContent(String content) {
-		this.content = content == null ? null : content.trim();
 		return this;
 	}
 
@@ -62,7 +51,7 @@ public class Note {
 		return time;
 	}
 
-	public Note setTime(Long time) {
+	public Card setTime(Long time) {
 		this.time = time;
 		return this;
 	}

@@ -16,92 +16,16 @@
 	<sql id="Base_Column_List">
 		id, name, pwd, nick, auth, ip, token, apptoken, time, apptime
 	</sql>
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-		select
-		<include refid="Base_Column_List" />
-		from user
-		where id = #{id,jdbcType=INTEGER}
-	</select>
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-		delete from user
-		where id = #{id,jdbcType=INTEGER}
-	</delete>
 	<insert id="insert" parameterType="com.qwwuyu.server.bean.User">
 		insert into user (id, name, pwd,
 		nick, auth, ip, token,
 		apptoken, time, apptime
 		)
 		values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR},
-		#{nick,jdbcType=VARCHAR}, #{auth,jdbcType=INTEGER}, #{ip,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR},
+		#{nick,jdbcType=VARCHAR}, #{auth,jdbcType=INTEGER},
+		#{ip,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR},
 		#{apptoken,jdbcType=VARCHAR}, #{time,jdbcType=BIGINT}, #{apptime,jdbcType=BIGINT}
 		)
-	</insert>
-	<insert id="insertSelective" parameterType="com.qwwuyu.server.bean.User">
-		insert into user
-		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="id != null">
-				id,
-			</if>
-			<if test="name != null">
-				name,
-			</if>
-			<if test="pwd != null">
-				pwd,
-			</if>
-			<if test="nick != null">
-				nick,
-			</if>
-			<if test="auth != null">
-				auth,
-			</if>
-			<if test="ip != null">
-				ip,
-			</if>
-			<if test="token != null">
-				token,
-			</if>
-			<if test="apptoken != null">
-				apptoken,
-			</if>
-			<if test="time != null">
-				time,
-			</if>
-			<if test="apptime != null">
-				apptime,
-			</if>
-		</trim>
-		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="id != null">
-				#{id,jdbcType=INTEGER},
-			</if>
-			<if test="name != null">
-				#{name,jdbcType=VARCHAR},
-			</if>
-			<if test="pwd != null">
-				#{pwd,jdbcType=VARCHAR},
-			</if>
-			<if test="nick != null">
-				#{nick,jdbcType=VARCHAR},
-			</if>
-			<if test="auth != null">
-				#{auth,jdbcType=INTEGER},
-			</if>
-			<if test="ip != null">
-				#{ip,jdbcType=VARCHAR},
-			</if>
-			<if test="token != null">
-				#{token,jdbcType=VARCHAR},
-			</if>
-			<if test="apptoken != null">
-				#{apptoken,jdbcType=VARCHAR},
-			</if>
-			<if test="time != null">
-				#{time,jdbcType=BIGINT},
-			</if>
-			<if test="apptime != null">
-				#{apptime,jdbcType=BIGINT},
-			</if>
-		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.qwwuyu.server.bean.User">
 		update user
@@ -143,7 +67,8 @@
 		nick = #{nick,jdbcType=VARCHAR},
 		auth = #{auth,jdbcType=INTEGER},
 		ip = #{ip,jdbcType=VARCHAR},
-		token = #{token,jdbcType=VARCHAR},
+		token =
+		#{token,jdbcType=VARCHAR},
 		apptoken = #{apptoken,jdbcType=VARCHAR},
 		time = #{time,jdbcType=BIGINT},
 		apptime = #{apptime,jdbcType=BIGINT}

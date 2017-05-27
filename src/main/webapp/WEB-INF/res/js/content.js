@@ -38,7 +38,7 @@ handContent(opt.attr("id"));
 function handContent(path) {
 	var params = GetRequest();
 	var request = $.ajax({
-		url : "/i/" + path,
+		url : "/i/" + path + "/get",
 		data : {
 			"auth" : auth,
 			"page" : params.page,

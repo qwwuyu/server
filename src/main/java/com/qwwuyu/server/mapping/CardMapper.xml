@@ -1,38 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.qwwuyu.server.dao.NoteMapper">
-	<resultMap id="BaseResultMap" type="com.qwwuyu.server.bean.Note">
+<mapper namespace="com.qwwuyu.server.dao.CardMapper">
+	<resultMap id="BaseResultMap" type="com.qwwuyu.server.bean.Card">
 		<id column="id" property="id" jdbcType="INTEGER" />
 		<result column="user_id" property="userId" jdbcType="INTEGER" />
 		<result column="nick" property="nick" jdbcType="VARCHAR" />
 		<result column="title" property="title" jdbcType="VARCHAR" />
-		<result column="content" property="content" jdbcType="VARCHAR" />
 		<result column="time" property="time" jdbcType="BIGINT" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, user_id, nick, title, content, time
+		id, user_id, nick, title, time
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
 		select
 		<include refid="Base_Column_List" />
-		from note
+		from card
 		where id = #{id,jdbcType=INTEGER}
 	</select>
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-		delete from note
-		where id = #{id,jdbcType=INTEGER}
-	</delete>
-	<insert id="insert" parameterType="com.qwwuyu.server.bean.Note">
-		insert into note (id, user_id, nick,
-		title, content, time
-		)
+	<insert id="insert" parameterType="com.qwwuyu.server.bean.Card">
+		insert into card (id, user_id, nick,
+		title, time)
 		values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{nick,jdbcType=VARCHAR},
-		#{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
-		#{time,jdbcType=BIGINT}
-		)
+		#{title,jdbcType=VARCHAR}, #{time,jdbcType=BIGINT})
 	</insert>
-	<update id="updateByPrimaryKeySelective" parameterType="com.qwwuyu.server.bean.Note">
-		update note
+	<update id="updateByPrimaryKeySelective" parameterType="com.qwwuyu.server.bean.Card">
+		update card
 		<set>
 			<if test="userId != null">
 				user_id = #{userId,jdbcType=INTEGER},
@@ -43,25 +35,26 @@
 			<if test="title != null">
 				title = #{title,jdbcType=VARCHAR},
 			</if>
-			<if test="content != null">
-				content = #{content,jdbcType=VARCHAR},
-			</if>
 			<if test="time != null">
 				time = #{time,jdbcType=BIGINT},
 			</if>
 		</set>
 		where id = #{id,jdbcType=INTEGER}
 	</update>
-	<select id="selectByNote" resultMap="BaseResultMap">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from card
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<select id="selectByCard" resultMap="BaseResultMap">
 		select
 		<include refid="Base_Column_List" />
-		from note
+		from card
 		<where>
-			<if test="note.id != -1">
-				and id = #{note.id}
+			<if test="card.id != -1">
+				and id = #{card.id}
 			</if>
-			<if test="note.userId != -1">
-				and user_id = #{note.userId}
+			<if test="card.userId != -1">
+				and user_id = #{card.userId}
 			</if>
 		</where>
 		<if test="asc != null">
