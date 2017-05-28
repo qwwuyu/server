@@ -5,7 +5,7 @@ import java.util.List;
 import com.qwwuyu.server.bean.Note;
 
 public interface INoteService {
-	void insert(Note note);
+	int insert(Note note);
 
 	Note selectByPrimaryKey(Integer id);
 
@@ -14,4 +14,6 @@ public interface INoteService {
 	List<Note> selectByNote(Note note, int limit, int offset, String asc, String desc);
 
 	int deleteByPrimaryKey(Integer id);
+
+	String getNote(int page);
 }

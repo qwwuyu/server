@@ -5,13 +5,15 @@ import java.util.List;
 import com.qwwuyu.server.bean.Card;
 
 public interface ICardService {
-	void insert(Card note);
+	int insert(Card card);
 
 	Card selectByPrimaryKey(Integer id);
 
-	int updateByPrimaryKeySelective(Card note);
-
-	List<Card> selectByCard(Card note, int limit, int offset, String asc, String desc);
+	int updateByPrimaryKeySelective(Card card);
 
 	int deleteByPrimaryKey(Integer id);
+
+	List<Card> selectByCard(Card card, int limit, int offset, String asc, String desc);
+
+	String getCard(int page);
 }

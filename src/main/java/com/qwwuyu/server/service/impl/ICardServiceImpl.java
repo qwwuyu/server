@@ -1,23 +1,31 @@
 package com.qwwuyu.server.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.qwwuyu.server.bean.Card;
 import com.qwwuyu.server.dao.CardMapper;
+import com.qwwuyu.server.dao.CommMapper;
 import com.qwwuyu.server.service.ICardService;
 
 @Service("card")
 public class ICardServiceImpl implements ICardService {
+	private String table = "card";
+	private int numOfPage = 10;
+	@Resource
+	private CommMapper commMapper;
 	@Resource
 	private CardMapper mapper;
 
 	@Override
-	public void insert(Card card) {
-		mapper.insert(card);
+	public int insert(Card card) {
+		return mapper.insert(card);
 	}
 
 	@Override
@@ -40,4 +48,14 @@ public class ICardServiceImpl implements ICardService {
 		return mapper.selectByCard(card, limit, offset, asc, desc);
 	}
 
+	@Override
+	public String getCard(int page) {
+		Map<String, Object> map = new HashMap<>();
+		int count = commMapper.selectCountByTable(table);
+		List<Card> cards = mapper.selectByCard(new Card(), numOfPage, (page - 1) * numOfPage, null, null);
+		map.put("page", (count + numOfPage - 1) / numOfPage);
+		map.put("count", count);
+		map.put("cards", cards);
+		return JSON.toJSONString(map);
+	}
 }

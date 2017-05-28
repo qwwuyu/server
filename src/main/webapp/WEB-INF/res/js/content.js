@@ -49,6 +49,7 @@ function handContent(path) {
 		},
 	});
 	request.then(function(data) {
+		L(data);
 	}, function(jqXHR, textStatus, errorThrown) {
 	});
 }
