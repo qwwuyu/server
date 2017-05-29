@@ -205,14 +205,6 @@ function handErr(textStatus) {
 		showErr("请求失败");
 	}
 }
-// 提醒
-function showErr(err, time) {
-	var alertTxt = $('<div class="alert"></div>').text(err);
-	$('.alert-list').append(alertTxt);
-	setTimeout(function() {
-		alertTxt.remove();
-	}, 'number' == typeof (time) ? time : 3000);
-}
 // rsa加密s
 function rsaEncrypt(str) {
 	var encrypt = new JSEncrypt();

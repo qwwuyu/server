@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.qwwuyu.server.dao.CommMapper">
-	<select id="selectCountByTable" resultType="java.lang.Integer">
-		select count(*) from information_schema.columns where table_name = #{table,jdbcType=VARCHAR};
+	<select id="selectCountByTable" resultType="java.lang.Integer" statementType="STATEMENT">
+		select count(*) from ${table};
 	</select>
 </mapper>

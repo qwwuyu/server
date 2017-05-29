@@ -1,6 +1,7 @@
 package com.qwwuyu.server.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.qwwuyu.server.bean.Card;
 
@@ -15,5 +16,5 @@ public interface ICardService {
 
 	List<Card> selectByCard(Card card, int limit, int offset, String asc, String desc);
 
-	String getCard(int page);
+	Map<String, Object> getCard(int page);
 }

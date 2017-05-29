@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
 import com.qwwuyu.server.bean.Note;
 import com.qwwuyu.server.dao.CommMapper;
 import com.qwwuyu.server.dao.NoteMapper;
@@ -49,12 +48,14 @@ public class INoteServiceImpl implements INoteService {
 	}
 
 	@Override
-	public String getNote(int page) {
+	public Map<String, Object> getNote(int page) {
 		Map<String, Object> map = new HashMap<>();
 		int count = commMapper.selectCountByTable(table);
-		List<Note> notes = mapper.selectByNote(new Note(), numOfPage, (page - 1) * numOfPage, null, null);
+		List<Note> datas = mapper.selectByNote(new Note(), numOfPage, (page - 1) * numOfPage, null, null);
 		map.put("page", (count + numOfPage - 1) / numOfPage);
-		map.put("notes", notes);
-		return JSON.toJSONString(map);
+		map.put("count", count);
+		map.put("select", page);
+		map.put("datas", datas);
+		return map;
 	}
 }

@@ -65,13 +65,13 @@
 			</if>
 		</where>
 		<if test="asc != null">
-			ORDER BY #{asc} ASC
+			ORDER BY ${asc} ASC
 		</if>
 		<if test="asc == null and desc != null">
-			ORDER BY #{desc} DESC
+			ORDER BY ${desc} DESC
 		</if>
 		<if test="limit != null and limit gt 0">
-			LIMIT #{offset},#{limit}
+			LIMIT ${offset},${limit}
 		</if>
 	</select>
 </mapper>

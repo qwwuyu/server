@@ -11,6 +11,7 @@
 <link href="/res/css/ionicons.min.css" type="text/css" rel="stylesheet" media="screen" />
 <link href="/res/css/base.css" type="text/css" rel="stylesheet" media="screen" />
 <script src="/res/js/jquery-3.2.1.min.js"></script>
+<script src="/res/js/template-web.js"></script>
 <script src="/res/js/js.cookie.js"></script>
 <script src="/res/js/jsencrypt.min.js"></script>
 <script src="/res/js/bcrypt.min.js"></script>
@@ -54,7 +55,10 @@
 				<li><a id="tool" href="/tool" class="nav-a"><i class="nav-ion ion-settings"></i><span class="nav-span">tool</span></a></li>
 			</ul>
 		</div>
-		<div class="content-main"></div>
+		<div class="content-main">
+			<div class="main-page"></div>
+			<div class="main-content"></div>
+		</div>
 	</div>
 	<div class="footer">
 		<div></div>

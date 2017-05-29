@@ -8,7 +8,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
 import com.qwwuyu.server.bean.Card;
 import com.qwwuyu.server.dao.CardMapper;
 import com.qwwuyu.server.dao.CommMapper;
@@ -49,13 +48,14 @@ public class ICardServiceImpl implements ICardService {
 	}
 
 	@Override
-	public String getCard(int page) {
+	public Map<String, Object> getCard(int page) {
 		Map<String, Object> map = new HashMap<>();
 		int count = commMapper.selectCountByTable(table);
-		List<Card> cards = mapper.selectByCard(new Card(), numOfPage, (page - 1) * numOfPage, null, null);
+		List<Card> datas = mapper.selectByCard(new Card(), numOfPage, (page - 1) * numOfPage, null, null);
 		map.put("page", (count + numOfPage - 1) / numOfPage);
 		map.put("count", count);
-		map.put("cards", cards);
-		return JSON.toJSONString(map);
+		map.put("select", page);
+		map.put("datas", datas);
+		return map;
 	}
 }

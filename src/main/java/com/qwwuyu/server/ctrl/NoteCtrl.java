@@ -27,10 +27,10 @@ public class NoteCtrl {
 		int page = 1;
 		try {
 			page = Integer.parseInt(request.getParameter("page"));
+			page = page > 0 ? page : 1;
 		} catch (Exception e) {
 		}
-		String data = service.getNote(page);
-		ResponseUtil.render(response, ResponseBean.getSuccessBean().setData(data));
+		ResponseUtil.render(response, ResponseBean.getSuccessBean().setData(service.getNote(page)));
 	}
 
 	@RequestMapping("/rm")

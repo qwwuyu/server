@@ -1,6 +1,7 @@
 package com.qwwuyu.server.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.qwwuyu.server.bean.Note;
 
@@ -15,5 +16,5 @@ public interface INoteService {
 
 	int deleteByPrimaryKey(Integer id);
 
-	String getNote(int page);
+	Map<String, Object> getNote(int page);
 }

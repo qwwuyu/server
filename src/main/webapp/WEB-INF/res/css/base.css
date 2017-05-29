@@ -29,7 +29,7 @@ img {
 }
 
 a,a:link,a:visited,a:hover,a:active {
-	
+	text-decoration: none;
 }
 /*---------- body ---------*/
 .w960 {
@@ -205,7 +205,6 @@ a,a:link,a:visited,a:hover,a:active {
 	font-weight: 500;
 	cursor: pointer;
 	color: #909090;
-	text-decoration: none;
 }
 
 .nav-a:hover {
@@ -234,8 +233,75 @@ a,a:link,a:visited,a:hover,a:active {
 	width: 804px;
 	margin-left: 156px;
 	background: #FFF;
-	height: 2000px;
 }
+
+.main-page {
+	padding: 10px 10px;
+	width: 782px;
+	background-color: #f5f7fa;
+	border: 1px solid #e7e9eb;
+	height: 24px;
+}
+
+.main-page li {
+	float: left;
+	height: 24px;
+	line-height: 24px;
+	font-size: 12px;
+}
+
+.main-page-list {
+	
+}
+
+.page-a {
+	padding: 0 4px;
+	font-weight: 500;
+	cursor: pointer;
+	color: #2d64b3;
+}
+
+.page-span {
+	padding: 0 4px;
+	font-weight: 500;
+	color: #000;
+}
+
+.main-page-num {
+	margin-left: 8px;
+	color: #666;
+}
+
+.main-page-num span {
+	color: red;
+}
+
+.main-content {
+	
+}
+
+.main-content li {
+	height: 49px;
+	padding: 0 12px;
+	border-bottom: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #e7e9eb;
+}
+
+.main-content-title {
+	display: inline-block;
+	margin: 4px 0;
+	color: #333;
+	font-size: 15px;
+}
+
+.main-content-info {
+	color: #909090;
+	font-size: 12px;
+	margin-top: 6px;
+	margin-right: 12px;
+}
+
 /*---------- footer ---------*/
 /*---------- dialog ---------*/
 .dialog {
