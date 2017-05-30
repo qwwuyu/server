@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>发布card</title>
+<title>发布note</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <link href="/res/img/qwwuyu.ico" type="image/x-icon" rel="shortcut icon" />
@@ -27,7 +27,7 @@
 			<div class="header-mask"></div>
 		</div>
 		<div class="w960 center">
-			<span class="top-h">网速很渣...</span>
+			<span class="top-h">网速超渣,不支持手机...</span>
 			<div class="header-anth top-h">
 				<ul>
 					<li id="login"><span>登录</span></li>
