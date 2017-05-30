@@ -38,6 +38,8 @@ public class IpFilter implements Filter {
 			limit(address + requestURI, request, response, chain, 10L, 86400000L);
 		} else if ("/i/login".equals(requestURI)) {
 			limit(address + requestURI, request, response, chain, 5L, 60000L);
+		} else if ("/i/card/send".equals(requestURI)) {
+			limit(address + requestURI, request, response, chain, 10L, 43200000L);
 		} else {
 			chain.doFilter(request, response);
 		}

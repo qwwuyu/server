@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>card</title>
+<title>发布flag</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <link href="/res/img/qwwuyu.ico" type="image/x-icon" rel="shortcut icon" />
@@ -17,6 +17,7 @@
 <script src="/res/js/bcrypt.min.js"></script>
 <script src="/res/js/base64.min.js"></script>
 <script src="/res/js/util.js"></script>
+<script src="/res/js/send.js"></script>
 </head>
 <body>
 	<div style="position: fixed; width: 100%; height: 100%; background-color: rgba(0, 0, 0, .05); z-index: -1000"></div>
@@ -47,21 +48,10 @@
 		</div>
 	</div>
 	<div class="content w960 center">
-		<div class="nav">
-			<ul>
-				<li><a id="card" href="/card" class="nav-a"><i class="nav-ion ion-compose"></i><span class="nav-span">card</span></a></li>
-				<li><a id="flag" href="/flag" class="nav-a"><i class="nav-ion ion-social-facebook-outline"></i><span class="nav-span">flag</span></a></li>
-				<li><a id="note" href="/note" class="nav-a"><i class="nav-ion ion-clipboard"></i><span class="nav-span">note</span></a></li>
-				<li style="display: none;"><a id="tool" href="/tool" class="nav-a"><i class="nav-ion ion-settings"></i><span class="nav-span">tool</span></a></li>
-			</ul>
-		</div>
-		<div class="content-main">
-			<div class="main-page"></div>
-			<div class="main-content"></div>
-		</div>
-	</div>
-	<div class="footer">
-		<div></div>
+		<form>
+			<input id="title" class="input" maxlength="50" placeholder="标题" autocomplete="off" />
+			<button id="send_flag" class="btn" style="width: 100px; margin-top: 12px;">发表</button>
+		</form>
 	</div>
 	<div class="dialog dialog_anth">
 		<form class="content auth-form">
@@ -92,6 +82,5 @@
 	<div class="alert-list"></div>
 	<div class="alert-list-succ"></div>
 	<script src="/res/js/auth.js"></script>
-	<script src="/res/js/content.js"></script>
 </body>
 </html>

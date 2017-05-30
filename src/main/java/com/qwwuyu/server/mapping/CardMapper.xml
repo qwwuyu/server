@@ -18,9 +18,8 @@
 		where id = #{id,jdbcType=INTEGER}
 	</select>
 	<insert id="insert" parameterType="com.qwwuyu.server.bean.Card">
-		insert into card (id, user_id, nick,
-		title, time)
-		values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{nick,jdbcType=VARCHAR},
+		insert into card (user_id, nick,title, time)
+		values (#{userId,jdbcType=INTEGER}, #{nick,jdbcType=VARCHAR},
 		#{title,jdbcType=VARCHAR}, #{time,jdbcType=BIGINT})
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.qwwuyu.server.bean.Card">

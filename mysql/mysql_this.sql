@@ -59,11 +59,25 @@ CREATE TABLE note(
   content varchar(1000) NOT NULL,
   time bigint NOT NULL,
   PRIMARY KEY (id),
-  constraint fk_user foreign key(user_id) references user(id)
+  constraint fk_note_user foreign key(user_id) references user(id)
 );
 DELETE FROM note;
 INSERT INTO note (user_id,nick,title,content,time) VALUES (1,'nick','title','content',500);
 SELECT * FROM note;
+
+DROP TABLE if exists flag;
+CREATE TABLE flag(
+  id int unsigned NOT NULL AUTO_INCREMENT,
+  user_id int unsigned NOT NULL,
+  nick varchar(40) NOT NULL,
+  title varchar(100) NOT NULL,
+  time bigint NOT NULL,
+  PRIMARY KEY (id),
+  constraint fk_flag_user foreign key(user_id) references user(id)
+);
+DELETE FROM flag;
+INSERT INTO flag (user_id,nick,title,time) VALUES (1,'nick','title',500);
+SELECT * FROM flag;
 --显示所有表
 show tables;
 

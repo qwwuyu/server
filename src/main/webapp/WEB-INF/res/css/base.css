@@ -18,7 +18,7 @@ h1,h2,h3,h4,h5,h6,ul,li {
 	list-style-type: none;
 }
 
-input,select,button {
+input,select,button,textarea {
 	font-size: 14px;
 	font-family: "Microsoft YaHei", Verdana, Arial, Helvetica, Tahoma;
 	vertical-align: middle;
@@ -78,6 +78,20 @@ a,a:link,a:visited,a:hover,a:active {
 	box-sizing: border-box;
 	cursor: pointer;
 	border: none;
+}
+
+.textarea {
+	padding: 12px;
+	width: 100%;
+	border: 1px solid #e9e9e9;
+	border-radius: 2px;
+	outline: none;
+	box-sizing: border-box;
+	resize: none;
+}
+
+.textarea:focus {
+	border-color: #007fff;
 }
 
 .clickable {
@@ -263,7 +277,7 @@ a,a:link,a:visited,a:hover,a:active {
 
 .page-span {
 	padding: 0 4px;
-	font-weight: 500;
+	font-weight: 700;
 	color: #000;
 }
 
@@ -276,29 +290,54 @@ a,a:link,a:visited,a:hover,a:active {
 	color: red;
 }
 
+.page-send {
+	color: #2d64b3;
+	float: right;
+	height: 24px;
+	line-height: 24px;
+}
+
 .main-content {
 	
 }
 
 .main-content li {
 	height: 49px;
-	padding: 0 12px;
 	border-bottom: 1px;
 	border-bottom-style: solid;
 	border-bottom-color: #e7e9eb;
 }
 
+.main-content-click {
+	display: block;
+	height: 49px;
+	width: 804px;
+	cursor: pointer;
+}
+
+.main-content-click:hover {
+	background: #F7F7F7;
+}
+
 .main-content-title {
-	display: inline-block;
-	margin: 4px 0;
+	display: block;
+	margin: 0px 12px;
 	color: #333;
 	font-size: 15px;
+	padding: 3px 0px;
 }
 
 .main-content-info {
 	color: #909090;
 	font-size: 12px;
-	margin-top: 6px;
+	margin-left: 12px;
+}
+
+.main-content-rm {
+	cursor: pointer;
+	color: #2d64b3;
+	font-size: 12px;
+	float: right;
 	margin-right: 12px;
 }
 
@@ -312,7 +351,7 @@ a,a:link,a:visited,a:hover,a:active {
 	right: 0;
 	background-color: rgba(0, 0, 0, .3);
 	display: none;
-	z-index: 1000;
+	z-index: 900;
 }
 
 .dialog .content {
@@ -355,10 +394,17 @@ a,a:link,a:visited,a:hover,a:active {
 	position: fixed;
 	top: 44px;
 	right: 24px;
-	z-index: 100;
+	z-index: 1000;
 }
 
-.alert-list .alert {
+.alert-list-succ {
+	position: fixed;
+	top: 44px;
+	left: 24px;
+	z-index: 1000;
+}
+
+.alert {
 	margin-bottom: 12px;
 	padding: 12px 24px;
 	width: 160px;

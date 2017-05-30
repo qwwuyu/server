@@ -49,7 +49,7 @@
 	</bean>
 	
 	<mvc:resources mapping="/html/**" location="/WEB-INF/html/" order="0"/>
-	<mvc:resources mapping="/res/**" location="/WEB-INF/res/" cache-period="2" order="0"/>
+	<mvc:resources mapping="/res/**" location="/WEB-INF/res/" cache-period="86400" order="0"/>
 	<mvc:annotation-driven />
 <!-- 	<mvc:default-servlet-handler default-servlet-name="default"/> -->
 </beans>  

@@ -3,7 +3,6 @@ var info = authInfo();
 var auth = Cookies.get('auth');
 
 var opt = getOpt().addClass("nav-active");
-
 function getOpt() {
 	var path = location.pathname == "/" ? "card" : location.pathname.substr(1);
 	return $('#' + path);
@@ -42,6 +41,9 @@ $(document).ready(function() {
 		history.pushState(null, path, path);
 		handContent(type);
 		return false;
+	}).on('click', '.main-content-rm', function(e) {
+		rmPosts($(this));
+		return false;
 	});
 });
 // 加载内容
@@ -61,7 +63,7 @@ function handContent(path) {
 	});
 	request.then(function(data) {
 		if (1 == data.statu) {
-			handPage(data.data);
+			handPage(path, data.data);
 			handData(path, data.data);
 		} else if (typeof (data.info) != "undefined") {
 			showErr(data.info);
@@ -71,7 +73,15 @@ function handContent(path) {
 	});
 }
 // 处理分页
-function handPage(data) {
+function handPage(path, data) {
+	var send = false;// card|note
+	if ("card" == path) {
+		send = true;
+	} else if ("note" == path && info.auth == 5) {
+		send = true;
+	} else if ("flag" == path && info.auth == 5) {
+		send = true;
+	}
 	var page = data.page;
 	var count = data.count;
 	var select = data.select;
@@ -89,6 +99,8 @@ function handPage(data) {
 		pages[i - start] = i;
 	}
 	var temp_page = template('temp_page', {
+		path : path,
+		send : send,
 		page : page,
 		count : count,
 		select : select,
@@ -98,8 +110,42 @@ function handPage(data) {
 }
 // 处理列表数据
 function handData(path, data) {
+	var list = data.datas;
+	var sysTime = data.sysTime;
+	for (var i = 0; i < list.length; i++) {
+		list[i].time = showTime(sysTime, list[i].time);
+	}
 	var temp_page = template('temp_' + path, {
 		datas : data.datas,
+		userId : info.id,
+		auth : info.auth,
 	});
 	$('.main-content').html(temp_page);
+}
+// 删除帖子
+function rmPosts(ts) {
+	var path = opt.attr("id");
+	var id = ts.attr("id");
+	var request = $.ajax({
+		url : "/i/" + path + "/rm",
+		data : {
+			"auth" : auth,
+			"id" : id,
+		},
+		beforeSend : function() {
+			ts.attr("disabled", "disabled");
+		},
+		complete : function() {
+			ts.removeAttr("disabled");
+		},
+	});
+	request.then(function(data) {
+		if (1 == data.statu) {
+			handContent(path);
+		} else {
+			showSucc(data.info, 5000);
+		}
+	}, function(jqXHR, textStatus, errorThrown) {
+		handErr(textStatus);
+	});
 }

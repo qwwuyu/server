@@ -3,35 +3,39 @@
 	<li class="main-page-list">
 		<a href="/card?page=1" class="page-a">上一页</a>
 		<span class="page-span">1</span>
+	</li>
 	<li class="main-page-num"><span>25</span>条，共<span>3</span>页</li>
+	<a href="/card/send" target="_blank" class="page-send">发帖</a>
 </ul>
 //temp_page 分页模版代码
 <ul>
 	<li class="main-page-list">
 		{{if select != 1}}
-			<a id="{{select - 1}}" href="/card?page={{select - 1}}" class="page-a">上一页</a>
+			<a id="{{select - 1}}" href="/{{path}}?page={{select - 1}}" class="page-a">上一页</a>
 		{{/if}}
 		{{each pages}}
 			{{if select != $value}}
-				<a id="{{$value}}" href="/card?page={{$value}}" class="page-a">{{$value}}</a>
+				<a id="{{$value}}" href="/{{path}}?page={{$value}}" class="page-a">{{$value}}</a>
 			{{else if select == $value}}
 				<span class="page-span">{{$value}}</span>
 			{{/if}}
 		{{/each}}
 		{{if select != page}}
-			<a id="{{select + 1}}" href="/card?page={{select + 1}}" class="page-a">下一页</a>
+			<a id="{{select + 1}}" href="/{{path}}?page={{select + 1}}" class="page-a">下一页</a>
 		{{/if}}
 	</li>
 	<li class="main-page-num"><span>{{count}}</span>条，共<span>{{page}}</span>页</li>
 </ul>
+{{if send}}
+	<a href="/{{path}}/send" target="_blank" class="page-send">发帖</a>
+{{/if}}
 //card原始代码
 <ul>
 	<li>
 		<span class="main-content-title">title</span>
-		<div>
-			<span class="main-content-info">title</span>
-			<span class="main-content-info">title</span>
-		</div>
+		<span class="main-content-info">title</span>
+		<span class="main-content-info">title</span>
+		<span id="1" class="main-content-rm">删除</span>
 	</li>
 </ul>
 //temp_card  card模版代码
@@ -39,10 +43,52 @@
 	{{each datas}}
 		<li>
 			<span class="main-content-title">{{$value.title}}</span>
-			<div>
-				<span class="main-content-info">{{$value.nick}}</span>
-				<span class="main-content-info">{{$value.time}}</span>
-			</div>
+			<span class="main-content-info">{{$value.nick}}</span>
+			<span class="main-content-info">{{$value.time}}</span>
+			{{if $value.userId == userId || auth == 5}}
+				<span id="{{$value.id}}" class="main-content-rm">删除</span>
+			{{/if}}
 		</li>
 	{{/each}}
 </ul>
+//note原始代码
+<ul>
+	<li>
+		<a href="/note/content?id=1" target="_blank" class="main-content-click"> 
+			<span class="main-content-title">title</span> 
+			<span class="main-content-info">title</span> 
+			<span class="main-content-info">title</span> 
+			<span id="1" class="main-content-rm">删除</span>
+		</a>
+	</li>
+</ul>
+//temp_note  note模版代码
+<ul>
+	{{each datas}}
+		<li>
+			<a href="/note/content?id={{$value.id}}" target="_blank" class="main-content-click"> 
+				<span class="main-content-title">{{$value.title}}</span>
+				<span class="main-content-info">{{$value.nick}}</span>
+				<span class="main-content-info">{{$value.time}}</span>
+				{{if $value.userId == userId || auth == 5}}
+					<span id="{{$value.id}}" class="main-content-rm">删除</span>
+				{{/if}}
+			</a>
+		</li>
+	{{/each}}
+</ul>
+//temp_flag  flag模版代码
+<ul>
+	{{each datas}}
+		<li>
+			<span class="main-content-title">{{$value.title}}</span>
+			<span class="main-content-info">{{$value.nick}}</span>
+			<span class="main-content-info">{{$value.time}}</span>
+		</li>
+	{{/each}}
+</ul>
+//temp_note_content  note模版代码
+<span class="main-content-title">{{note.title}}</span>
+<span class="main-content-info">{{note.nick}}</span>
+<span class="main-content-info">{{note.time}}</span>
+<span class="main-content-title">{{note.content}}</span>

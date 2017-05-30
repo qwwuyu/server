@@ -51,11 +51,12 @@ public class ICardServiceImpl implements ICardService {
 	public Map<String, Object> getCard(int page) {
 		Map<String, Object> map = new HashMap<>();
 		int count = commMapper.selectCountByTable(table);
-		List<Card> datas = mapper.selectByCard(new Card(), numOfPage, (page - 1) * numOfPage, null, null);
+		List<Card> datas = mapper.selectByCard(new Card(), numOfPage, (page - 1) * numOfPage, null, "time");
 		map.put("page", (count + numOfPage - 1) / numOfPage);
 		map.put("count", count);
 		map.put("select", page);
 		map.put("datas", datas);
+		map.put("sysTime", System.currentTimeMillis());
 		return map;
 	}
 }

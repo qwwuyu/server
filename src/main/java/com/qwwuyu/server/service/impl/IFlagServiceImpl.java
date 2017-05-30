@@ -8,32 +8,32 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.qwwuyu.server.bean.Note;
+import com.qwwuyu.server.bean.Flag;
 import com.qwwuyu.server.dao.CommMapper;
-import com.qwwuyu.server.dao.NoteMapper;
-import com.qwwuyu.server.service.INoteService;
+import com.qwwuyu.server.dao.FlagMapper;
+import com.qwwuyu.server.service.IFlagService;
 
-@Service("note")
-public class INoteServiceImpl implements INoteService {
-	private String table = "note";
+@Service("flag")
+public class IFlagServiceImpl implements IFlagService {
+	private String table = "flag";
 	private int numOfPage = 10;
 	@Resource
 	private CommMapper commMapper;
 	@Resource
-	private NoteMapper mapper;
+	private FlagMapper mapper;
 
 	@Override
-	public int insert(Note note) {
-		return mapper.insert(note);
+	public int insert(Flag flag) {
+		return mapper.insert(flag);
 	}
 
 	@Override
-	public Note selectByPrimaryKey(Integer id) {
+	public Flag selectByPrimaryKey(Integer id) {
 		return mapper.selectByPrimaryKey(id);
 	}
 
 	@Override
-	public int updateByPrimaryKeySelective(Note record) {
+	public int updateByPrimaryKeySelective(Flag record) {
 		return mapper.updateByPrimaryKeySelective(record);
 	}
 
@@ -43,15 +43,15 @@ public class INoteServiceImpl implements INoteService {
 	}
 
 	@Override
-	public List<Note> selectByNote(Note note, int limit, int offset, String asc, String desc) {
-		return mapper.selectByNote(note, limit, offset, asc, desc);
+	public List<Flag> selectByFlag(Flag flag, int limit, int offset, String asc, String desc) {
+		return mapper.selectByFlag(flag, limit, offset, asc, desc);
 	}
 
 	@Override
-	public Map<String, Object> getNote(int page) {
+	public Map<String, Object> getFlag(int page) {
 		Map<String, Object> map = new HashMap<>();
 		int count = commMapper.selectCountByTable(table);
-		List<Note> datas = mapper.selectByNote(new Note(), numOfPage, (page - 1) * numOfPage, null, "time");
+		List<Flag> datas = mapper.selectByFlag(new Flag(), numOfPage, (page - 1) * numOfPage, null, "time");
 		map.put("page", (count + numOfPage - 1) / numOfPage);
 		map.put("count", count);
 		map.put("select", page);
