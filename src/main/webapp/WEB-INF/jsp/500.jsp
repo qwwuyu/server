@@ -9,7 +9,7 @@
 <meta name="keywords" content="qwwuyu,www.qwwuyu.com" />
 <meta name="description" content="qwwuyu" />
 <link href="/res/css/ionicons.min.css" type="text/css" rel="stylesheet" media="screen" />
-<link href="/res/css/base.css" type="text/css" rel="stylesheet" media="screen" />
+<link href="/res/css/comm.css" type="text/css" rel="stylesheet" media="screen" />
 </head>
 <body>
 	<span style="font-size: 22px; color: #333; margin: 20px 20px; display: block;">啊哦，服务器出错了！</span>

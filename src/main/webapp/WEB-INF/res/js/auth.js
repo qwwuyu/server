@@ -3,7 +3,7 @@ $.ajaxSetup({
 	timeout : 5000,
 	type : 'POST',
 	cache : false,
-	dataType : "json",
+	dataType : "json"
 });
 
 var isLogin = true;
@@ -118,7 +118,7 @@ function login() {
 		complete : function() {
 			$('#complete').removeAttr("disabled").text("登录");
 			$('#switch').css("pointer-events", "auto");
-		},
+		}
 	});
 	request.then(function(data) {
 		handLogin(data);
@@ -149,7 +149,7 @@ function register() {
 		complete : function() {
 			$('#complete').removeAttr("disabled").text("注册");
 			$('#switch').css("pointer-events", "auto");
-		},
+		}
 	});
 	request.then(function(data) {
 		handRegister(data);
@@ -232,7 +232,7 @@ function handAuth() {
 			url : '/i/checkToken',
 			data : {
 				"token" : auth
-			},
+			}
 		});
 		request.then(function(data) {
 			if (1 == data.statu) {

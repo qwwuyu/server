@@ -25,14 +25,14 @@
 			timeout : 5000,
 			type : 'POST',
 			cache : false,
-			dataType : "json",
+			dataType : "json"
 		});
 		var params = GetRequest();
 		var request = $.ajax({
 			url : "/i/note/content",
 			data : {
 				"id" : params.id,
-			},
+			}
 		});
 		request.then(function(data) {
 			L(data);

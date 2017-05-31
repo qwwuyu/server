@@ -54,12 +54,12 @@ function handContent(path) {
 		url : "/i/" + path + "/get",
 		data : {
 			"auth" : auth,
-			"page" : params.page,
+			"page" : params.page
 		},
 		beforeSend : function() {
 		},
 		complete : function() {
-		},
+		}
 	});
 	request.then(function(data) {
 		if (1 == data.statu) {
@@ -104,7 +104,7 @@ function handPage(path, data) {
 		page : page,
 		count : count,
 		select : select,
-		pages : pages,
+		pages : pages
 	});
 	$('.main-page').html(temp_page);
 }
@@ -118,7 +118,7 @@ function handData(path, data) {
 	var temp_page = template('temp_' + path, {
 		datas : data.datas,
 		userId : info.id,
-		auth : info.auth,
+		auth : info.auth
 	});
 	$('.main-content').html(temp_page);
 }
@@ -130,7 +130,7 @@ function rmPosts(ts) {
 		url : "/i/" + path + "/rm",
 		data : {
 			"auth" : auth,
-			"id" : id,
+			"id" : id
 		},
 		beforeSend : function() {
 			ts.attr("disabled", "disabled");

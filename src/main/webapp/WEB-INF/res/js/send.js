@@ -55,7 +55,7 @@ function sendCard(auth, title) {
 		},
 		complete : function() {
 			$('#send_card').removeAttr("disabled").text("发表");
-		},
+		}
 	});
 	request.then(function(data) {
 		if (1 == data.statu) {
@@ -74,14 +74,14 @@ function sendNote(auth, title, content) {
 		data : {
 			"auth" : auth,
 			"title" : title,
-			"content" : content,
+			"content" : content
 		},
 		beforeSend : function() {
 			$('#send_note').attr("disabled", "disabled").text("发表中...");
 		},
 		complete : function() {
 			$('#send_note').removeAttr("disabled").text("发表");
-		},
+		}
 	});
 	request.then(function(data) {
 		if (1 == data.statu) {
@@ -100,14 +100,14 @@ function sendFlag(auth, title) {
 		url : '/i/flag/send',
 		data : {
 			"auth" : auth,
-			"title" : title,
+			"title" : title
 		},
 		beforeSend : function() {
 			$('#send_flag').attr("disabled", "disabled").text("发表中...");
 		},
 		complete : function() {
 			$('#send_flag').removeAttr("disabled").text("发表");
-		},
+		}
 	});
 	request.then(function(data) {
 		if (1 == data.statu) {

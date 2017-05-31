@@ -9,7 +9,7 @@
 <meta name="keywords" content="qwwuyu,www.qwwuyu.com" />
 <meta name="description" content="qwwuyu" />
 <link href="/res/css/ionicons.min.css" type="text/css" rel="stylesheet" media="screen" />
-<link href="/res/css/base.css" type="text/css" rel="stylesheet" media="screen" />
+<link href="/res/css/comm.css" type="text/css" rel="stylesheet" media="screen" />
 <script src="/res/js/jquery-3.2.1.min.js"></script>
 <script src="/res/js/template-web.js"></script>
 <script src="/res/js/js.cookie.js"></script>
