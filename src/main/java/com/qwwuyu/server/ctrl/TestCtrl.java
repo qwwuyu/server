@@ -9,6 +9,11 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,8 +45,7 @@ public class TestCtrl {
 			response.setDateHeader("Expires", 0);
 			try {
 				response.getWriter().write(JSON.toJSONString(new ResponseBean(1, "", map)));
-			} catch (IOException e) {
-			}
+			} catch (IOException e) {}
 		}
 	}
 
@@ -54,8 +58,7 @@ public class TestCtrl {
 		response.setDateHeader("Expires", 0);
 		try {
 			response.getWriter().write(JSON.toJSONString(new ResponseBean(1, "", map)));
-		} catch (IOException e) {
-		}
+		} catch (IOException e) {}
 	}
 
 	@RequestMapping("/timeout")
@@ -89,4 +92,21 @@ public class TestCtrl {
 		}
 		post(request, response);
 	}
+
+	@RequestMapping(value = "/download")
+	public ResponseEntity<byte[]> download(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentDispositionFormData("attachment", "download.jpg");
+		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(new File(SecretConfig.uploadDir + "1.jpg")), headers, HttpStatus.CREATED);
+	}
+
+	@RequestMapping(value = "/download2")
+	public ResponseEntity<byte[]> download2(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentDispositionFormData("attachment", "download.file");
+		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(new File(SecretConfig.uploadDir + "2.file")), headers, HttpStatus.CREATED);
+	}
+
 }
