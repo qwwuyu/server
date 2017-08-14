@@ -1,7 +1,10 @@
 package com.qwwuyu.server.ctrl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -16,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -45,7 +49,8 @@ public class TestCtrl {
 			response.setDateHeader("Expires", 0);
 			try {
 				response.getWriter().write(JSON.toJSONString(new ResponseBean(1, "", map)));
-			} catch (IOException e) {}
+			} catch (IOException e) {
+			}
 		}
 	}
 
@@ -58,7 +63,8 @@ public class TestCtrl {
 		response.setDateHeader("Expires", 0);
 		try {
 			response.getWriter().write(JSON.toJSONString(new ResponseBean(1, "", map)));
-		} catch (IOException e) {}
+		} catch (IOException e) {
+		}
 	}
 
 	@RequestMapping("/timeout")
@@ -93,20 +99,41 @@ public class TestCtrl {
 		post(request, response);
 	}
 
-	@RequestMapping(value = "/download")
-	public ResponseEntity<byte[]> download(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	// @RequestMapping(value = "/download")
+	private ResponseEntity<byte[]> download(HttpServletResponse response) throws IOException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentDispositionFormData("attachment", "download.jpg");
 		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(new File(SecretConfig.uploadDir + "1.jpg")), headers, HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "/download2")
-	public ResponseEntity<byte[]> download2(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentDispositionFormData("attachment", "download.file");
-		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(new File(SecretConfig.uploadDir + "2.file")), headers, HttpStatus.CREATED);
+	@RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public void download(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		File file = new File(SecretConfig.uploadDir + "1.file");
+		try (InputStream is = new FileInputStream(file); OutputStream os = response.getOutputStream();) {
+			response.setHeader("Content-Disposition", "attachment; filename=\"download.file\"");
+			response.addHeader("Content-Length", String.valueOf(file.length()));
+			int read = 0;
+			byte[] bytes = new byte[1024 * 1024];
+			while ((read = is.read(bytes)) != -1) {
+				os.write(bytes, 0, read);
+			}
+			os.flush();
+		}
 	}
 
+	@RequestMapping(value = "/download2", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public void downloadBig(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		File file = new File(SecretConfig.uploadDir + "2.file");
+		try (InputStream is = new FileInputStream(file); OutputStream os = response.getOutputStream();) {
+			response.setHeader("Content-Disposition", "attachment; filename=\"download.file\"");
+			response.addHeader("Content-Length", String.valueOf(file.length()));
+			int read = 0;
+			byte[] bytes = new byte[1024 * 1024];
+			while ((read = is.read(bytes)) != -1) {
+				os.write(bytes, 0, read);
+			}
+			os.flush();
+		}
+	}
 }
