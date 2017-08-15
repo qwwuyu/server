@@ -18,8 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -39,7 +41,7 @@ public class TestCtrl {
 	@Resource
 	private IFlagService service;
 
-	@RequestMapping("/get")
+	@RequestMapping(value = "/get", method = RequestMethod.GET)
 	public void get(HttpServletRequest request, HttpServletResponse response) {
 		if ("GET".equals(request.getMethod())) {
 			Map<String, String[]> map = request.getParameterMap();
@@ -49,12 +51,11 @@ public class TestCtrl {
 			response.setDateHeader("Expires", 0);
 			try {
 				response.getWriter().write(JSON.toJSONString(new ResponseBean(1, "", map)));
-			} catch (IOException e) {
-			}
+			} catch (IOException e) {}
 		}
 	}
 
-	@RequestMapping("/post")
+	@RequestMapping(value = "/post", method = RequestMethod.POST)
 	public void post(HttpServletRequest request, HttpServletResponse response) {
 		Map<String, String[]> map = request.getParameterMap();
 		response.setContentType("application/json;charset=utf-8");
@@ -63,22 +64,21 @@ public class TestCtrl {
 		response.setDateHeader("Expires", 0);
 		try {
 			response.getWriter().write(JSON.toJSONString(new ResponseBean(1, "", map)));
-		} catch (IOException e) {
-		}
+		} catch (IOException e) {}
 	}
 
-	@RequestMapping("/timeout")
+	@RequestMapping(value = "/timeout", method = { RequestMethod.POST, RequestMethod.GET })
 	public void timeout(HttpServletRequest request, HttpServletResponse response) {
 		CommUtil.sleep(100000);
 		post(request, response);
 	}
 
-	@RequestMapping("/error")
+	@RequestMapping(value = "/error", method = { RequestMethod.POST, RequestMethod.GET })
 	public void error(HttpServletRequest request, HttpServletResponse response) {
 		throw new RuntimeException("err");
 	}
 
-	@RequestMapping("/upload")
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public void upload(HttpServletRequest request, HttpServletResponse response) throws IllegalStateException, IOException {
 		// 将当前上下文初始化给 CommonsMutipartResolver
 		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
@@ -99,38 +99,63 @@ public class TestCtrl {
 		post(request, response);
 	}
 
-	// @RequestMapping(value = "/download")
-	private ResponseEntity<byte[]> download(HttpServletResponse response) throws IOException {
+	public ResponseEntity<byte[]> download() throws IOException {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentDispositionFormData("attachment", "download.jpg");
 		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(new File(SecretConfig.uploadDir + "1.jpg")), headers, HttpStatus.CREATED);
+		return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(new File(SecretConfig.uploadDir + "1.jpg")), headers,
+				HttpStatus.CREATED);
+	}
+
+	@RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE,
+			headers = { "range" })
+	public void download(@RequestHeader("range") String range, @RequestParam("name") String name, HttpServletResponse response)
+			throws IOException {
+		downloadFile(name, range, response);
 	}
 
 	@RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public void download(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		File file = new File(SecretConfig.uploadDir + "1.file");
-		try (InputStream is = new FileInputStream(file); OutputStream os = response.getOutputStream();) {
-			response.setHeader("Content-Disposition", "attachment; filename=\"download.file\"");
-			response.addHeader("Content-Length", String.valueOf(file.length()));
-			int read = 0;
-			byte[] bytes = new byte[1024 * 1024];
-			while ((read = is.read(bytes)) != -1) {
-				os.write(bytes, 0, read);
-			}
-			os.flush();
-		}
+	public void download(@RequestParam("name") String name, HttpServletResponse response) throws IOException {
+		downloadFile(name, null, response);
 	}
 
-	@RequestMapping(value = "/download2", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public void downloadBig(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		File file = new File(SecretConfig.uploadDir + "2.file");
+	private void downloadFile(String name, String range, HttpServletResponse response) throws IOException {
+		File file = new File(SecretConfig.uploadDir + name);
+		if (!file.exists()) {
+			response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
+			return;
+		}
+		long left = 0, right = file.length() - 1, written = left;// 100 200 100
+		if (range != null) {
+			try {
+				written = left = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)\\-([\\d]*)", "$1"));
+				right = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)\\-([\\d]*)", "$2"));
+			} catch (Exception e) {}
+		}
+		if (right >= file.length() || right < left || left < 0) {
+			response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
+			return;
+		}
+		if (range != null && left != 0) {
+			response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+			response.setHeader("Content-Range", String.format("bytes %d-%d/%d", left, right, file.length()));
+		}
+		response.setHeader("Content-Disposition", "attachment; filename=\"" + name + "\"");
+		response.setHeader("Content-Length", String.valueOf(right - left + 1));
+		response.setHeader("Accept-Ranges", "bytes");
 		try (InputStream is = new FileInputStream(file); OutputStream os = response.getOutputStream();) {
-			response.setHeader("Content-Disposition", "attachment; filename=\"download.file\"");
-			response.addHeader("Content-Length", String.valueOf(file.length()));
+			if (left != 0) {
+				is.skip(left);
+			}
 			int read = 0;
 			byte[] bytes = new byte[1024 * 1024];
 			while ((read = is.read(bytes)) != -1) {
+				written += read;
+				if (written > right) {
+					read = (int) (right + 1 + read - written);
+					os.write(bytes, 0, read);
+					break;
+				}
 				os.write(bytes, 0, read);
 			}
 			os.flush();
