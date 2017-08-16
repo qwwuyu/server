@@ -1,15 +1,21 @@
 package com.qwwuyu.test;
 
+import java.io.File;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.qwwuyu.server.configs.SecretConfig;
 import com.qwwuyu.server.utils.CommUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class Util {
 	public static void main(String[] args) throws Exception {
-		formatHtmlTemp();
+		// formatHtmlTemp();
+		File file = new File(SecretConfig.fileDir, "..\\file\\1.png");
+		System.out.println(file.toString());
+		System.out.println(file.exists());
 	}
 
 	// 压缩html代码为一行

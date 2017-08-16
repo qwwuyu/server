@@ -6,17 +6,17 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<link href="/res/img/qwwuyu.ico" type="image/x-icon" rel="shortcut icon" />
+<link href="/tres/img/qwwuyu.ico" type="image/x-icon" rel="shortcut icon" />
 <meta name="keywords" content="qwwuyu,www.qwwuyu.com" />
 <meta name="description" content="qwwuyu" />
-<link href="/res/css/ionicons.min.css" type="text/css" rel="stylesheet" media="screen" />
+<link href="/tres/css/ionicons.min.css" type="text/css" rel="stylesheet" media="screen" />
 <link href="/res/css/comm.css" type="text/css" rel="stylesheet" media="screen" />
-<script src="/res/js/jquery-3.2.1.min.js"></script>
-<script src="/res/js/template-web.js"></script>
-<script src="/res/js/js.cookie.js"></script>
-<script src="/res/js/jsencrypt.min.js"></script>
-<script src="/res/js/bcrypt.min.js"></script>
-<script src="/res/js/base64.min.js"></script>
+<script src="/tres/js/jquery-3.2.1.min.js"></script>
+<script src="/tres/js/template-web.js"></script>
+<script src="/tres/js/js.cookie.js"></script>
+<script src="/tres/js/jsencrypt.min.js"></script>
+<script src="/tres/js/bcrypt.min.js"></script>
+<script src="/tres/js/base64.min.js"></script>
 <script src="/res/js/util.js"></script>
 </head>
 <body>

@@ -1,5 +1,7 @@
 package com.qwwuyu.server.configs;
 
+import java.io.File;
+
 public class FieldConfig {
 	// {"code":0,"data":{"country":"\u4e2d\u56fd","country_id":"CN","area":"\u534e\u5357","area_id":"800000","region":"\u5e7f\u4e1c\u7701","region_id":"440000","city":"\u6df1\u5733\u5e02","city_id":"440300","county":"\u5b9d\u5b89\u533a","county_id":"440306","isp":"\u7535\u4fe1","isp_id":"100017","ip":"119.137.52.75"}}
 	public static String url_find_ip = "http://ip.taobao.com/service/getIpInfo.php?ip=119.137.52.75";

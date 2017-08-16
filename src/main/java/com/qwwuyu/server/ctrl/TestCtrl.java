@@ -12,11 +12,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FileUtils;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,7 +47,8 @@ public class TestCtrl {
 			response.setDateHeader("Expires", 0);
 			try {
 				response.getWriter().write(JSON.toJSONString(new ResponseBean(1, "", map)));
-			} catch (IOException e) {}
+			} catch (IOException e) {
+			}
 		}
 	}
 
@@ -64,7 +61,8 @@ public class TestCtrl {
 		response.setDateHeader("Expires", 0);
 		try {
 			response.getWriter().write(JSON.toJSONString(new ResponseBean(1, "", map)));
-		} catch (IOException e) {}
+		} catch (IOException e) {
+		}
 	}
 
 	@RequestMapping(value = "/timeout", method = { RequestMethod.POST, RequestMethod.GET })
@@ -91,46 +89,41 @@ public class TestCtrl {
 				MultipartFile file = multiRequest.getFile(iterator.next().toString());
 				if (file != null) {
 					String fileName = file.getOriginalFilename() != null ? file.getOriginalFilename() : file.getName();
-					String path = SecretConfig.uploadDir + fileName;
-					file.transferTo(new File(path));
+					file.transferTo(new File(SecretConfig.fileDir, fileName));
 				}
 			}
 		}
 		post(request, response);
 	}
 
-	public ResponseEntity<byte[]> download() throws IOException {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentDispositionFormData("attachment", "download.jpg");
-		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(new File(SecretConfig.uploadDir + "1.jpg")), headers,
-				HttpStatus.CREATED);
-	}
-
 	@RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE,
 			headers = { "range" })
-	public void download(@RequestHeader("range") String range, @RequestParam("name") String name, HttpServletResponse response)
-			throws IOException {
+	public void download(@RequestHeader("range") String range, @RequestParam(value = "name", required = false) String name,
+			HttpServletResponse response) throws IOException {
 		downloadFile(name, range, response);
 	}
 
 	@RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public void download(@RequestParam("name") String name, HttpServletResponse response) throws IOException {
+	public void download(@RequestParam(value = "name", required = false) String name, HttpServletResponse response) throws IOException {
 		downloadFile(name, null, response);
 	}
 
 	private void downloadFile(String name, String range, HttpServletResponse response) throws IOException {
-		File file = new File(SecretConfig.uploadDir + name);
+		File file = new File(SecretConfig.fileDir, name);
+		System.out.println(1 + file.getAbsolutePath());
 		if (!file.exists()) {
+			System.out.println(2);
 			response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 			return;
 		}
+		System.out.println(3);
 		long left = 0, right = file.length() - 1, written = left;// 100 200 100
 		if (range != null) {
 			try {
 				written = left = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)\\-([\\d]*)", "$1"));
 				right = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)\\-([\\d]*)", "$2"));
-			} catch (Exception e) {}
+			} catch (Exception e) {
+			}
 		}
 		if (right >= file.length() || right < left || left < 0) {
 			response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
@@ -140,6 +133,8 @@ public class TestCtrl {
 			response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
 			response.setHeader("Content-Range", String.format("bytes %d-%d/%d", left, right, file.length()));
 		}
+		// HttpHeaders headers = new HttpHeaders();
+		// headers.setContentDispositionFormData("attachment", "download.jpg");
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + name + "\"");
 		response.setHeader("Content-Length", String.valueOf(right - left + 1));
 		response.setHeader("Accept-Ranges", "bytes");

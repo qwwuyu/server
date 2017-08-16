@@ -5,14 +5,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<link href="/res/img/qwwuyu.ico" type="image/x-icon" rel=icon>
-<link href="/res/img/qwwuyu.ico" type="image/x-icon" rel="shortcut icon">
+<link href="/tres/img/qwwuyu.ico" type="image/x-icon" rel="shortcut icon">
 <meta name="keywords" content="qwwuyu,www.qwwuyu.com" />
 <meta name="description" content="qwwuyu" />
-<link href="/res/css/textarea.css" type="text/css" rel="stylesheet" />
-<script src="/res/js/jquery-3.2.1.min.js" type="text/javascript"></script>
-<script src="/res/js/editor.js" type="text/javascript"></script>
-<script src="/res/js/js-cookie.js" type="text/javascript"></script>
+<link href="/tres/css/textarea.css" type="text/css" rel="stylesheet" />
+<script src="/tres/js/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script src="/tres/js/editor.js" type="text/javascript"></script>
+<script src="/tres/js/js-cookie.js" type="text/javascript"></script>
 <title>java程序</title>
 </head>
 <body>
