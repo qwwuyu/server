@@ -17,10 +17,8 @@ import com.qwwuyu.server.service.IFlagService;
 public class IFlagServiceImpl implements IFlagService {
 	private String table = "flag";
 	private int numOfPage = 10;
-	@Resource
-	private CommMapper commMapper;
-	@Resource
-	private FlagMapper mapper;
+	@Resource private CommMapper commMapper;
+	@Resource private FlagMapper mapper;
 
 	@Override
 	public int insert(Flag flag) {

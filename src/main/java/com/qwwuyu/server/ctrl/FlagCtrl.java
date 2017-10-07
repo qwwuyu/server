@@ -18,10 +18,8 @@ import com.qwwuyu.server.utils.ResponseUtil;
 @Controller
 @RequestMapping("/i/flag")
 public class FlagCtrl {
-	@Resource
-	private IUserService userService;
-	@Resource
-	private IFlagService service;
+	@Resource private IUserService userService;
+	@Resource private IFlagService service;
 
 	@RequestMapping("/get")
 	public void getFlag(HttpServletRequest request, HttpServletResponse response) {
@@ -29,8 +27,7 @@ public class FlagCtrl {
 		try {
 			page = Integer.parseInt(request.getParameter("page"));
 			page = page > 0 ? page : 1;
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 		ResponseUtil.render(response, ResponseBean.getSuccessBean().setData(service.getFlag(page)));
 	}
 
@@ -45,15 +42,14 @@ public class FlagCtrl {
 			return;
 		}
 		if (user.getAuth() != 5) {
-			J2EEUtil.renderInfo(response, "请先登录");
+			J2EEUtil.renderInfo(response, "权限不足");
 			return;
 		}
 		if (title == null || !title.matches(".{1,50}") || !title.matches(".*[\\S]+.*")) {
 			J2EEUtil.renderInfo(response, "内容不能为空");
 			return;
 		}
-		Flag flag = new Flag().setNick(user.getNick()).setTime(System.currentTimeMillis()).setTitle(title)
-				.setUserId(user.getId());
+		Flag flag = new Flag().setNick(user.getNick()).setTime(System.currentTimeMillis()).setTitle(title).setUserId(user.getId());
 		service.insert(flag);
 		ResponseUtil.render(response, ResponseBean.getSuccessBean());
 	}

@@ -30,8 +30,7 @@ public class IpFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-			ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		String requestURI = ((HttpServletRequest) request).getRequestURI();
 		String address = J2EEUtil.getAddress((HttpServletRequest) request);
 		if ("/i/register".equals(requestURI)) {
@@ -50,8 +49,8 @@ public class IpFilter implements Filter {
 		logger.info("IpFilter:destroy");
 	}
 
-	private void limit(String key, ServletRequest request, ServletResponse response, FilterChain chain, long maxNum,
-			long maxTime) throws IOException, ServletException {
+	private void limit(String key, ServletRequest request, ServletResponse response, FilterChain chain, long maxNum, long maxTime)
+			throws IOException, ServletException {
 		if (map.containsKey(key)) {
 			Long[] ls = map.get(key);
 			long num = ls[0] + 1;

@@ -24,18 +24,18 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.alibaba.fastjson.JSON;
 import com.qwwuyu.server.bean.ResponseBean;
+import com.qwwuyu.server.bean.User;
 import com.qwwuyu.server.configs.SecretConfig;
 import com.qwwuyu.server.service.IFlagService;
 import com.qwwuyu.server.service.IUserService;
 import com.qwwuyu.server.utils.CommUtil;
+import com.qwwuyu.server.utils.J2EEUtil;
 
 @Controller
 @RequestMapping("/test")
 public class TestCtrl {
-	@Resource
-	private IUserService userService;
-	@Resource
-	private IFlagService service;
+	@Resource private IUserService userService;
+	@Resource private IFlagService service;
 
 	@RequestMapping(value = "/get", method = RequestMethod.GET)
 	public void get(HttpServletRequest request, HttpServletResponse response) {
@@ -47,8 +47,7 @@ public class TestCtrl {
 			response.setDateHeader("Expires", 0);
 			try {
 				response.getWriter().write(JSON.toJSONString(new ResponseBean(1, "", map)));
-			} catch (IOException e) {
-			}
+			} catch (IOException e) {}
 		}
 	}
 
@@ -61,8 +60,7 @@ public class TestCtrl {
 		response.setDateHeader("Expires", 0);
 		try {
 			response.getWriter().write(JSON.toJSONString(new ResponseBean(1, "", map)));
-		} catch (IOException e) {
-		}
+		} catch (IOException e) {}
 	}
 
 	@RequestMapping(value = "/timeout", method = { RequestMethod.POST, RequestMethod.GET })
@@ -78,6 +76,17 @@ public class TestCtrl {
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public void upload(HttpServletRequest request, HttpServletResponse response) throws IllegalStateException, IOException {
+		String token = request.getParameter("auth");
+		if (J2EEUtil.isNull(response, token)) return;
+		User user = userService.selectByUser(new User().setToken(token));
+		if (user == null) {
+			J2EEUtil.renderInfo(response, "请先登录");
+			return;
+		}
+		if (user.getAuth() != 5) {
+			J2EEUtil.renderInfo(response, "权限不足");
+			return;
+		}
 		// 将当前上下文初始化给 CommonsMutipartResolver
 		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
 		// 检查form中是否有enctype="multipart/form-data"
@@ -98,17 +107,29 @@ public class TestCtrl {
 
 	@RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE,
 			headers = { "range" })
-	public void download(@RequestHeader("range") String range, @RequestParam(value = "name", required = false) String name,
-			HttpServletResponse response) throws IOException {
-		downloadFile(name, range, response);
+	public void download(@RequestParam(value = "token", required = false) String token,
+			@RequestParam(value = "name", required = false) String name, @RequestHeader("range") String range, HttpServletResponse response)
+			throws IOException {
+		downloadFile(token, name, range, response);
 	}
 
 	@RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public void download(@RequestParam(value = "name", required = false) String name, HttpServletResponse response) throws IOException {
-		downloadFile(name, null, response);
+	public void download(@RequestParam(value = "token", required = false) String token,
+			@RequestParam(value = "name", required = false) String name, HttpServletResponse response) throws IOException {
+		downloadFile(token, name, null, response);
 	}
 
-	private void downloadFile(String name, String range, HttpServletResponse response) throws IOException {
+	private void downloadFile(String token, String name, String range, HttpServletResponse response) throws IOException {
+		if (J2EEUtil.isNull(response, token)) return;
+		User user = userService.selectByUser(new User().setToken(token));
+		if (user == null) {
+			J2EEUtil.renderInfo(response, "请先登录");
+			return;
+		}
+		if (user.getAuth() != 5) {
+			J2EEUtil.renderInfo(response, "权限不足");
+			return;
+		}
 		File file = new File(SecretConfig.fileDir, name);
 		System.out.println(1 + file.getAbsolutePath());
 		if (!file.exists()) {
@@ -122,8 +143,7 @@ public class TestCtrl {
 			try {
 				written = left = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)\\-([\\d]*)", "$1"));
 				right = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)\\-([\\d]*)", "$2"));
-			} catch (Exception e) {
-			}
+			} catch (Exception e) {}
 		}
 		if (right >= file.length() || right < left || left < 0) {
 			response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);

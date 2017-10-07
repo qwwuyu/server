@@ -15,7 +15,6 @@ public class ResponseUtil {
 		response.setDateHeader("Expires", 0);
 		try {
 			response.getWriter().write(JSON.toJSONString(bean));
-		} catch (IOException e) {
-		}
+		} catch (IOException e) {}
 	}
 }

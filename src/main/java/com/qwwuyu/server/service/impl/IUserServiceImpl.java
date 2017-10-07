@@ -10,8 +10,7 @@ import com.qwwuyu.server.service.IUserService;
 
 @Service("user")
 public class IUserServiceImpl implements IUserService {
-	@Resource
-	private UserMapper userMapper;
+	@Resource private UserMapper userMapper;
 
 	@Override
 	public void insert(User user) {

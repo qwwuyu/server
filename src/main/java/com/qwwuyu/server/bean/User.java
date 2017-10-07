@@ -25,8 +25,8 @@ public class User {
 		super();
 	}
 
-	public User(Integer id, String name, String pwd, String nick, Integer auth, String ip, String token,
-			String apptoken, Long time, Long apptime) {
+	public User(Integer id, String name, String pwd, String nick, Integer auth, String ip, String token, String apptoken, Long time,
+			Long apptime) {
 		super();
 		this.id = id;
 		this.name = name;

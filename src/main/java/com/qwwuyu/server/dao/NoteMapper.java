@@ -15,6 +15,6 @@ public interface NoteMapper {
 
 	int deleteByPrimaryKey(Integer id);
 
-	List<Note> selectByNote(@Param("note") Note note, @Param("limit") int limit, @Param("offset") int offset,
-			@Param("asc") String asc, @Param("desc") String desc);
+	List<Note> selectByNote(@Param("note") Note note, @Param("limit") int limit, @Param("offset") int offset, @Param("asc") String asc,
+			@Param("desc") String desc);
 }

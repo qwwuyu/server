@@ -110,8 +110,7 @@ public class RSAUtil {
 
 	/** 保存密匙 */
 	public void saveKeyForBase64(File privateKeyFile, File publicKeyFile) throws Exception {
-		if (prikey == null || pubkey == null)
-			return;
+		if (prikey == null || pubkey == null) return;
 		BASE64Encoder encoder = new BASE64Encoder();
 		saveBase64(encoder.encodeBuffer(prikey.getEncoded()), privateKeyFile);
 		saveBase64(encoder.encodeBuffer(pubkey.getEncoded()), publicKeyFile);

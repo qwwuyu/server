@@ -15,6 +15,6 @@ public interface CardMapper {
 
 	int deleteByPrimaryKey(Integer id);
 
-	List<Card> selectByCard(@Param("card") Card card, @Param("limit") int limit, @Param("offset") int offset,
-			@Param("asc") String asc, @Param("desc") String desc);
+	List<Card> selectByCard(@Param("card") Card card, @Param("limit") int limit, @Param("offset") int offset, @Param("asc") String asc,
+			@Param("desc") String desc);
 }

@@ -21,10 +21,8 @@ import com.qwwuyu.server.utils.ResponseUtil;
 @Controller
 @RequestMapping("/i/note")
 public class NoteCtrl {
-	@Resource
-	private IUserService userService;
-	@Resource
-	private INoteService service;
+	@Resource private IUserService userService;
+	@Resource private INoteService service;
 
 	@RequestMapping("/get")
 	public void getNote(HttpServletRequest request, HttpServletResponse response) {
@@ -32,8 +30,7 @@ public class NoteCtrl {
 		try {
 			page = Integer.parseInt(request.getParameter("page"));
 			page = page > 0 ? page : 1;
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 		ResponseUtil.render(response, ResponseBean.getSuccessBean().setData(service.getNote(page)));
 	}
 
@@ -56,8 +53,8 @@ public class NoteCtrl {
 			J2EEUtil.renderInfo(response, "内容不能为空");
 			return;
 		}
-		Note note = new Note().setUserId(user.getId()).setNick(user.getNick()).setTime(System.currentTimeMillis())
-				.setTitle(title).setContent(content);
+		Note note = new Note().setUserId(user.getId()).setNick(user.getNick()).setTime(System.currentTimeMillis()).setTitle(title)
+				.setContent(content);
 		service.insert(note);
 		ResponseUtil.render(response, ResponseBean.getSuccessBean());
 	}

@@ -18,10 +18,8 @@ import com.qwwuyu.server.utils.ResponseUtil;
 @Controller
 @RequestMapping("/i/card")
 public class CardCtrl {
-	@Resource
-	private IUserService userService;
-	@Resource
-	private ICardService service;
+	@Resource private IUserService userService;
+	@Resource private ICardService service;
 
 	@RequestMapping("/get")
 	public void getCard(HttpServletRequest request, HttpServletResponse response) {
@@ -29,8 +27,7 @@ public class CardCtrl {
 		try {
 			page = Integer.parseInt(request.getParameter("page"));
 			page = page > 0 ? page : 1;
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 		ResponseUtil.render(response, ResponseBean.getSuccessBean().setData(service.getCard(page)));
 	}
 
@@ -48,8 +45,7 @@ public class CardCtrl {
 			J2EEUtil.renderInfo(response, "内容不能为空");
 			return;
 		}
-		Card card = new Card().setNick(user.getNick()).setTime(System.currentTimeMillis()).setTitle(title)
-				.setUserId(user.getId());
+		Card card = new Card().setNick(user.getNick()).setTime(System.currentTimeMillis()).setTitle(title).setUserId(user.getId());
 		service.insert(card);
 		ResponseUtil.render(response, ResponseBean.getSuccessBean());
 	}

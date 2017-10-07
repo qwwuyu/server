@@ -17,10 +17,8 @@ import com.qwwuyu.server.service.ICardService;
 public class ICardServiceImpl implements ICardService {
 	private String table = "card";
 	private int numOfPage = 10;
-	@Resource
-	private CommMapper commMapper;
-	@Resource
-	private CardMapper mapper;
+	@Resource private CommMapper commMapper;
+	@Resource private CardMapper mapper;
 
 	@Override
 	public int insert(Card card) {

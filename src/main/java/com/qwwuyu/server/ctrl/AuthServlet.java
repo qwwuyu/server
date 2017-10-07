@@ -18,8 +18,7 @@ import com.qwwuyu.server.utils.ResponseUtil;
 @Controller
 @RequestMapping("/i")
 public class AuthServlet {
-	@Resource
-	private IUserService service;
+	@Resource private IUserService service;
 
 	@RequestMapping("/login")
 	public void login(HttpServletRequest request, HttpServletResponse response) {
@@ -51,8 +50,7 @@ public class AuthServlet {
 			ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("昵称已存在").setStatu(2));
 			return;
 		}
-		User user = new User(null, acc, J2EEUtil.handPwd(acc, pwd), nick, 2, J2EEUtil.getAddress(request), null, null,
-				0l, 0l);
+		User user = new User(null, acc, J2EEUtil.handPwd(acc, pwd), nick, 2, J2EEUtil.getAddress(request), null, null, 0l, 0l);
 		service.insert(user);
 		login(response, acc, user.getPwd());
 	}

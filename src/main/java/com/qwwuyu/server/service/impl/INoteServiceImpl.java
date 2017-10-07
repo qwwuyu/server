@@ -17,10 +17,8 @@ import com.qwwuyu.server.service.INoteService;
 public class INoteServiceImpl implements INoteService {
 	private String table = "note";
 	private int numOfPage = 10;
-	@Resource
-	private CommMapper commMapper;
-	@Resource
-	private NoteMapper mapper;
+	@Resource private CommMapper commMapper;
+	@Resource private NoteMapper mapper;
 
 	@Override
 	public int insert(Note note) {

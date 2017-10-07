@@ -15,6 +15,6 @@ public interface FlagMapper {
 
 	int deleteByPrimaryKey(Integer id);
 
-	List<Flag> selectByFlag(@Param("flag") Flag flag, @Param("limit") int limit, @Param("offset") int offset,
-			@Param("asc") String asc, @Param("desc") String desc);
+	List<Flag> selectByFlag(@Param("flag") Flag flag, @Param("limit") int limit, @Param("offset") int offset, @Param("asc") String asc,
+			@Param("desc") String desc);
 }

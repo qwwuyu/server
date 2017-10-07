@@ -38,10 +38,8 @@ public class JavaRunUtil {
 
 	private static String runFile(File file) throws Exception {
 		Object[] result = runProcess("javac " + file + " -encoding utf-8");
-		if (!(boolean) result[0])
-			return (String) result[1];
-		result = runProcess("java -cp " + file.getParent() + " "
-				+ file.getName().substring(0, file.getName().lastIndexOf('.')));
+		if (!(boolean) result[0]) return (String) result[1];
+		result = runProcess("java -cp " + file.getParent() + " " + file.getName().substring(0, file.getName().lastIndexOf('.')));
 		return (String) result[1];
 	}
 
