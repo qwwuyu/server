@@ -94,6 +94,9 @@ public class SmartQQClient implements Closeable {
 	public boolean login(long waitTime, final MessageCallback callback) {
 		getQRCode();
 		String url = verifyQRCode(waitTime);
+		try {
+			new File(FileUtil.webInfFile("sres/img/", tag + ".png").getCanonicalPath()).delete();
+		} catch (Exception e) {}
 		if (url == null) return false;
 		getPtwebqq(url);
 		getVfwebqq();

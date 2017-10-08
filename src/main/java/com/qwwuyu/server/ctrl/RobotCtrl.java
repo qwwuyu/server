@@ -37,7 +37,7 @@ public class RobotCtrl {
 			J2EEUtil.renderInfo(response, "请先登录");
 			return;
 		}
-		if (user.getAuth() != 5) {
+		if (user.getAuth() < 3) {
 			J2EEUtil.renderInfo(response, "权限不足");
 			return;
 		}
@@ -56,29 +56,11 @@ public class RobotCtrl {
 			J2EEUtil.renderInfo(response, "请先登录");
 			return;
 		}
-		if (user.getAuth() != 5) {
+		if (user.getAuth() < 3) {
 			J2EEUtil.renderInfo(response, "权限不足");
 			return;
 		}
 		new Thread(() -> Robot.closeSmartQQ(tag)).start();
-		ResponseUtil.render(response, ResponseBean.getSuccessBean());
-	}
-
-	@RequestMapping("/delete")
-	public void deleteQQ(HttpServletRequest request, HttpServletResponse response) {
-		String token = request.getParameter("auth");
-		String tag = request.getParameter("tag");
-		if (J2EEUtil.isNull(response, token, tag)) return;
-		User user = userService.selectByUser(new User().setToken(token));
-		if (user == null) {
-			J2EEUtil.renderInfo(response, "请先登录");
-			return;
-		}
-		if (user.getAuth() != 5) {
-			J2EEUtil.renderInfo(response, "权限不足");
-			return;
-		}
-		Robot.deleteQQ(tag);
 		ResponseUtil.render(response, ResponseBean.getSuccessBean());
 	}
 }

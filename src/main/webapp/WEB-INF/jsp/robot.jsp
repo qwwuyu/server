@@ -55,7 +55,6 @@
 				<button id="qqrefresh" class="btn" style="width: 100px;">刷新</button>
 				<button id="qqopen" class="btn" style="width: 100px; margin-left: 12px;">挂机</button>
 				<button id="qqclose" class="btn" style="width: 100px; margin-left: 12px;">停止</button>
-				<button id="qqdelete" class="btn" style="width: 100px; margin-left: 12px;">删除</button>
 			</div>
 		</form>
 		<img id="qrimg" width="165" height="165" style="margin-top: 12px;" />

@@ -25,16 +25,6 @@ $(document).ready(function() {
 		}
 		return false;
 	});
-	$('#qqdelete').bind("click", function(event) {
-		var tag = $('#qqtag').val();
-		var auth = Cookies.get('auth');
-		if ('string' != typeof (auth)) {
-			showErr("请先登录");
-		} else {
-			deleteRobot(auth, tag);
-		}
-		return false;
-	});
 });
 function openRobot(auth, tag, pwd) {
 	var request = $.ajax({
@@ -74,31 +64,6 @@ function closeRobot(auth, tag) {
 		},
 		complete : function() {
 			$('#qqclose').removeAttr("disabled").text("停止");
-		}
-	});
-	request.then(function(data) {
-		if (1 == data.statu) {
-			$('#qrimg').attr("src", "");
-			showSucc("操作成功", 5000);
-		} else {
-			showErr(data.info);
-		}
-	}, function(jqXHR, textStatus, errorThrown) {
-		showErr(textStatus);
-	});
-}
-function deleteRobot(auth, tag) {
-	var request = $.ajax({
-		url : '/robot/delete',
-		data : {
-			"auth" : auth,
-			"tag" : tag
-		},
-		beforeSend : function() {
-			$('#qqdelete').attr("disabled", "disabled").text("操作中...");
-		},
-		complete : function() {
-			$('#qqdelete').removeAttr("disabled").text("删除");
 		}
 	});
 	request.then(function(data) {

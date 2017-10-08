@@ -1,7 +1,6 @@
 package com.scienjus.smartqq;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,9 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.alibaba.fastjson.JSON;
 import com.qwwuyu.server.utils.CommUtil;
-import com.qwwuyu.server.utils.FileUtil;
 import com.scienjus.smartqq.callback.MessageCallback;
 import com.scienjus.smartqq.client.SmartQQClient;
 import com.scienjus.smartqq.model.DiscussMessage;
@@ -21,8 +18,6 @@ import com.scienjus.smartqq.model.GroupMessage;
 import com.scienjus.smartqq.model.Message;
 
 public class Robot {
-	private static String qwTag = "233";
-	private static String asdTag = "123";
 	private static Map<String, SmartQQClient> map = new HashMap<>();
 
 	public static void addSmartQQ(String tag, String pwd) {
@@ -43,26 +38,18 @@ public class Robot {
 		}
 	}
 
-	public static void deleteQQ(String tag) {
-		try {
-			String filePath = FileUtil.webInfFile("sres/img/", tag + ".png").getCanonicalPath();
-			boolean delete = new File(filePath).delete();
-			System.out.println("文件删除:" + delete);
-		} catch (Exception e) {
-			System.out.println("文件删除:" + e.getMessage());
-		}
-	}
-
 	private static class MyMessageCallback implements MessageCallback, Closeable {
 		private ExecutorService executor = Executors.newCachedThreadPool();
 		private final SmartQQClient client;
 		private final String tag;
 		private final String pwd;
-		private Long qwId = 0L;
-		private Long robotId = 0L;
+		private Long admin = 0L;
+		private String nike;
+		private Map<Long, Long> robotMap = new HashMap<>();
+		private Map<Long, String> nikeMap = new HashMap<>();
 		private Map<Long, Wait> waitMap = new HashMap<>();
 		private Map<Long, ArrayList<String[]>> msgsMap = new HashMap<>();
-		private int flag = 0;
+		private Map<Long, Integer> flagMap = new HashMap<>();
 
 		public MyMessageCallback(SmartQQClient client, String tag, String pwd) {
 			this.client = client;
@@ -74,13 +61,11 @@ public class Robot {
 		@Override
 		public void onMessage(Message message) {
 			lastTime = System.currentTimeMillis();
-			System.out.println(tag + JSON.toJSONString(message));
-			if (pwd.equals(message.getContent())) {
-				qwId = message.getUserId();
-				executor.execute(() -> client.sendMessageToFriend(qwId, "收到qwid"));
-				System.out.println("qwId:" + qwId);
-			} else if (qwId == message.getUserId() && "存活".equals(message.getContent())) {
-				executor.execute(() -> client.sendMessageToFriend(qwId, "123"));
+			String content = message.getContent();
+			if (content.startsWith(pwd)) {
+				admin = message.getUserId();
+				nike = "@" + content.substring(pwd.length());
+				executor.execute(() -> client.sendMessageToFriend(admin, "收到id"));
 			}
 		}
 
@@ -88,20 +73,25 @@ public class Robot {
 
 		@Override
 		public void onGroupMessage(GroupMessage message) {
-			lastTime = System.currentTimeMillis();
-			System.out.println(tag + JSON.toJSONString(message));
-			if (message.getContent().equals(lastMsg)) {
+			if (admin == 0L || message.getContent().equals(lastMsg)) {
 				return;
 			}
+			lastTime = System.currentTimeMillis();
 			lastMsg = message.getContent();
 			String content = message.getContent();
 			long groupId = message.getGroupId();
-			if (0L == robotId && content.startsWith("@大腿")) {
-				robotId = message.getUserId();
-				System.out.println("robotId:" + robotId);
-			} else if (qwId == message.getUserId()) {
+			Long robot = robotMap.get(groupId);
+			if (robot == null) robot = 0L;
+			if (0L == robot && content.startsWith(nike)) {
+				robot = message.getUserId();
+				robotMap.put(groupId, robot);
+				nikeMap.put(groupId, nike);
+				flagMap.put(groupId, 0);
+				executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "收到机器id"));
+			} else if (admin == message.getUserId()) {
 				if ("重新获取".equals(content)) {
-					robotId = 0L;
+					robotMap.put(groupId, null);
+					executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "重新获取id"));
 				} else if (content.startsWith(tag + "开始-")) {
 					// 开始-钓鱼-大腿.+[积分|鱼饵][\D]+(\d+)分钟-探险-大腿.+[宠物|探险][\D]+(\d+)分钟
 					// 开始-进入副本 神陨星域-asd.+[副本|荒古][\D]+(\d+)分钟-双修-asd.+[双修|活动][\D]+(\d+)分钟
@@ -148,43 +138,27 @@ public class Robot {
 				} else if (content.startsWith(tag + "-")) {
 					final String txt = content.substring((tag + "-").length());
 					executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), txt));
-				} else if (content.startsWith(tag + "run-")) {// shutdown -s -f -t 10
-					try {
-						executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "收到指令"));
-						final String txt = content.substring((tag + "run-").length());
-						Runtime.getRuntime().exec(txt);
-					} catch (Exception e) {
-						executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "处理失败"));
-					}
 				}
 			}
-			if (robotId == message.getUserId()) {
-				if (asdTag.equals(tag) && content.contains("@asd 您的宠物已经精疲力竭了") && flag < 2) {
-					executor.execute(() -> {
-						client.sendMessageToGroup(message.getGroupId(), flag == 0 ? "使用 小精力瓶" : "使用 大精力瓶", "进入副本 神陨星域");
-					});
-				} else if (asdTag.equals(tag) && content.contains("@asd 精力不足！双修需要") && flag < 2) {
-					executor.execute(() -> {
-						client.sendMessageToGroup(message.getGroupId(), flag == 0 ? "使用 小精力瓶" : "使用 大精力瓶", "双修");
-					});
-				} else if (asdTag.equals(tag) && content.contains("@asd 您背包里并没有小精力瓶呢")) {
-					flag = 1;
-				} else if (asdTag.equals(tag) && content.contains("@asd 您背包里并没有大精力瓶呢")) {
-					flag = 2;
-				} else if (qwTag.equals(tag) && content.contains("@大腿 您的宠物宝宝心情实在是太差了")) {
+			if (robot == message.getUserId()) {
+				final Integer flag = flagMap.get(groupId);
+				String nike = nikeMap.get(groupId);
+				if (content.contains(nike + " 您的宠物已经精疲力竭了") && flag < 2) {
+					executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), flag == 0 ? "使用 小精力瓶" : "使用 大精力瓶", "进入副本 神陨星域"));
+				} else if (content.contains(nike + " 精力不足！双修需要") && flag < 2) {
+					executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), flag == 0 ? "使用 小精力瓶" : "使用 大精力瓶", "双修"));
+				} else if (content.contains(nike + " 您背包里并没有小精力瓶呢")) {
+					flagMap.put(groupId, 1);
+				} else if (content.contains(nike + " 您背包里并没有大精力瓶呢")) {
+					flagMap.put(groupId, 2);
+				} else if (content.contains(nike + " 您的宠物宝宝心情实在是太差了")) {
 					executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "玩耍"));
-				} else if (qwTag.equals(tag) && content.contains("@大腿 您还没有鱼竿呢")) {
-					executor.execute(() -> {
-						client.sendMessageToGroup(message.getGroupId(), "购买鱼竿 稀有鱼竿", "钓鱼");
-					});
-				} else if (qwTag.equals(tag) && content.contains("@大腿 您的稀有鱼饵已经用完啦")) {
-					executor.execute(() -> {
-						client.sendMessageToGroup(message.getGroupId(), "购买鱼饵 稀有鱼饵 100", "钓鱼");
-					});
-				} else if (qwTag.equals(tag) && content.contains("@大腿 运气爆棚啦")) {
-					executor.execute(() -> {
-						client.sendMessageToGroup(message.getGroupId(), "假装看不见", "钓鱼");
-					});
+				} else if (content.contains(nike + " 您还没有鱼竿呢")) {
+					executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "购买鱼竿 稀有鱼竿", "钓鱼"));
+				} else if (content.contains(nike + " 您的稀有鱼饵已经用完啦")) {
+					executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "购买鱼饵 稀有鱼饵 100", "钓鱼"));
+				} else if (content.contains(nike + " 运气爆棚啦")) {
+					executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "假装看不见", "钓鱼"));
 				} else if (content.contains("分钟")) {
 					Wait wait = waitMap.get(groupId);
 					ArrayList<String[]> msgs = msgsMap.get(groupId);
@@ -218,22 +192,19 @@ public class Robot {
 
 		private void checkLive() {
 			lastTime = System.currentTimeMillis();
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					while (isLive) {
-						try {
-							long nowTime = System.currentTimeMillis();
-							if (nowTime - lastTime > 40L * 60 * 1000) {
-								stop();
-								return;
-							}
-							synchronized (lock) {
-								lock.wait(10L * 60 * 1000);
-							}
-						} catch (Exception e) {
+			new Thread(() -> {
+				while (isLive) {
+					try {
+						long nowTime = System.currentTimeMillis();
+						if (nowTime - lastTime > 40L * 60 * 1000) {
 							stop();
+							return;
 						}
+						synchronized (lock) {
+							lock.wait(10L * 60 * 1000);
+						}
+					} catch (Exception e) {
+						stop();
 					}
 				}
 			}).start();
@@ -244,9 +215,7 @@ public class Robot {
 				wait.stop();
 			}
 			waitMap.clear();
-			executor.execute(() -> {
-				closeSmartQQ(tag);
-			});
+			executor.execute(() -> closeSmartQQ(tag));
 		}
 	}
 
