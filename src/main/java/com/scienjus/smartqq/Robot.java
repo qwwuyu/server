@@ -98,6 +98,10 @@ public class Robot {
 					if (!waitMap.containsKey(groupId)) {
 						final ArrayList<String[]> msgs = new ArrayList<>();
 						String[] command = content.substring((tag + "开始-").length()).split("-");
+						if (command.length % 3 != 0) {
+							executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "指令格式错误"));
+							return;
+						}
 						for (int i = 0; i < command.length; i += 3) {
 							msgs.add(new String[] { command[i], command[i + 1], command[i + 2] });
 						}
@@ -109,7 +113,8 @@ public class Robot {
 								client.sendMessageToGroup(message.getGroupId(), "挂机开始");
 								for (int i = 0; i < msgs.size(); i++) {
 									CommUtil.sleep(1000);
-									wait.addTag(msgs.get(i)[0], Integer.parseInt(msgs.get(i)[2]) * 60 * 1000);
+									int t = Math.max(1, Integer.parseInt(msgs.get(i)[2]));
+									wait.addTag(msgs.get(i)[0], t * 60 * 1000);
 								}
 							} catch (Exception e) {}
 						});
