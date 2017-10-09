@@ -22,68 +22,28 @@
 </head>
 <body>
 	<div style="position: fixed; width: 100%; height: 100%; background-color: rgba(0, 0, 0, .05); z-index: -1000"></div>
-	<div class="header">
-		<div class="header-mask-wrp">
-			<div class="header-mask-bg"></div>
-			<div class="header-mask"></div>
+	<div class="center">
+		<div class="header-anth-y top-h" style="float: left; display: block;">
+			<ul>
+				<li id="user"><span id="user_nick">未登录</span></li>
+			</ul>
 		</div>
-		<div class="w960 center">
-			<span class="top-h">网速超渣,不支持手机...</span>
-			<div class="header-anth top-h">
-				<ul>
-					<li id="login"><span>登录</span></li>
-					<li id="register"><span>注册</span></li>
-				</ul>
-			</div>
-			<div class="header-anth-y top-h">
-				<ul>
-					<li id="user"><span id="user_nick"></span>
-						<div id="user-menu" class="user-menu">
-							<ul>
-								<li><span>暂未开放</span></li>
-								<li id="offline"><span>注销</span></li>
-							</ul>
-						</div></li>
-				</ul>
-			</div>
-		</div>
-	</div>
-	<div class="content w960 center">
-		<form>
-			<input id="qqtag" class="input" maxlength="5" placeholder="tag" autocomplete="off" /> <input id="qqpwd" class="input" maxlength="5" placeholder="pwd" autocomplete="off" style="margin-top: 12px;" />
+		<button id="offline" class="btn" style="width: 100px; margin-left: 12px;">注销</button>
+		<form class="header-anth" style="float: none;">
+			<input id="acc" class="input" maxlength="20" placeholder="帐号" style="margin-top: 12px;" /> <input id="pwd" class="input" maxlength="20" type="password" placeholder="密码" style="margin-top: 12px;" />
 			<div style="margin-top: 12px;">
-				<button id="qqrefresh" class="btn" style="width: 100px;">刷新</button>
+				<button id="complete" class="btn" style="width: 100px; margin-left: 12px;">登录</button>
+			</div>
+		</form>
+		<form>
+			<input id="qqtag" class="input" maxlength="5" placeholder="tag" autocomplete="off" style="margin-top: 12px;" /> <input id="qqpwd" class="input" maxlength="5" placeholder="pwd" autocomplete="off" style="margin-top: 12px;" />
+			<div style="margin-top: 12px;">
+				<button id="qqrefresh" class="btn" style="width: 100px; margin-left: 12px;">刷新</button>
 				<button id="qqopen" class="btn" style="width: 100px; margin-left: 12px;">挂机</button>
 				<button id="qqclose" class="btn" style="width: 100px; margin-left: 12px;">停止</button>
 			</div>
 		</form>
 		<img id="qrimg" width="165" height="165" style="margin-top: 12px;" />
-	</div>
-	<div class="dialog dialog_anth">
-		<form class="content auth-form">
-			<i class="close ion-close-round"></i>
-			<div class="panel">
-				<span class="title">登录</span>
-				<div class="input-group">
-					<div class="input-box">
-						<input id="acc" class="input" maxlength="20" placeholder="帐号" />
-					</div>
-					<div class="input-box" style="display: none;">
-						<input id="nick" class="input" maxlength="20" placeholder="昵称" />
-					</div>
-					<div class="input-box">
-						<input id="pwd" class="input" maxlength="20" type="password" placeholder="密码" />
-					</div>
-					<div class="input-box" style="display: none;">
-						<input id="pwd2" class="input" maxlength="20" type="password" placeholder="重复密码" />
-					</div>
-				</div>
-				<button id="complete" class="btn">登录</button>
-				<div class="prompt-box">
-					<span>没有账号？</span> <span id="switch" class="clickable">注册</span> <a id="forget" class="right clickable">忘记密码</a>
-				</div>
-			</div>
-		</form>
 	</div>
 	<div class="alert-list"></div>
 	<div class="alert-list-succ"></div>

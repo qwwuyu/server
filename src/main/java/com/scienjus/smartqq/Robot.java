@@ -65,7 +65,7 @@ public class Robot {
 			if (content.startsWith(pwd)) {
 				admin = message.getUserId();
 				nike = "@" + content.substring(pwd.length());
-				executor.execute(() -> client.sendMessageToFriend(admin, "收到id"));
+				executor.execute(() -> client.sendMessageToFriend(admin, "收到id" + nike));
 			}
 		}
 
@@ -98,18 +98,20 @@ public class Robot {
 					if (!waitMap.containsKey(groupId)) {
 						final ArrayList<String[]> msgs = new ArrayList<>();
 						String[] command = content.substring((tag + "开始-").length()).split("-");
-						for (int i = 0; i < command.length; i += 2) {
-							msgs.add(new String[] { command[i], command[i + 1] });
+						for (int i = 0; i < command.length; i += 3) {
+							msgs.add(new String[] { command[i], command[i + 1], command[i + 2] });
 						}
 						msgsMap.put(groupId, msgs);
 						final Wait wait = new Wait(new MyWaitCallBack(client, groupId));
 						waitMap.put(groupId, wait);
 						executor.execute(() -> {
-							client.sendMessageToGroup(message.getGroupId(), "挂机开始");
-							for (int i = 0; i < msgs.size(); i++) {
-								CommUtil.sleep(1000);
-								wait.addTag(msgs.get(i)[0], 30 * 60 * 1000);
-							}
+							try {
+								client.sendMessageToGroup(message.getGroupId(), "挂机开始");
+								for (int i = 0; i < msgs.size(); i++) {
+									CommUtil.sleep(1000);
+									wait.addTag(msgs.get(i)[0], Integer.parseInt(msgs.get(i)[2]) * 60 * 1000);
+								}
+							} catch (Exception e) {}
 						});
 					} else {
 						executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "挂机过了"));
