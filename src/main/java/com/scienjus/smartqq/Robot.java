@@ -73,12 +73,18 @@ public class Robot {
 
 		@Override
 		public void onGroupMessage(GroupMessage message) {
+			String content = message.getContent();
+			if (content.startsWith(pwd)) {
+				admin = message.getUserId();
+				nike = "@" + content.substring(pwd.length());
+				executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "收到id" + nike));
+				return;
+			}
 			if (admin == 0L || message.getContent().equals(lastMsg)) {
 				return;
 			}
 			lastTime = System.currentTimeMillis();
 			lastMsg = message.getContent();
-			String content = message.getContent();
 			long groupId = message.getGroupId();
 			Long robot = robotMap.get(groupId);
 			if (robot == null) robot = 0L;
@@ -166,6 +172,8 @@ public class Robot {
 					executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "购买鱼饵 稀有鱼饵 100", "钓鱼"));
 				} else if (content.contains(nike + " 运气爆棚啦")) {
 					executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "假装看不见", "钓鱼"));
+				} else if (content.contains(nike + " 吼吼，只见鱼儿")) {
+					executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "钓鱼"));
 				} else if (content.contains("分钟")) {
 					Wait wait = waitMap.get(groupId);
 					ArrayList<String[]> msgs = msgsMap.get(groupId);
