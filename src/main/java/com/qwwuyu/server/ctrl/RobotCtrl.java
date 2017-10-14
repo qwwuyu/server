@@ -32,6 +32,10 @@ public class RobotCtrl {
 		String tag = request.getParameter("tag");
 		String pwd = request.getParameter("pwd");
 		if (J2EEUtil.isNull(response, token, tag, pwd)) return;
+		if (pwd.startsWith(tag)) {
+			J2EEUtil.renderInfo(response, "tag和pwd不能相同开头");
+			return;
+		}
 		User user = userService.selectByUser(new User().setToken(token));
 		if (user == null) {
 			J2EEUtil.renderInfo(response, "请先登录");
@@ -56,7 +60,7 @@ public class RobotCtrl {
 			J2EEUtil.renderInfo(response, "请先登录");
 			return;
 		}
-		if (user.getAuth() < 3) {
+		if (user.getAuth() < 5) {
 			J2EEUtil.renderInfo(response, "权限不足");
 			return;
 		}

@@ -77,7 +77,7 @@ public class Robot {
 			if (content.startsWith(pwd)) {
 				admin = message.getUserId();
 				nike = "@" + content.substring(pwd.length());
-				executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "收到id" + nike));
+				executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "get" + nike));
 				return;
 			}
 			if (admin == 0L || message.getContent().equals(lastMsg)) {
@@ -93,7 +93,7 @@ public class Robot {
 				robotMap.put(groupId, robot);
 				nikeMap.put(groupId, nike);
 				flagMap.put(groupId, 0);
-				executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "收到机器id"));
+				executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "get"));
 			} else if (admin == message.getUserId()) {
 				if ("重新获取".equals(content)) {
 					robotMap.put(groupId, null);
@@ -116,7 +116,7 @@ public class Robot {
 						waitMap.put(groupId, wait);
 						executor.execute(() -> {
 							try {
-								client.sendMessageToGroup(message.getGroupId(), "挂机开始");
+								client.sendMessageToGroup(message.getGroupId(), "start");
 								for (int i = 0; i < msgs.size(); i++) {
 									CommUtil.sleep(1000);
 									int t = Math.max(1, Integer.parseInt(msgs.get(i)[2]));
@@ -135,7 +135,7 @@ public class Robot {
 					}
 					if (wait != null) {
 						wait.stop();
-						executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "挂机暂停"));
+						executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "stop"));
 					} else {
 						executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "你没有开始"));
 					}
@@ -145,7 +145,7 @@ public class Robot {
 					}
 					waitMap.clear();
 					executor.execute(() -> {
-						client.sendMessageToGroup(message.getGroupId(), "程序结束");
+						client.sendMessageToGroup(message.getGroupId(), "end");
 						closeSmartQQ(tag);
 					});
 				} else if (content.startsWith(tag + "-")) {
@@ -174,7 +174,7 @@ public class Robot {
 					executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "假装看不见", "钓鱼"));
 				} else if (content.contains(nike + " 吼吼，只见鱼儿")) {
 					executor.execute(() -> client.sendMessageToGroup(message.getGroupId(), "钓鱼"));
-				} else if (content.contains("分钟")) {
+				} else if (content.contains("分钟") || content.contains("报时")) {
 					Wait wait = waitMap.get(groupId);
 					ArrayList<String[]> msgs = msgsMap.get(groupId);
 					if (wait != null && msgs != null) {
