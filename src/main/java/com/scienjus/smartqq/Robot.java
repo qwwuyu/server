@@ -211,7 +211,7 @@ public class Robot {
 				while (isLive) {
 					try {
 						long nowTime = System.currentTimeMillis();
-						if (nowTime - lastTime > 40L * 60 * 1000) {
+						if (nowTime - lastTime > 70L * 60 * 1000) {
 							stop();
 							return;
 						}

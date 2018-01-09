@@ -4,6 +4,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -651,13 +652,13 @@ public class SmartQQClient implements Closeable {
 		if (url.getReferer() != null) {
 			request.addHeader("Referer", url.getReferer());
 		}
-		return request.text();
+		return request.text(StandardCharsets.UTF_8);
 	}
 
 	// 发送post请求
 	private Response<String> post(ApiURL url, JSONObject r) {
 		return session.post(url.getUrl()).addHeader("User-Agent", ApiURL.USER_AGENT).addHeader("Referer", url.getReferer())
-				.addHeader("Origin", url.getOrigin()).addForm("r", r.toJSONString()).text();
+				.addHeader("Origin", url.getOrigin()).addForm("r", r.toJSONString()).text(StandardCharsets.UTF_8);
 	}
 
 	// 发送post请求，失败时重试
