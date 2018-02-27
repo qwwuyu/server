@@ -60,17 +60,20 @@ public class Robot {
 
 		@Override
 		public void onMessage(Message message) {
-			onMessage(message.getContent(), message.getUserId(), message.getUserId(), (msg, chatId) -> client.sendMessageToFriend(chatId, msg));
+			onMessage(message.getContent(), message.getUserId(), message.getUserId(),
+					(msg, chatId) -> client.sendMessageToFriend(chatId, msg));
 		}
 
 		@Override
 		public void onGroupMessage(GroupMessage message) {
-			onMessage(message.getContent(), message.getUserId(), message.getGroupId(), (msg, chatId) -> client.sendMessageToGroup(chatId, msg));
+			onMessage(message.getContent(), message.getUserId(), message.getGroupId(),
+					(msg, chatId) -> client.sendMessageToGroup(chatId, msg));
 		}
 
 		@Override
 		public void onDiscussMessage(DiscussMessage message) {
-			onMessage(message.getContent(), message.getUserId(), message.getDiscussId(), (msg, chatId) -> client.sendMessageToDiscuss(chatId, msg));
+			onMessage(message.getContent(), message.getUserId(), message.getDiscussId(),
+					(msg, chatId) -> client.sendMessageToDiscuss(chatId, msg));
 		}
 
 		private String lastMsg = null;
@@ -114,7 +117,7 @@ public class Robot {
 						waitMap.put(chatId, wait);
 						executor.execute(() -> {
 							try {
-								send(send, "start", chatId);
+								send.sendMessage("start", chatId);
 								for (int i = 0; i < msgs.size(); i++) {
 									CommUtil.sleep(1000);
 									int t = Math.max(1, Integer.parseInt(msgs.get(i)[2]));
