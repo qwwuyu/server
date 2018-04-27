@@ -17,6 +17,8 @@ public class Message {
     private String content;
 
     private long userId;
+    
+    private long to_uin;
 
     private Font font;
 
@@ -33,6 +35,7 @@ public class Message {
 
         this.time = json.getLongValue("time");
         this.userId = json.getLongValue("from_uin");
+        this.to_uin = json.getLongValue("to_uin");
     }
 
     public long getTime() {
@@ -59,12 +62,19 @@ public class Message {
         this.userId = userId;
     }
 
-    public Font getFont() {
+    public long getTo_uin() {
+		return to_uin;
+	}
+
+	public void setTo_uin(long to_uin) {
+		this.to_uin = to_uin;
+	}
+
+	public Font getFont() {
         return font;
     }
 
     public void setFont(Font font) {
         this.font = font;
     }
-
 }

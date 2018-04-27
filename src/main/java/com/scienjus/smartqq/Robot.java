@@ -60,7 +60,11 @@ public class Robot {
 
 		@Override
 		public void onMessage(Message message) {
-			onMessage(message.getContent(), message.getUserId(), message.getUserId(), (msg, chatId) -> client.sendMessageToFriend(chatId, msg));
+			if(admin == 0 || admin == message.getUserId()) {
+				onMessage(message.getContent(), message.getUserId(), message.getTo_uin(), (msg, chatId) -> client.sendMessageToFriend(chatId, msg));
+			} else {
+				onMessage(message.getContent(), message.getTo_uin(), message.getUserId(), (msg, chatId) -> client.sendMessageToFriend(chatId, msg));
+			}
 		}
 
 		@Override
@@ -110,7 +114,7 @@ public class Robot {
 							msgs.add(new String[] { command[i], command[i + 1], command[i + 2] });
 						}
 						msgsMap.put(chatId, msgs);
-						final Wait wait = new Wait(new MyWaitCallBack(client, chatId));
+						final Wait wait = new Wait(new MyWaitCallBack(send, chatId));
 						waitMap.put(chatId, wait);
 						executor.execute(() -> {
 							try {
@@ -214,17 +218,17 @@ public class Robot {
 	}
 
 	private static class MyWaitCallBack implements Wait.CallBack {
-		private final SmartQQClient client;
-		private final long groupId;
+		private final ISendMessage send;
+		private final long chatId;
 
-		public MyWaitCallBack(SmartQQClient client, long groupId) {
-			this.client = client;
-			this.groupId = groupId;
+		public MyWaitCallBack(ISendMessage send, long chatId) {
+			this.send = send;
+			this.chatId = chatId;
 		}
 
 		@Override
 		public void call(String tag) {
-			client.sendMessageToGroup(groupId, tag);
+			send.sendMessage(tag, chatId);
 		}
 	}
 
