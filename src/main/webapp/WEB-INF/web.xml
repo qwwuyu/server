@@ -33,6 +33,14 @@
 		<filter-name>IpFilter</filter-name>
 		<url-pattern>/i/*</url-pattern>
 	</filter-mapping>
+	<filter-mapping>
+		<filter-name>IpFilter</filter-name>
+		<url-pattern>/test/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>IpFilter</filter-name>
+		<url-pattern>/robot/*</url-pattern>
+	</filter-mapping>
 	<!-- 过滤器配置结束 -->
 
 	<!-- 监听器配置开始 -->

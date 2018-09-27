@@ -131,13 +131,10 @@ public class TestCtrl {
 			return;
 		}
 		File file = new File(SecretConfig.fileDir, name);
-		System.out.println(1 + file.getAbsolutePath());
 		if (!file.exists()) {
-			System.out.println(2);
 			response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 			return;
 		}
-		System.out.println(3);
 		long left = 0, right = file.length() - 1, written = left;// 100 200 100
 		if (range != null) {
 			try {

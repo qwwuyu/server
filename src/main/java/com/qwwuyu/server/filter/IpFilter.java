@@ -33,6 +33,7 @@ public class IpFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 		String requestURI = ((HttpServletRequest) request).getRequestURI();
 		String address = J2EEUtil.getAddress((HttpServletRequest) request);
+		String realAddress = J2EEUtil.getRealAddress((HttpServletRequest) request);
 		if ("/i/register".equals(requestURI)) {
 			limit(address + requestURI, request, response, chain, 10L, 86400000L);
 		} else if ("/i/login".equals(requestURI)) {
@@ -40,6 +41,7 @@ public class IpFilter implements Filter {
 		} else if ("/i/card/send".equals(requestURI)) {
 			limit(address + requestURI, request, response, chain, 10L, 43200000L);
 		} else {
+			logger.info("requestURI:" + requestURI + " address:" + address + " realAddress:" + realAddress);
 			chain.doFilter(request, response);
 		}
 	}

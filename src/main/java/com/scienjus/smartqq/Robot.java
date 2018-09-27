@@ -40,16 +40,15 @@ public class Robot {
 
 	private static class MyMessageCallback implements MessageCallback, Closeable {
 		private ExecutorService executor = Executors.newCachedThreadPool();
+		private boolean hint = true;
 		private final SmartQQClient client;
 		private final String tag;
 		private final String pwd;
 		private Long admin = 0L;
 		private String nike;
 		private Map<Long, Long> robotMap = new HashMap<>();
-		private Map<Long, String> nikeMap = new HashMap<>();
 		private Map<Long, Wait> waitMap = new HashMap<>();
 		private Map<Long, ArrayList<String[]>> msgsMap = new HashMap<>();
-		private Map<Long, Integer> flagMap = new HashMap<>();
 
 		public MyMessageCallback(SmartQQClient client, String tag, String pwd) {
 			this.client = client;
@@ -60,10 +59,12 @@ public class Robot {
 
 		@Override
 		public void onMessage(Message message) {
-			if(admin == 0 || admin == message.getUserId()) {
-				onMessage(message.getContent(), message.getUserId(), message.getTo_uin(), (msg, chatId) -> client.sendMessageToFriend(chatId, msg));
+			if (admin == 0 || admin == message.getUserId()) {
+				onMessage(message.getContent(), message.getUserId(), message.getTo_uin(),
+						(msg, chatId) -> client.sendMessageToFriend(chatId, msg));
 			} else {
-				onMessage(message.getContent(), message.getTo_uin(), message.getUserId(), (msg, chatId) -> client.sendMessageToFriend(chatId, msg));
+				onMessage(message.getContent(), message.getTo_uin(), message.getUserId(),
+						(msg, chatId) -> client.sendMessageToFriend(chatId, msg));
 			}
 		}
 
@@ -86,7 +87,7 @@ public class Robot {
 			if (content.startsWith(pwd)) {
 				admin = userId;
 				nike = "@" + content.substring(pwd.length());
-				send(send, "收到id" + nike, chatId);
+				sendHint(send, "收到id" + nike, chatId);
 			}
 			if (admin == 0L || content.equals(lastMsg)) {
 				return;
@@ -96,20 +97,18 @@ public class Robot {
 			if (robot == null && content.startsWith(nike)) {
 				robot = userId;
 				robotMap.put(chatId, robot);
-				nikeMap.put(chatId, nike);
-				flagMap.put(chatId, 0);
-				send(send, "get", chatId);
+				sendHint(send, "get", chatId);
 			} else if (admin == userId) {
 				if ("重新获取".equals(content)) {
 					robotMap.remove(chatId);
-					send(send, "重新获取id", chatId);
+					sendHint(send, "重新获取id", chatId);
 				} else if (content.startsWith(tag + "开始-")) {
 					// 开始-钓鱼-大腿.+[积分|鱼饵][\D]+(\d+)分钟-探险-大腿.+[宠物|探险][\D]+(\d+)分钟
 					if (!waitMap.containsKey(chatId)) {
 						final ArrayList<String[]> msgs = new ArrayList<>();
 						String[] command = content.substring((tag + "开始-").length()).split("-");
 						if (command.length % 3 != 0) {
-							send(send, "指令格式错误", chatId);
+							sendHint(send, "指令格式错误", chatId);
 							return;
 						}
 						for (int i = 0; i < command.length; i += 3) {
@@ -120,7 +119,9 @@ public class Robot {
 						waitMap.put(chatId, wait);
 						executor.execute(() -> {
 							try {
-								send.sendMessage("start", chatId);
+								if (!hint) {
+									send.sendMessage("start", chatId);
+								}
 								for (int i = 0; i < msgs.size(); i++) {
 									CommUtil.sleep(1000);
 									int t = Math.max(1, Integer.parseInt(msgs.get(i)[2]));
@@ -129,7 +130,7 @@ public class Robot {
 							} catch (Exception e) {}
 						});
 					} else {
-						send(send, "挂机过了", chatId);
+						sendHint(send, "挂机过了", chatId);
 					}
 				} else if ((tag + "暂停").equals(content)) {
 					Wait wait = waitMap.remove(chatId);
@@ -139,9 +140,9 @@ public class Robot {
 					}
 					if (wait != null) {
 						wait.stop();
-						send(send, "stop", chatId);
+						sendHint(send, "stop", chatId);
 					} else {
-						send(send, "你没有开始", chatId);
+						sendHint(send, "你没有开始", chatId);
 					}
 				} else if ((tag + "停止").equals(content)) {
 					for (Wait wait : waitMap.values()) {
@@ -156,10 +157,10 @@ public class Robot {
 					final String txt = content.substring((tag + "-").length());
 					send(send, txt, chatId);
 				}
+			} else {
+
 			}
 			if (robot == userId) {
-				final Integer flag = flagMap.get(chatId);
-				String nike = nikeMap.get(chatId);
 				Wait wait = waitMap.get(chatId);
 				ArrayList<String[]> msgs = msgsMap.get(chatId);
 				if (wait != null && msgs != null) {
@@ -175,6 +176,12 @@ public class Robot {
 
 		private void send(ISendMessage send, String msg, long chatId) {
 			executor.execute(() -> send.sendMessage(msg, chatId));
+		}
+
+		private void sendHint(ISendMessage send, String msg, long chatId) {
+			if (!hint) {
+				send(send, msg, chatId);
+			}
 		}
 
 		@Override
