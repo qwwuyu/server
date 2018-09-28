@@ -76,14 +76,20 @@ public class TestCtrl {
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public void upload(HttpServletRequest request, HttpServletResponse response) throws IllegalStateException, IOException {
-		String token = request.getParameter("auth");
-		if (J2EEUtil.isNull(response, token)) return;
+		String token = request.getParameter("token");
+		System.out.println(1);
+		if (J2EEUtil.isNull(response, token)) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
 		User user = userService.selectByUser(new User().setToken(token));
 		if (user == null) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			J2EEUtil.renderInfo(response, "请先登录");
 			return;
 		}
 		if (user.getAuth() != 5) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			J2EEUtil.renderInfo(response, "权限不足");
 			return;
 		}
@@ -120,13 +126,18 @@ public class TestCtrl {
 	}
 
 	private void downloadFile(String token, String name, String range, HttpServletResponse response) throws IOException {
-		if (J2EEUtil.isNull(response, token)) return;
+		if (J2EEUtil.isNull(response, token)) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
 		User user = userService.selectByUser(new User().setToken(token));
 		if (user == null) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			J2EEUtil.renderInfo(response, "请先登录");
 			return;
 		}
 		if (user.getAuth() != 5) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			J2EEUtil.renderInfo(response, "权限不足");
 			return;
 		}

@@ -30,18 +30,29 @@ public class IpFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		String requestURI = ((HttpServletRequest) request).getRequestURI();
-		String address = J2EEUtil.getAddress((HttpServletRequest) request);
-		String realAddress = J2EEUtil.getRealAddress((HttpServletRequest) request);
+	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException,
+			ServletException {
+		HttpServletRequest request = (HttpServletRequest) servletRequest;
+		HttpServletResponse response = (HttpServletResponse) servletResponse;
+		String requestURI = request.getRequestURI();
+		String address = J2EEUtil.getAddress(request);
+		String realAddress = J2EEUtil.getRealAddress(request);
+		String method = request.getMethod();
+		logger.info("requestURI:" + requestURI + " method:" + method + " address:" + address + " realAddress:" + realAddress);
 		if ("/i/register".equals(requestURI)) {
 			limit(address + requestURI, request, response, chain, 10L, 86400000L);
 		} else if ("/i/login".equals(requestURI)) {
 			limit(address + requestURI, request, response, chain, 5L, 60000L);
 		} else if ("/i/card/send".equals(requestURI)) {
 			limit(address + requestURI, request, response, chain, 10L, 43200000L);
+		} else if ("/test/upload".equals(requestURI)) {
+			String token = request.getParameter("token");
+			if (J2EEUtil.isNull(response, token)) {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				return;
+			}
+			chain.doFilter(request, response);
 		} else {
-			logger.info("requestURI:" + requestURI + " address:" + address + " realAddress:" + realAddress);
 			chain.doFilter(request, response);
 		}
 	}
