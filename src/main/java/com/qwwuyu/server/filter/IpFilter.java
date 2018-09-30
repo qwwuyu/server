@@ -20,12 +20,11 @@ import com.qwwuyu.server.utils.J2EEUtil;
 import com.qwwuyu.server.utils.ResponseUtil;
 
 public class IpFilter implements Filter {
-	private Logger logger;
+	private Logger logger = Logger.getLogger("ip");;
 	private Map<String, Long[]> map = new HashMap<String, Long[]>();
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		logger = Logger.getLogger(IpFilter.class);
 		logger.info("IpFilter:init");
 	}
 

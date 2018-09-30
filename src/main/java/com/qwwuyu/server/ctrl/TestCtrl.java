@@ -77,7 +77,6 @@ public class TestCtrl {
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public void upload(HttpServletRequest request, HttpServletResponse response) throws IllegalStateException, IOException {
 		String token = request.getParameter("token");
-		System.out.println(1);
 		if (J2EEUtil.isNull(response, token)) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
