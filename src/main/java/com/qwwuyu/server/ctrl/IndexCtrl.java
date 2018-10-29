@@ -7,10 +7,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class IndexCtrl {
+	@RequestMapping("/robots.txt")
+	public String robots(HttpServletRequest request) {
+		return "/WEB-INF/jsp/robots.jsp";
+	}
+
 	@RequestMapping("/")
 	public String toWelcome(HttpServletRequest request) {
 		if ("/".equals(request.getRequestURI())) {
-			return "/WEB-INF/jsp/index.jsp";
+			return "/WEB-INF/jsp/empty.jsp";
 		} else {
 			return "/WEB-INF/jsp/404.jsp";
 		}
