@@ -11,6 +11,6 @@
 <meta name="description" content="qwwuyu" />
 </head>
 <body>
-	<div>避免爬虫,首页暂不开放 /card</div>
+	<div>避免爬虫,首页暂不开放</div>
 </body>
 </html>

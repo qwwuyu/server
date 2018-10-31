@@ -9,6 +9,14 @@ public class CommUtil {
 		return SystemUtils.IS_OS_WINDOWS;
 	}
 
+	public static boolean isExist(String str) {
+		return !isEmpty(str);
+	}
+
+	public static boolean isEmpty(String str) {
+		return str == null || str.equals("");
+	}
+
 	public static void sleep(long millis) {
 		try {
 			Thread.sleep(millis);

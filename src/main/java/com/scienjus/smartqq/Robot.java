@@ -4,13 +4,15 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import org.apache.log4j.Logger;
 
 import com.qwwuyu.server.utils.CommUtil;
+import com.qwwuyu.server.utils.TLRobot;
 import com.scienjus.smartqq.callback.MessageCallback;
 import com.scienjus.smartqq.client.SmartQQClient;
 import com.scienjus.smartqq.model.DiscussMessage;
@@ -18,6 +20,7 @@ import com.scienjus.smartqq.model.GroupMessage;
 import com.scienjus.smartqq.model.Message;
 
 public class Robot {
+	private static Logger logger = Logger.getLogger("qq");;
 	private static Map<String, SmartQQClient> map = new HashMap<>();
 
 	public static void addSmartQQ(String tag, String pwd) {
@@ -39,16 +42,24 @@ public class Robot {
 	}
 
 	private static class MyMessageCallback implements MessageCallback, Closeable {
-		private ExecutorService executor = Executors.newCachedThreadPool();
-		private boolean hint = true;
+		private final ExecutorService executor = Executors.newCachedThreadPool();
 		private final SmartQQClient client;
 		private final String tag;
 		private final String pwd;
+		private String lastMsg = null;
 		private Long admin = 0L;
-		private String nike;
-		private Map<Long, Long> robotMap = new HashMap<>();
+		private boolean hint = true;
+		private boolean log = false;
+		private String tlKey;
+
 		private Map<Long, Wait> waitMap = new HashMap<>();
 		private Map<Long, ArrayList<String[]>> msgsMap = new HashMap<>();
+
+		private long lastUser = 0;
+		private List<Long> users = new ArrayList<>();
+		private String[] cmds = new String[10];
+		private List<String> receive = new ArrayList<>();
+		private List<String> reply = new ArrayList<>();
 
 		public MyMessageCallback(SmartQQClient client, String tag, String pwd) {
 			this.client = client;
@@ -80,29 +91,24 @@ public class Robot {
 					(msg, chatId) -> client.sendMessageToDiscuss(chatId, msg));
 		}
 
-		private String lastMsg = null;
-
-		private void onMessage(String content, long userId, long chatId, ISendMessage send) {
-			lastTime = System.currentTimeMillis();
-			if (content.startsWith(pwd)) {
-				admin = userId;
-				nike = "@" + content.substring(pwd.length());
-				sendHint(send, "收到id" + nike, chatId);
+		private synchronized void onMessage(final String content, long userId, long chatId, ISendMessage send) {
+			lastLiveTime = System.currentTimeMillis();
+			if (content.startsWith(pwd + "-")) {
+				String[] setting = content.split("-");
+				if (setting.length == 4) {
+					admin = userId;
+					hint = "1".equals(setting[1]);
+					log = "1".equals(setting[2]);
+					tlKey = setting[3];
+					send(send, "hint:" + hint + " log:" + log, chatId);
+				}
 			}
 			if (admin == 0L || content.equals(lastMsg)) {
 				return;
 			}
-			lastMsg = content;
-			Long robot = robotMap.get(chatId);
-			if (robot == null && content.startsWith(nike)) {
-				robot = userId;
-				robotMap.put(chatId, robot);
-				sendHint(send, "get", chatId);
-			} else if (admin == userId) {
-				if ("重新获取".equals(content)) {
-					robotMap.remove(chatId);
-					sendHint(send, "重新获取id", chatId);
-				} else if (content.startsWith(tag + "开始-")) {
+			log(content);
+			if (admin == userId) {
+				if (content.startsWith(tag + "开始-")) {
 					// 开始-钓鱼-大腿.+[积分|鱼饵][\D]+(\d+)分钟-探险-大腿.+[宠物|探险][\D]+(\d+)分钟
 					if (!waitMap.containsKey(chatId)) {
 						final ArrayList<String[]> msgs = new ArrayList<>();
@@ -119,9 +125,7 @@ public class Robot {
 						waitMap.put(chatId, wait);
 						executor.execute(() -> {
 							try {
-								if (!hint) {
-									send.sendMessage("start", chatId);
-								}
+								if (!hint) send.sendMessage("start", chatId);
 								for (int i = 0; i < msgs.size(); i++) {
 									CommUtil.sleep(1000);
 									int t = Math.max(1, Integer.parseInt(msgs.get(i)[2]));
@@ -153,25 +157,66 @@ public class Robot {
 						send.sendMessage("end", chatId);
 						closeSmartQQ(tag);
 					});
-				} else if (content.startsWith(tag + "-")) {
-					final String txt = content.substring((tag + "-").length());
+				} else if (content.startsWith(tag + ":")) {
+					final String txt = content.substring((tag + ":").length());
 					send(send, txt, chatId);
-				}
-			} else {
-
-			}
-			if (robot == userId) {
-				Wait wait = waitMap.get(chatId);
-				ArrayList<String[]> msgs = msgsMap.get(chatId);
-				if (wait != null && msgs != null) {
-					for (int i = 0; i < msgs.size(); i++) {
-						int time = getTime(content, msgs.get(i)[1]);
-						if (1800 != time) {
-							wait.setTagTime(msgs.get(i)[0], time * 1000);
+				} else if (content.startsWith(tag + "-")) {
+					final String question = content.substring((tag + "-").length());
+					if (CommUtil.isExist(tlKey) && tlKey.length() > 3) {
+						executor.execute(() -> {
+							String result = TLRobot.requestTL(tlKey, String.valueOf(userId), question);
+							send.sendMessage(result, chatId);
+						});
+					}
+				} else if ("bind".equals(content)) {
+					if (lastUser != 0 && !users.contains(lastUser)) users.add(lastUser);
+				} else if (content.startsWith(tag + "re-")) {
+					cmds[0] = content.substring((tag + "re-").length());
+				} else if (content.startsWith(tag + "rc-")) {
+					cmds[1] = content.substring((tag + "rc-").length());
+				} else if ("clear".equals(content)) {
+					users.clear();
+					cmds[0] = null;
+					cmds[1] = null;
+					send(send, "clear over", chatId);
+				} else if (content.startsWith(tag + "reply-")) {
+					final String txt = content.substring((tag + "reply-").length());
+					String[] replys = txt.split("-");
+					receive.clear();
+					reply.clear();
+					if (replys.length % 2 == 0) {
+						for (int i = 0; i < replys.length; i += 2) {
+							receive.add(replys[i]);
+							reply.add(replys[i + 1]);
 						}
 					}
 				}
+				// other
+			} else if (users.contains(userId)) {
+				if ("gun".equals(content)) {
+					users.remove(userId);
+				} else if (CommUtil.isExist(tlKey) && tlKey.length() > 3) {
+					executor.execute(() -> {
+						String result = TLRobot.requestTL(tlKey, String.valueOf(userId), content);
+						send.sendMessage(result, chatId);
+					});
+				}
+			} else if (CommUtil.isExist(cmds[0]) && content.equals(cmds[0])) {
+				users.add(userId);
+			} else if (CommUtil.isExist(cmds[1]) && content.contains(cmds[1])) {
+				users.add(userId);
+			} else if (!receive.isEmpty()) {
+				int index = receive.indexOf(content);
+				if (index != -1) {
+					send(send, reply.get(index), chatId);
+				}
 			}
+			lastUser = userId;
+			lastMsg = content;
+		}
+
+		private void log(String message) {
+			if (log) logger.info(message);
 		}
 
 		private void send(ISendMessage send, String msg, long chatId) {
@@ -188,27 +233,28 @@ public class Robot {
 		public void close() throws IOException {
 			executor.shutdown();
 			isLive = false;
-			synchronized (lock) {
-				lock.notify();
+			synchronized (liveLock) {
+				liveLock.notify();
 			}
 		}
 
+		/**  */
 		private boolean isLive = true;
-		private long lastTime;
-		private Object lock = new Object();
+		private long lastLiveTime;
+		private Object liveLock = new Object();
 
 		private void checkLive() {
-			lastTime = System.currentTimeMillis();
+			lastLiveTime = System.currentTimeMillis();
 			new Thread(() -> {
 				while (isLive) {
 					try {
 						long nowTime = System.currentTimeMillis();
-						if (nowTime - lastTime > 120L * 60 * 1000) {
+						if (nowTime - lastLiveTime > 120L * 60 * 1000) {
 							stop();
 							return;
 						}
-						synchronized (lock) {
-							lock.wait(10L * 60 * 1000);
+						synchronized (liveLock) {
+							liveLock.wait(10L * 60 * 1000);
 						}
 					} catch (Exception e) {
 						stop();
@@ -243,17 +289,5 @@ public class Robot {
 
 	interface ISendMessage {
 		void sendMessage(String msg, long chatId);
-	}
-
-	private static int getTime(String txt, String regex) {
-		try {
-			Pattern compile = Pattern.compile(regex);
-			Matcher matcher = compile.matcher(txt);
-			if (matcher.find()) {
-				int time = Integer.parseInt(matcher.group(1));
-				return Math.min(time, 1800);
-			}
-		} catch (Exception e) {}
-		return 1800;
 	}
 }
