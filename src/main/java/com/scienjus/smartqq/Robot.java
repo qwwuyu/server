@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,6 +13,7 @@ import java.util.concurrent.Executors;
 import org.apache.log4j.Logger;
 
 import com.qwwuyu.server.utils.CommUtil;
+import com.qwwuyu.server.utils.LimitQueue;
 import com.qwwuyu.server.utils.TLRobot;
 import com.scienjus.smartqq.callback.MessageCallback;
 import com.scienjus.smartqq.client.SmartQQClient;
@@ -46,7 +48,6 @@ public class Robot {
 		private final SmartQQClient client;
 		private final String tag;
 		private final String pwd;
-		private String lastMsg = null;
 		private Long admin = 0L;
 		private boolean hint = true;
 		private boolean log = false;
@@ -55,7 +56,7 @@ public class Robot {
 		private Map<Long, Wait> waitMap = new HashMap<>();
 		private Map<Long, ArrayList<String[]>> msgsMap = new HashMap<>();
 
-		private long lastUser = 0;
+		private LimitQueue<MsgItem> items = new LimitQueue<>(10);
 		private List<Long> users = new ArrayList<>();
 		private String[] cmds = new String[10];
 		private List<String> receive = new ArrayList<>();
@@ -93,6 +94,10 @@ public class Robot {
 
 		private synchronized void onMessage(final String content, long userId, long chatId, ISendMessage send) {
 			lastLiveTime = System.currentTimeMillis();
+			if (content == null) return;
+			MsgItem lastItem = items.getLast();
+			items.offer(new MsgItem(content, userId, chatId));
+			log(String.format(Locale.CHINA, "chatId=%s userId=%s content=%s", chatId, userId, content));
 			if (content.startsWith(pwd + "-")) {
 				String[] setting = content.split("-");
 				if (setting.length == 4) {
@@ -102,14 +107,14 @@ public class Robot {
 					tlKey = setting[3];
 					send(send, "hint:" + hint + " log:" + log, chatId);
 				}
-			}
-			if (admin == 0L || content.equals(lastMsg)) {
+				return;
+			} else if (admin == 0L || content.equals("")
+					|| (lastItem != null && userId == lastItem.userId && chatId == lastItem.chatId && content.equals(lastItem.content))) {
 				return;
 			}
-			log(content);
 			if (admin == userId) {
 				if (content.startsWith(tag + "开始-")) {
-					// 开始-钓鱼-大腿.+[积分|鱼饵][\D]+(\d+)分钟-探险-大腿.+[宠物|探险][\D]+(\d+)分钟
+					// 开始-钓鱼-x-10
 					if (!waitMap.containsKey(chatId)) {
 						final ArrayList<String[]> msgs = new ArrayList<>();
 						String[] command = content.substring((tag + "开始-").length()).split("-");
@@ -162,23 +167,37 @@ public class Robot {
 					send(send, txt, chatId);
 				} else if (content.startsWith(tag + "-")) {
 					final String question = content.substring((tag + "-").length());
-					if (CommUtil.isExist(tlKey) && tlKey.length() > 3) {
-						executor.execute(() -> {
-							String result = TLRobot.requestTL(tlKey, String.valueOf(userId), question);
-							send.sendMessage(result, chatId);
-						});
+					robot(send, question, userId, chatId);
+				} else if (content.startsWith("bind")) {
+					final String txt = content.substring("bind".length());
+					for (int i = 0; i < items.size() - 1; i++) {
+						MsgItem msgItem = items.get(i);
+						if (msgItem != null && msgItem.content.contains(txt)) {
+							if (!users.contains(msgItem.userId)) {
+								users.add(msgItem.userId);
+							}
+							send(send, "bind:" + msgItem.content, chatId);
+							break;
+						}
 					}
-				} else if ("bind".equals(content)) {
-					if (lastUser != 0 && !users.contains(lastUser)) users.add(lastUser);
+				} else if (content.startsWith("unbind")) {
+					final String txt = content.substring("unbind".length());
+					for (int i = 0; i < items.size() - 1; i++) {
+						MsgItem msgItem = items.get(i);
+						if (msgItem != null && msgItem.content.contains(txt)) {
+							if (users.contains(msgItem.userId)) {
+								users.remove(msgItem.userId);
+							}
+							send(send, "unbind:" + msgItem.content, chatId);
+							break;
+						}
+					}
 				} else if (content.startsWith(tag + "re-")) {
 					cmds[0] = content.substring((tag + "re-").length());
 				} else if (content.startsWith(tag + "rc-")) {
 					cmds[1] = content.substring((tag + "rc-").length());
-				} else if ("clear".equals(content)) {
-					users.clear();
-					cmds[0] = null;
-					cmds[1] = null;
-					send(send, "clear over", chatId);
+				} else if (content.startsWith(tag + "rs-")) {
+					cmds[2] = content.substring((tag + "rs-").length());
 				} else if (content.startsWith(tag + "reply-")) {
 					final String txt = content.substring((tag + "reply-").length());
 					String[] replys = txt.split("-");
@@ -190,33 +209,45 @@ public class Robot {
 							reply.add(replys[i + 1]);
 						}
 					}
+				} else if ("clear".equals(content)) {
+					users.clear();
+					cmds[0] = null;
+					cmds[1] = null;
+					sendHint(send, "clear over", chatId);
 				}
 				// other
-			} else if (users.contains(userId)) {
-				if ("gun".equals(content)) {
-					users.remove(userId);
-				} else if (CommUtil.isExist(tlKey) && tlKey.length() > 3) {
-					executor.execute(() -> {
-						String result = TLRobot.requestTL(tlKey, String.valueOf(userId), content);
-						send.sendMessage(result, chatId);
-					});
-				}
 			} else if (CommUtil.isExist(cmds[0]) && content.equals(cmds[0])) {
 				users.add(userId);
 			} else if (CommUtil.isExist(cmds[1]) && content.contains(cmds[1])) {
 				users.add(userId);
+			} else if (CommUtil.isExist(cmds[2]) && content.startsWith(cmds[2] + "-")) {
+				final String question = content.substring((cmds[2] + "-").length());
+				robot(send, question, userId, chatId);
 			} else if (!receive.isEmpty()) {
 				int index = receive.indexOf(content);
 				if (index != -1) {
 					send(send, reply.get(index), chatId);
 				}
+			} else if (users.contains(userId)) {
+				if ("gun".equals(content)) {
+					users.remove(userId);
+				} else {
+					robot(send, content, userId, chatId);
+				}
 			}
-			lastUser = userId;
-			lastMsg = content;
 		}
 
 		private void log(String message) {
 			if (log) logger.info(message);
+		}
+
+		private void robot(ISendMessage send, String question, long userId, long chatId) {
+			if (CommUtil.isExist(tlKey) && tlKey.length() > 3) {
+				executor.execute(() -> {
+					String result = TLRobot.requestTL(tlKey, String.valueOf(userId), question);
+					send.sendMessage(result, chatId);
+				});
+			}
 		}
 
 		private void send(ISendMessage send, String msg, long chatId) {
@@ -285,6 +316,19 @@ public class Robot {
 		public void call(String tag) {
 			send.sendMessage(tag, chatId);
 		}
+	}
+
+	private static class MsgItem {
+		public MsgItem(String content, long userId, long chatId) {
+			this.content = content;
+			this.userId = userId;
+			this.chatId = chatId;
+		}
+
+		public String content;
+		public long userId;
+		public long chatId;
+
 	}
 
 	interface ISendMessage {
