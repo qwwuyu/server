@@ -111,6 +111,10 @@ public class TestCtrl {
 	private void downloadFile(HttpServletRequest request, String name, String range, HttpServletResponse response) throws IOException {
 		User user = J2EEUtil.checkPermit(5, userService, request, response);
 		if (null == user) return;
+		if (J2EEUtil.isNull(response, name)) {
+			response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
+			return;
+		}
 		File file = new File(SecretConfig.fileDir, name);
 		if (!file.exists()) {
 			response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);

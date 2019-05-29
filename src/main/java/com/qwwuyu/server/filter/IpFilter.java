@@ -10,6 +10,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -46,6 +47,14 @@ public class IpFilter implements Filter {
 			limit(address + requestURI, request, response, chain, 10L, 43200000L);
 		} else if ("/test/upload".equals(requestURI)) {
 			String token = request.getParameter("token");
+			if (token == null || token.length() == 0) {
+				Cookie[] cookies = request.getCookies();
+				for (Cookie cookie : cookies) {
+					if ("auth".equals(cookie.getName())) {
+						token = cookie.getValue();
+					}
+				}
+			}
 			if (J2EEUtil.isNull(response, token)) {
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				return;
