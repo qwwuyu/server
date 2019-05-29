@@ -20,7 +20,7 @@ public class RobotCtrl {
 	@Resource private IUserService userService;
 
 	@RequestMapping("")
-	public String toRobot(HttpServletRequest request, Model model) {// 165 x 165
+	public String toRobot(HttpServletRequest request, Model model) {
 		return "/WEB-INF/jsp/robot.jsp";
 	}
 

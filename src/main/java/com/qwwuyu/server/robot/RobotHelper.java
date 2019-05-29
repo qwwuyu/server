@@ -15,6 +15,7 @@ import com.sun.net.httpserver.HttpServer;
 public class RobotHelper {
 	private static Logger logger = Logger.getLogger("qq");
 	private HttpServer httpServer;
+	private HttpServer httpServer2;
 
 	private RobotHelper() {}
 
@@ -31,27 +32,52 @@ public class RobotHelper {
 	}
 
 	public synchronized void openRobot() throws Exception {
-		if (httpServer != null) {
+		if (httpServer != null || httpServer2 != null) {
 			throw new Exception("httpServer已经存在");
 		}
+		String msg = "";
 		try {
+			logger.info("httpServer1开始");
 			PicqBotX bot = new PicqBotX(new PicqConfig(12311).setDebug(false));
 			bot.addAccount("kere", "127.0.0.1", 12310);
+			logger.info("httpServer1请求成功");
 			bot.getEventManager().registerListeners(new TestListener());
 			httpServer = bot.startBot();
+			logger.info("httpServer1监听成功");
 		} catch (Exception e) {
-			logger.info("httpServer启动失败", e);
-			throw new Exception("httpServer启动失败");
+			logger.info("httpServer1启动失败", e);
+			msg += "httpServer1 ";
+		}
+		try {
+			logger.info("httpServer2开始");
+			PicqBotX bot = new PicqBotX(new PicqConfig(12411).setDebug(false));
+			bot.addAccount("kere", "127.0.0.1", 12410);
+			logger.info("httpServer2请求成功");
+			bot.getEventManager().registerListeners(new TestListener());
+			httpServer2 = bot.startBot();
+			logger.info("httpServer2监听成功");
+		} catch (Exception e) {
+			logger.info("httpServer2启动失败", e);
+			msg += "httpServer2 ";
+		}
+		if (msg.length() > 0) {
+			throw new Exception(msg + "启动失败");
 		}
 	}
 
 	public synchronized void closeRobot() throws Exception {
-		if (httpServer == null) {
+		if (httpServer == null && httpServer2 == null) {
 			throw new Exception("httpServer不存在");
 		}
 		try {
 			httpServer.stop(0);
 			httpServer = null;
+		} catch (Exception e) {
+			throw new Exception("httpServer关闭失败");
+		}
+		try {
+			httpServer2.stop(0);
+			httpServer2 = null;
 		} catch (Exception e) {
 			throw new Exception("httpServer关闭失败");
 		}

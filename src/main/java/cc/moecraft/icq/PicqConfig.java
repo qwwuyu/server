@@ -79,7 +79,7 @@ public class PicqConfig
     private ColorSupportLevel colorSupportLevel = FORCED;
 
     /** Logger日志路径 (设为空就不输出文件了) */
-    private String logPath = "logs";
+    private String logPath = "";//logs
 
     /** Logger日志文件名 */
     private String logFileName = "PicqBotX-Log";
