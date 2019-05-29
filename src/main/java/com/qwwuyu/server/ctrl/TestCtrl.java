@@ -76,22 +76,7 @@ public class TestCtrl {
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public void upload(HttpServletRequest request, HttpServletResponse response) throws IllegalStateException, IOException {
-		String token = request.getParameter("token");
-		if (J2EEUtil.isNull(response, token)) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			return;
-		}
-		User user = userService.selectByUser(new User().setToken(token));
-		if (user == null) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			J2EEUtil.renderInfo(response, "请先登录");
-			return;
-		}
-		if (user.getAuth() != 5) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			J2EEUtil.renderInfo(response, "权限不足");
-			return;
-		}
+		if (null == J2EEUtil.checkPermit(5, userService, request, response)) return;
 		// 将当前上下文初始化给 CommonsMutipartResolver
 		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
 		// 检查form中是否有enctype="multipart/form-data"
@@ -112,34 +97,20 @@ public class TestCtrl {
 
 	@RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE,
 			headers = { "range" })
-	public void download(@RequestParam(value = "token", required = false) String token,
-			@RequestParam(value = "name", required = false) String name, @RequestHeader("range") String range, HttpServletResponse response)
-			throws IOException {
-		downloadFile(token, name, range, response);
+	public void download(HttpServletRequest request, @RequestHeader("range") String range,
+			@RequestParam(value = "name", required = false) String name, HttpServletResponse response) throws IOException {
+		downloadFile(request, name, range, response);
 	}
 
 	@RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public void download(@RequestParam(value = "token", required = false) String token,
-			@RequestParam(value = "name", required = false) String name, HttpServletResponse response) throws IOException {
-		downloadFile(token, name, null, response);
+	public void download(HttpServletRequest request, @RequestParam(value = "name", required = false) String name,
+			HttpServletResponse response) throws IOException {
+		downloadFile(request, name, null, response);
 	}
 
-	private void downloadFile(String token, String name, String range, HttpServletResponse response) throws IOException {
-		if (J2EEUtil.isNull(response, token)) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			return;
-		}
-		User user = userService.selectByUser(new User().setToken(token));
-		if (user == null) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			J2EEUtil.renderInfo(response, "请先登录");
-			return;
-		}
-		if (user.getAuth() != 5) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			J2EEUtil.renderInfo(response, "权限不足");
-			return;
-		}
+	private void downloadFile(HttpServletRequest request, String name, String range, HttpServletResponse response) throws IOException {
+		User user = J2EEUtil.checkPermit(5, userService, request, response);
+		if (null == user) return;
 		File file = new File(SecretConfig.fileDir, name);
 		if (!file.exists()) {
 			response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);

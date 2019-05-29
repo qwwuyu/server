@@ -1,49 +1,38 @@
 $(document).ready(function() {
-	$('#qqrefresh').bind("click", function(event) {
-		var tag = $('#qqtag').val();
-		$('#qrimg').attr("src", "/sres/img/" + tag + ".png");
-		return false;
-	});
 	$('#qqopen').bind("click", function(event) {
-		var tag = $('#qqtag').val();
-		var pwd = $('#qqpwd').val();
 		var auth = Cookies.get('auth');
 		if ('string' != typeof (auth)) {
 			showErr("请先登录");
 		} else {
-			openRobot(auth, tag, pwd);
+			openRobot(auth);
 		}
 		return false;
 	});
 	$('#qqclose').bind("click", function(event) {
-		var tag = $('#qqtag').val();
 		var auth = Cookies.get('auth');
 		if ('string' != typeof (auth)) {
 			showErr("请先登录");
 		} else {
-			closeRobot(auth, tag);
+			closeRobot(auth);
 		}
 		return false;
 	});
 });
-function openRobot(auth, tag, pwd) {
+function openRobot(auth) {
 	var request = $.ajax({
 		url : '/robot/open',
 		data : {
-			"auth" : auth,
-			"tag" : tag,
-			"pwd" : pwd
+			"auth" : auth
 		},
 		beforeSend : function() {
 			$('#qqopen').attr("disabled", "disabled").text("操作中...");
 		},
 		complete : function() {
-			$('#qqopen').removeAttr("disabled").text("挂机");
+			$('#qqopen').removeAttr("disabled").text("开启");
 		}
 	});
 	request.then(function(data) {
 		if (1 == data.statu) {
-			$('#qrimg').attr("src", "/sres/img/" + tag + ".png");
 			showSucc("操作成功", 5000);
 		} else {
 			showErr(data.info);
@@ -56,19 +45,17 @@ function closeRobot(auth, tag) {
 	var request = $.ajax({
 		url : '/robot/close',
 		data : {
-			"auth" : auth,
-			"tag" : tag
+			"auth" : auth
 		},
 		beforeSend : function() {
 			$('#qqclose').attr("disabled", "disabled").text("操作中...");
 		},
 		complete : function() {
-			$('#qqclose').removeAttr("disabled").text("停止");
+			$('#qqclose').removeAttr("disabled").text("关闭");
 		}
 	});
 	request.then(function(data) {
 		if (1 == data.statu) {
-			$('#qrimg').attr("src", "");
 			showSucc("操作成功", 5000);
 		} else {
 			showErr(data.info);

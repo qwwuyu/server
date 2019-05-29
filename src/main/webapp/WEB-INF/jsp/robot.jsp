@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>qq挂机</title>
+<title>qq机器人</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -36,14 +36,11 @@
 			</div>
 		</form>
 		<form>
-			<input id="qqtag" class="input" maxlength="5" placeholder="tag" autocomplete="off" style="margin-top: 12px;" /> <input id="qqpwd" class="input" maxlength="5" placeholder="pwd" autocomplete="off" style="margin-top: 12px;" />
 			<div style="margin-top: 12px;">
-				<button id="qqrefresh" class="btn" style="width: 100px; margin-left: 12px;">刷新</button>
-				<button id="qqopen" class="btn" style="width: 100px; margin-left: 12px;">挂机</button>
-				<button id="qqclose" class="btn" style="width: 100px; margin-left: 12px;">停止</button>
+				<button id="qqopen" class="btn" style="width: 100px; margin-left: 12px;">开启</button>
+				<button id="qqclose" class="btn" style="width: 100px; margin-left: 12px;">关闭</button>
 			</div>
 		</form>
-		<img id="qrimg" width="165" height="165" style="margin-top: 12px;" />
 	</div>
 	<div class="alert-list"></div>
 	<div class="alert-list-succ"></div>

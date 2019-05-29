@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,6 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.qwwuyu.server.bean.ResponseBean;
 import com.qwwuyu.server.bean.User;
+import com.qwwuyu.server.service.IUserService;
 
 public class J2EEUtil {
 	/** 获取客户ip */
@@ -46,7 +48,14 @@ public class J2EEUtil {
 	}
 
 	public static boolean renderInfo(HttpServletResponse response, String info) {
+		return renderInfo(response, info, 0);
+	}
+
+	public static boolean renderInfo(HttpServletResponse response, String info, int code) {
 		if (info != null) {
+			if (code > 0) {
+				response.setStatus(code);
+			}
 			ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo(info));
 			return true;
 		}
@@ -77,5 +86,31 @@ public class J2EEUtil {
 	public static Map<String, Object> parseToken(String token) {
 		return JSON.parseObject(new String(Base64.getDecoder().decode(token.getBytes()), StandardCharsets.UTF_8),
 				new TypeReference<Map<String, Object>>() {});
+	}
+
+	public static User checkPermit(int minPermit, IUserService userService, HttpServletRequest request, HttpServletResponse response) {
+		String token = request.getParameter("auth");
+		if (token == null || token.length() == 0) {
+			Cookie[] cookies = request.getCookies();
+			for (Cookie cookie : cookies) {
+				if ("auth".equals(cookie.getName())) {
+					token = cookie.getValue();
+				}
+			}
+		}
+		if (token == null || token.length() == 0) {
+			J2EEUtil.renderInfo(response, "请先登录", HttpServletResponse.SC_UNAUTHORIZED);
+			return null;
+		}
+		User user = userService.selectByUser(new User().setToken(token));
+		if (user == null) {
+			J2EEUtil.renderInfo(response, "请先登录", HttpServletResponse.SC_UNAUTHORIZED);
+			return null;
+		}
+		if (user.getAuth() < minPermit) {
+			J2EEUtil.renderInfo(response, "权限不足", HttpServletResponse.SC_UNAUTHORIZED);
+			return null;
+		}
+		return user;
 	}
 }

@@ -9,12 +9,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.qwwuyu.server.bean.ResponseBean;
-import com.qwwuyu.server.bean.User;
+import com.qwwuyu.server.robot.RobotHelper;
 import com.qwwuyu.server.service.IUserService;
-import com.qwwuyu.server.utils.CommUtil;
 import com.qwwuyu.server.utils.J2EEUtil;
 import com.qwwuyu.server.utils.ResponseUtil;
-import com.scienjus.smartqq.Robot;
 
 @Controller
 @RequestMapping("/robot")
@@ -28,43 +26,23 @@ public class RobotCtrl {
 
 	@RequestMapping("/open")
 	public void openQQ(HttpServletRequest request, HttpServletResponse response) {
-		String token = request.getParameter("auth");
-		String tag = request.getParameter("tag");
-		String pwd = request.getParameter("pwd");
-		if (J2EEUtil.isNull(response, token, tag, pwd)) return;
-		if (pwd.startsWith(tag)) {
-			J2EEUtil.renderInfo(response, "tag和pwd不能相同开头");
-			return;
+		if (null == J2EEUtil.checkPermit(5, userService, request, response)) return;
+		try {
+			RobotHelper.getInstance().openRobot();
+			ResponseUtil.render(response, ResponseBean.getSuccessBean());
+		} catch (Exception e) {
+			ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo(e.getMessage()));
 		}
-		User user = userService.selectByUser(new User().setToken(token));
-		if (user == null) {
-			J2EEUtil.renderInfo(response, "请先登录");
-			return;
-		}
-		if (user.getAuth() < 3) {
-			J2EEUtil.renderInfo(response, "权限不足");
-			return;
-		}
-		new Thread(() -> Robot.addSmartQQ(tag, pwd)).start();
-		CommUtil.sleep(2000);
-		ResponseUtil.render(response, ResponseBean.getSuccessBean());
 	}
 
 	@RequestMapping("/close")
 	public void closeQQ(HttpServletRequest request, HttpServletResponse response) {
-		String token = request.getParameter("auth");
-		String tag = request.getParameter("tag");
-		if (J2EEUtil.isNull(response, token, tag)) return;
-		User user = userService.selectByUser(new User().setToken(token));
-		if (user == null) {
-			J2EEUtil.renderInfo(response, "请先登录");
-			return;
+		if (null == J2EEUtil.checkPermit(5, userService, request, response)) return;
+		try {
+			RobotHelper.getInstance().closeRobot();
+			ResponseUtil.render(response, ResponseBean.getSuccessBean());
+		} catch (Exception e) {
+			ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo(e.getMessage()));
 		}
-		if (user.getAuth() < 5) {
-			J2EEUtil.renderInfo(response, "权限不足");
-			return;
-		}
-		new Thread(() -> Robot.closeSmartQQ(tag)).start();
-		ResponseUtil.render(response, ResponseBean.getSuccessBean());
 	}
 }

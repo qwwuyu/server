@@ -3,6 +3,8 @@ package com.qwwuyu.server.utils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class CommUtil {
 	public static boolean isWindows() {
@@ -33,5 +35,12 @@ public class CommUtil {
 		}
 		reader.close();
 		return builder.substring(0, builder.length() - 1).toString();
+	}
+
+	public static String getStackTraceString(Throwable tr) {
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		tr.printStackTrace(pw);
+		return sw.toString();
 	}
 }
