@@ -38,8 +38,8 @@ public class RobotHelper {
 		String msg = "";
 		try {
 			logger.info("httpServer1开始");
-			PicqBotX bot = new PicqBotX(new PicqConfig(12311).setDebug(false));
-			bot.addAccount("kere", "127.0.0.1", 12310);
+			PicqBotX bot = new PicqBotX(new PicqConfig(2002).setDebug(false));
+			bot.addAccount("kere", "127.0.0.1", 2001);
 			logger.info("httpServer1请求成功");
 			bot.getEventManager().registerListeners(new TestListener());
 			httpServer = bot.startBot();
@@ -50,8 +50,8 @@ public class RobotHelper {
 		}
 		try {
 			logger.info("httpServer2开始");
-			PicqBotX bot = new PicqBotX(new PicqConfig(12411).setDebug(false));
-			bot.addAccount("kere", "127.0.0.1", 12410);
+			PicqBotX bot = new PicqBotX(new PicqConfig(2005).setDebug(false));
+			bot.addAccount("kere", "127.0.0.1", 2004);
 			logger.info("httpServer2请求成功");
 			bot.getEventManager().registerListeners(new TestListener());
 			httpServer2 = bot.startBot();
