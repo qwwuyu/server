@@ -109,6 +109,7 @@ public class TestCtrl {
 	}
 
 	private void downloadFile(HttpServletRequest request, String name, String range, HttpServletResponse response) throws IOException {
+		System.out.println("range:" + range);
 		User user = J2EEUtil.checkPermit(5, userService, request, response);
 		if (null == user) return;
 		if (J2EEUtil.isNull(response, name)) {
@@ -124,9 +125,11 @@ public class TestCtrl {
 		if (range != null) {
 			try {
 				written = left = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)\\-([\\d]*)", "$1"));
-				right = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)\\-([\\d]*)", "$2"));
+				long rightRange = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)\\-([\\d]*)", "$2"));
+				if (rightRange != 0) right = rightRange;
 			} catch (Exception e) {}
 		}
+		System.out.println("left=" + left + " right=" + right);
 		if (right >= file.length() || right < left || left < 0) {
 			response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 			return;
@@ -135,6 +138,7 @@ public class TestCtrl {
 			response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
 			response.setHeader("Content-Range", String.format("bytes %d-%d/%d", left, right, file.length()));
 		}
+		System.out.println("left=" + left + " right=" + right);
 		// HttpHeaders headers = new HttpHeaders();
 		// headers.setContentDispositionFormData("attachment", "download.jpg");
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + name + "\"");
