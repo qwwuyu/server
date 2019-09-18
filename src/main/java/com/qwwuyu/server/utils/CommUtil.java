@@ -3,8 +3,10 @@ package com.qwwuyu.server.utils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.file.Files;
 
 public class CommUtil {
 	public static boolean isWindows() {
@@ -42,5 +44,9 @@ public class CommUtil {
 		PrintWriter pw = new PrintWriter(sw);
 		tr.printStackTrace(pw);
 		return sw.toString();
+	}
+
+	public static byte[] file2bs(File file) throws IOException {
+		return Files.readAllBytes(file.toPath());
 	}
 }

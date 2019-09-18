@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,16 +38,7 @@ public class TestCtrl {
 
 	@RequestMapping(value = "/get", method = RequestMethod.GET)
 	public void get(HttpServletRequest request, HttpServletResponse response) {
-		if ("GET".equals(request.getMethod())) {
-			Map<String, String[]> map = request.getParameterMap();
-			response.setContentType("application/json;charset=utf-8");
-			response.setHeader("Pragma", "No-cache");
-			response.setHeader("Cache-Control", "no-cache");
-			response.setDateHeader("Expires", 0);
-			try {
-				response.getWriter().write(JSON.toJSONString(new ResponseBean(1, "", map)));
-			} catch (IOException e) {}
-		}
+		post(request, response);
 	}
 
 	@RequestMapping(value = "/post", method = RequestMethod.POST)
@@ -95,21 +85,14 @@ public class TestCtrl {
 		post(request, response);
 	}
 
-	@RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE,
-			headers = { "range" })
-	public void download(HttpServletRequest request, @RequestHeader("range") String range,
-			@RequestParam(value = "name", required = false) String name, HttpServletResponse response) throws IOException {
-		downloadFile(request, name, range, response);
-	}
-
 	@RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public void download(HttpServletRequest request, @RequestParam(value = "name", required = false) String name,
 			HttpServletResponse response) throws IOException {
-		downloadFile(request, name, null, response);
+		String range = request.getHeader("range");
+		downloadFile(request, name, range, response);
 	}
 
 	private void downloadFile(HttpServletRequest request, String name, String range, HttpServletResponse response) throws IOException {
-		System.out.println("range:" + range);
 		User user = J2EEUtil.checkPermit(5, userService, request, response);
 		if (null == user) return;
 		if (J2EEUtil.isNull(response, name)) {
@@ -121,26 +104,21 @@ public class TestCtrl {
 			response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 			return;
 		}
-		long left = 0, right = file.length() - 1, written = left;// 100 200 100
+		long left = 0, right = file.length() - 1, written = left;
 		if (range != null) {
 			try {
 				written = left = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)\\-([\\d]*)", "$1"));
-				long rightRange = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)\\-([\\d]*)", "$2"));
-				if (rightRange != 0) right = rightRange;
+				right = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)\\-([\\d]*)", "$2"));
 			} catch (Exception e) {}
 		}
-		System.out.println("left=" + left + " right=" + right);
-		if (right >= file.length() || right < left || left < 0) {
+		if (0 > left || right >= file.length() || right < left) {
 			response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 			return;
 		}
-		if (range != null && left != 0) {
+		if (range != null) {
 			response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
 			response.setHeader("Content-Range", String.format("bytes %d-%d/%d", left, right, file.length()));
 		}
-		System.out.println("left=" + left + " right=" + right);
-		// HttpHeaders headers = new HttpHeaders();
-		// headers.setContentDispositionFormData("attachment", "download.jpg");
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + name + "\"");
 		response.setHeader("Content-Length", String.valueOf(right - left + 1));
 		response.setHeader("Accept-Ranges", "bytes");
