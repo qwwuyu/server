@@ -14,7 +14,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.qwwuyu.server.bean.ResponseBean;
 import com.qwwuyu.server.bean.User;
-import com.qwwuyu.server.configs.FieldConfig;
 import com.qwwuyu.server.service.IUserService;
 
 public class J2EEUtil {
@@ -101,20 +100,20 @@ public class J2EEUtil {
 			}
 		}
 		if (token == null || token.length() == 0) {
-			J2EEUtil.renderInfo(response, "请先登录", HttpServletResponse.SC_UNAUTHORIZED);
+			J2EEUtil.renderInfo(response, "请先登录");
 			return null;
 		}
 		User user = userService.selectByUser(new User().setToken(token));
 		if (user == null) {
-			J2EEUtil.renderInfo(response, "请先登录", HttpServletResponse.SC_UNAUTHORIZED);
+			J2EEUtil.renderInfo(response, "请先登录");
 			return null;
 		} else if (user.getAuth() < minPermit) {
-			J2EEUtil.renderInfo(response, "权限不足", HttpServletResponse.SC_UNAUTHORIZED);
+			J2EEUtil.renderInfo(response, "权限不足");
 			return null;
-		} /*else if (System.currentTimeMillis() - user.getTime() > FieldConfig.expiresValue) {
-			J2EEUtil.renderInfo(response, "验证已过期", HttpServletResponse.SC_UNAUTHORIZED);
-			return null;
-		}*/
+		} /*
+			 * else if (System.currentTimeMillis() - user.getTime() > FieldConfig.expiresValue) { J2EEUtil.renderInfo(response, "验证已过期",
+			 * HttpServletResponse.SC_UNAUTHORIZED); return null; }
+			 */
 		return user;
 	}
 }

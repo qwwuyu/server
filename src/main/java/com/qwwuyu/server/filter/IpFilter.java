@@ -30,8 +30,8 @@ public class IpFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException,
-			ServletException {
+	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
+			throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 		String requestURI = request.getRequestURI();
@@ -55,8 +55,8 @@ public class IpFilter implements Filter {
 					}
 				}
 			}
-			if (J2EEUtil.isNull(response, token)) {
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			if (token == null || token.length() == 0) {
+				J2EEUtil.renderInfo(response, "请先登录");
 				return;
 			}
 			chain.doFilter(request, response);

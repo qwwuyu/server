@@ -5,7 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -29,6 +31,7 @@ import com.qwwuyu.server.service.IFlagService;
 import com.qwwuyu.server.service.IUserService;
 import com.qwwuyu.server.utils.CommUtil;
 import com.qwwuyu.server.utils.J2EEUtil;
+import com.qwwuyu.server.utils.ResponseUtil;
 
 @Controller
 @RequestMapping("/test")
@@ -70,6 +73,7 @@ public class TestCtrl {
 		// 将当前上下文初始化给 CommonsMutipartResolver
 		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
 		// 检查form中是否有enctype="multipart/form-data"
+		List<String> list = new ArrayList<>();
 		if (multipartResolver.isMultipart(request)) {
 			MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
 			// 获取multiRequest 中所有的文件名
@@ -77,12 +81,16 @@ public class TestCtrl {
 			while (iterator.hasNext()) {
 				MultipartFile file = multiRequest.getFile(iterator.next().toString());
 				if (file != null) {
-					String fileName = file.getOriginalFilename() != null ? file.getOriginalFilename() : file.getName();
-					file.transferTo(new File(SecretConfig.fileDir, fileName));
+					String oFilename = file.getOriginalFilename();
+					String fileName = oFilename == null ? file.getName() : oFilename;
+					if (fileName != null) {
+						file.transferTo(new File(SecretConfig.fileDir, fileName));
+						list.add(fileName);
+					}
 				}
 			}
 		}
-		post(request, response);
+		ResponseUtil.render(response, ResponseBean.getSuccessBean().setData(list));
 	}
 
 	@RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
