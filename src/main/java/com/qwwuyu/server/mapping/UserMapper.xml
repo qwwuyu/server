@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qwwuyu.server.dao.UserMapper">
+	<resultMap id="BaseResultMap" type="com.qwwuyu.server.bean.User">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="pwd" property="pwd" jdbcType="VARCHAR" />
+		<result column="nick" property="nick" jdbcType="VARCHAR" />
+		<result column="auth" property="auth" jdbcType="INTEGER" />
+		<result column="ip" property="ip" jdbcType="VARCHAR" />
+		<result column="token" property="token" jdbcType="VARCHAR" />
+		<result column="apptoken" property="apptoken" jdbcType="VARCHAR" />
+		<result column="time" property="time" jdbcType="BIGINT" />
+		<result column="apptime" property="apptime" jdbcType="BIGINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, name, pwd, nick, auth, ip, token, apptoken, time, apptime
+	</sql>
+	<insert id="insert" parameterType="com.qwwuyu.server.bean.User">
+		insert into user (id, name, pwd,
+		nick, auth, ip, token,
+		apptoken, time, apptime
+		)
+		values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR},
+		#{nick,jdbcType=VARCHAR}, #{auth,jdbcType=INTEGER},
+		#{ip,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR},
+		#{apptoken,jdbcType=VARCHAR}, #{time,jdbcType=BIGINT}, #{apptime,jdbcType=BIGINT}
+		)
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.qwwuyu.server.bean.User">
+		update user
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="pwd != null">
+				pwd = #{pwd,jdbcType=VARCHAR},
+			</if>
+			<if test="nick != null">
+				nick = #{nick,jdbcType=VARCHAR},
+			</if>
+			<if test="auth != null">
+				auth = #{auth,jdbcType=INTEGER},
+			</if>
+			<if test="ip != null">
+				ip = #{ip,jdbcType=VARCHAR},
+			</if>
+			<if test="token != null">
+				token = #{token,jdbcType=VARCHAR},
+			</if>
+			<if test="apptoken != null">
+				apptoken = #{apptoken,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				time = #{time,jdbcType=BIGINT},
+			</if>
+			<if test="apptime != null">
+				apptime = #{apptime,jdbcType=BIGINT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.qwwuyu.server.bean.User">
+		update user
+		set name = #{name,jdbcType=VARCHAR},
+		pwd = #{pwd,jdbcType=VARCHAR},
+		nick = #{nick,jdbcType=VARCHAR},
+		auth = #{auth,jdbcType=INTEGER},
+		ip = #{ip,jdbcType=VARCHAR},
+		token =
+		#{token,jdbcType=VARCHAR},
+		apptoken = #{apptoken,jdbcType=VARCHAR},
+		time = #{time,jdbcType=BIGINT},
+		apptime = #{apptime,jdbcType=BIGINT}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="selectByUser" resultMap="BaseResultMap" parameterType="com.qwwuyu.server.bean.User">
+		select
+		<include refid="Base_Column_List" />
+		from user
+		<where>
+			<if test="id != -1">
+				and id = #{id}
+			</if>
+			<if test="name != null">
+				and name = #{name}
+			</if>
+			<if test="pwd != null">
+				and pwd = #{pwd}
+			</if>
+			<if test="nick != null">
+				and nick = #{nick}
+			</if>
+			<if test="auth != -1">
+				and auth = #{auth}
+			</if>
+			<if test="token != null">
+				and token = #{token}
+			</if>
+			<if test="apptoken != null">
+				and apptoken = #{apptoken}
+			</if>
+		</where>
+	</select>
+</mapper>

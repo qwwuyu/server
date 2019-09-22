@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qwwuyu.server.dao.FlagMapper">
+	<resultMap id="BaseResultMap" type="com.qwwuyu.server.bean.Flag">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="user_id" property="userId" jdbcType="INTEGER" />
+		<result column="nick" property="nick" jdbcType="VARCHAR" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="time" property="time" jdbcType="BIGINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, user_id, nick, title, time
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from flag
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<insert id="insert" parameterType="com.qwwuyu.server.bean.Flag">
+		insert into flag (user_id, nick,title, time)
+		values (#{userId,jdbcType=INTEGER}, #{nick,jdbcType=VARCHAR},
+		#{title,jdbcType=VARCHAR}, #{time,jdbcType=BIGINT})
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.qwwuyu.server.bean.Flag">
+		update flag
+		<set>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=INTEGER},
+			</if>
+			<if test="nick != null">
+				nick = #{nick,jdbcType=VARCHAR},
+			</if>
+			<if test="title != null">
+				title = #{title,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				time = #{time,jdbcType=BIGINT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from flag
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<select id="selectByFlag" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from flag
+		<where>
+			<if test="flag.id != -1">
+				and id = #{flag.id}
+			</if>
+			<if test="flag.userId != -1">
+				and user_id = #{flag.userId}
+			</if>
+		</where>
+		<if test="asc != null">
+			ORDER BY ${asc} ASC
+		</if>
+		<if test="asc == null and desc != null">
+			ORDER BY ${desc} DESC
+		</if>
+		<if test="limit != null and limit gt 0">
+			LIMIT ${offset},${limit}
+		</if>
+	</select>
+</mapper>

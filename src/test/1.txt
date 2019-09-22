@@ -1,0 +1,4 @@
+<span class="main-content-title">{{note.title}}</span>
+<span class="main-content-info">{{note.nick}}</span>
+<span class="main-content-info">{{note.time}}</span>
+<span class="main-content-title">{{note.content}}</span>
