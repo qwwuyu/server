@@ -37,8 +37,8 @@ public class J2EEUtil {
     }
 
     public static boolean isNull(HttpServletResponse response, String... parame) {
-        for (int i = 0; i < parame.length; i++) {
-            if (null == parame[i] || "".equals(parame[i])) {
+        for (String s : parame) {
+            if (null == s || "".equals(s)) {
                 ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("参数不正确"));
                 return true;
             }
@@ -64,9 +64,11 @@ public class J2EEUtil {
     /** BCrypt固定格式加密密码 */
     public static String handPwd(String acc, String pwd) {
         int length = acc.length();
+        StringBuilder accBuilder = new StringBuilder(acc);
         for (int i = length; i < 22; i++) {
-            acc = acc + "0";
+            accBuilder.append("0");
         }
+        acc = accBuilder.toString();
         String salt = "$2a$10$" + acc.replaceAll("_", "/");
         return BCrypt.hashpw(pwd, salt);
     }
@@ -88,6 +90,10 @@ public class J2EEUtil {
     }
 
     public static User checkPermit(int minPermit, IUserService userService, HttpServletRequest request, HttpServletResponse response) {
+        return checkPermit(minPermit, 0, userService, request, response);
+    }
+
+    public static User checkPermit(int minPermit, int code, IUserService userService, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getParameter("auth");
         if (token == null || token.length() == 0) {
             Cookie[] cookies = request.getCookies();
@@ -99,15 +105,15 @@ public class J2EEUtil {
             }
         }
         if (token == null || token.length() == 0) {
-            J2EEUtil.renderInfo(response, "请先登录");
+            J2EEUtil.renderInfo(response, "请先登录", code);
             return null;
         }
         User user = userService.selectByUser(new User().setToken(token));
         if (user == null) {
-            J2EEUtil.renderInfo(response, "请先登录");
+            J2EEUtil.renderInfo(response, "请先登录", code);
             return null;
         } else if (user.getAuth() < minPermit) {
-            J2EEUtil.renderInfo(response, "权限不足");
+            J2EEUtil.renderInfo(response, "权限不足", code);
             return null;
         } /*
          * else if (System.currentTimeMillis() - user.getTime() > FieldConfig.expiresValue) { J2EEUtil.renderInfo(response, "验证已过期",

@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.qwwuyu.server.bean.ResponseBean;
 import com.qwwuyu.server.bean.User;
 import com.qwwuyu.server.configs.SecretConfig;
-import com.qwwuyu.server.service.IFlagService;
 import com.qwwuyu.server.service.IUserService;
 import com.qwwuyu.server.utils.CommUtil;
 import com.qwwuyu.server.utils.J2EEUtil;
@@ -32,8 +31,6 @@ import java.util.Map;
 public class TestCtrl {
     @Resource
     private IUserService userService;
-    @Resource
-    private IFlagService service;
 
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     public void get(HttpServletRequest request, HttpServletResponse response) {
