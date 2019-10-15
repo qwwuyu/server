@@ -94,7 +94,7 @@ public class TestCtrl {
     }
 
     private void downloadFile(HttpServletRequest request, String name, String range, HttpServletResponse response) throws IOException {
-        User user = J2EEUtil.checkPermit(5, userService, request, response);
+        User user = J2EEUtil.checkPermit(5, HttpServletResponse.SC_UNAUTHORIZED, userService, request, response);
         if (null == user) return;
         if (J2EEUtil.isNull(response, name)) {
             response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
