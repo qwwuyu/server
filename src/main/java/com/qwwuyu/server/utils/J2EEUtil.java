@@ -97,10 +97,11 @@ public class J2EEUtil {
         String token = request.getParameter("auth");
         if (token == null || token.length() == 0) {
             Cookie[] cookies = request.getCookies();
-            if (cookies == null) return null;
-            for (Cookie cookie : cookies) {
-                if ("auth".equals(cookie.getName())) {
-                    token = cookie.getValue();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("auth".equals(cookie.getName())) {
+                        token = cookie.getValue();
+                    }
                 }
             }
         }

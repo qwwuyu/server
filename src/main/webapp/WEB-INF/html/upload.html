@@ -1,47 +1,46 @@
 <!doctype html>
 <html>
 <head>
-<title>upload</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<link href="/tres/img/qwwuyu.ico" type="image/x-icon" rel="shortcut icon" />
-<meta name="keywords" content="qwwuyu,www.qwwuyu.com" />
-<meta name="description" content="qwwuyu" />
-<script src="/tres/js/jquery-3.2.1.min.js"></script>
-<script src="/tres/js/template-web.js"></script>
-<script src="/tres/js/js.cookie.js"></script>
-<script src="/tres/js/jquery.ui.widget.js"></script>
-<script src="/tres/js/jquery.iframe-transport.js"></script>
-<script src="/tres/js/jquery.fileupload.js"></script>
-<script src="/res/js/util.js"></script>
+    <title>upload</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <link href="/tres/img/qwwuyu.ico" type="image/x-icon" rel="shortcut icon"/>
+    <meta name="keywords" content="qwwuyu,www.qwwuyu.com"/>
+    <meta name="description" content="qwwuyu"/>
+    <script src="/tres/js/jquery-3.2.1.min.js"></script>
+    <script src="/tres/js/template-web.js"></script>
+    <script src="/tres/js/js.cookie.js"></script>
+    <script src="/tres/js/jquery.ui.widget.js"></script>
+    <script src="/tres/js/jquery.iframe-transport.js"></script>
+    <script src="/tres/js/jquery.fileupload.js"></script>
+    <script src="/res/js/util.js"></script>
 </head>
 <body>
-	<!-- <input id="fileupload" type="file" name="files" data-url="server/php/" multiple> -->
-	<input type="file" name="pic1" id="fileupload">
-	<div>
-		<span id="progress">progress</span>
-	</div>
-	<div>
-		<span id="result">result</span>
-	</div>
-	<script type="text/javascript">
-		$(function() {
-			//初始化上传插件
-			var auth = Cookies.get('auth');
-			var request = $('#fileupload').fileupload({
-				url : '/test/upload',
-				dataType : 'text',
-				progressall : function(e, data) {
-					$('#progress').text(data.loaded + "/" + data.total);
-				},
-				done : function(e, data) {
-					$('#result').text("done:" + data.result);
-				},
-				fail : function(e, data) {
-					$('#result').text("fail:" + data.result);
-				}
-			});
-		});
-	</script>
+<!-- <input id="fileupload" type="file" name="files" data-url="server/php/" multiple> -->
+<input type="file" name="pic1" id="fileupload">
+<div>
+    <span id="progress">progress</span>
+</div>
+<div>
+    <span id="result">result</span>
+</div>
+<script type="text/javascript">
+    $(function () {
+        //初始化上传插件
+        $('#fileupload').fileupload({
+            url: '/test/upload',
+            dataType: 'text',
+            progressall: function (e, data) {
+                $('#progress').text(data.loaded + "/" + data.total);
+            },
+            done: function (e, data) {
+                $('#result').text("done:" + data.result);
+            },
+            fail: function (e, data) {
+                $('#result').text("fail:" + data.result);
+            }
+        });
+    });
+</script>
 </body>
 </html>

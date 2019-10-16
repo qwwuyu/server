@@ -21,6 +21,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -121,7 +122,7 @@ public class TestCtrl {
             response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
             response.setHeader("Content-Range", String.format("bytes %d-%d/%d", left, right, file.length()));
         }
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + name + "\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(name, "utf-8") + "\"");
         response.setHeader("Content-Length", String.valueOf(right - left + 1));
         response.setHeader("Accept-Ranges", "bytes");
         try (InputStream is = new FileInputStream(file); OutputStream os = response.getOutputStream()) {
