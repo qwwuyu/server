@@ -4,11 +4,17 @@ package com.qwwuyu.server.bean;
  * 网络请求返回状态属性
  */
 public class ResponseBean {
-    /** 返回状态码 */
-    private int statu;
-    /** 返回消息 */
+    /**
+     * 返回状态码
+     */
+    private int state;
+    /**
+     * 返回消息
+     */
     private String info;
-    /** 返回数据 */
+    /**
+     * 返回数据
+     */
     private Object data;
 
     public ResponseBean() {
@@ -17,17 +23,17 @@ public class ResponseBean {
 
     public ResponseBean(int statu, String info, Object data) {
         super();
-        this.statu = statu;
+        this.state = statu;
         this.info = info;
         this.data = data;
     }
 
     public int getStatu() {
-        return statu;
+        return state;
     }
 
     public ResponseBean setStatu(int statu) {
-        this.statu = statu;
+        this.state = statu;
         return this;
     }
 
@@ -47,19 +53,5 @@ public class ResponseBean {
     public ResponseBean setData(Object data) {
         this.data = data;
         return this;
-    }
-
-    public static ResponseBean getSuccessBean() {
-        ResponseBean bean = new ResponseBean();
-        bean.statu = 1;
-        bean.info = "请求成功";
-        return bean;
-    }
-
-    public static ResponseBean getErrorBean() {
-        ResponseBean bean = new ResponseBean();
-        bean.statu = -1;
-        bean.info = "服务器内部错误";
-        return bean;
     }
 }

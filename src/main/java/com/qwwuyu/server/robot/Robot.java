@@ -86,12 +86,12 @@ public class Robot {
                         executor.execute(() -> {
                             try {
                                 if (!hint) send.sendMessage("start", chatId);
-                                for (int i = 0; i < msgs.size(); i++) {
+                                for (String[] msg : msgs) {
                                     CommUtil.sleep(1000);
-                                    int t = Math.max(1, Integer.parseInt(msgs.get(i)[2]));
-                                    wait.addTag(msgs.get(i)[0], t * 1000);
+                                    int t = Math.max(1, Integer.parseInt(msg[2]));
+                                    wait.addTag(msg[0], t * 1000);
                                 }
-                            } catch (Exception e) {
+                            } catch (Exception ignored) {
                             }
                         });
                     } else {
@@ -141,9 +141,7 @@ public class Robot {
                     for (int i = 0; i < items.size() - 1; i++) {
                         MsgItem msgItem = items.get(i);
                         if (msgItem != null && msgItem.content.contains(txt)) {
-                            if (users.contains(msgItem.userId)) {
-                                users.remove(msgItem.userId);
-                            }
+                            users.remove(msgItem.userId);
                             send(send, "unbind:" + msgItem.content, chatId);
                             break;
                         }
@@ -176,8 +174,7 @@ public class Robot {
                     numMap.put(chatId, num);
                 } else if (content.startsWith(tag + "time-")) {
                     final String txt = content.substring((tag + "time-").length());
-                    int time = Integer.parseInt(txt);
-                    this.time = time;
+                    this.time = Integer.parseInt(txt);
                 }
                 // other
             } else if (CommUtil.isExist(cmds[0]) && content.equals(cmds[0])) {
@@ -200,8 +197,7 @@ public class Robot {
                 }
             } else if (numMap.containsKey(chatId) && content.matches("^\\d+$")) {
                 Integer num = numMap.get(chatId);
-                Long time = timeMap.get(userId);
-                if (time != null && System.currentTimeMillis() - time < this.time) return;
+                if (System.currentTimeMillis() - time < this.time) return;
                 int x = Integer.parseInt(content);
                 if (x < num) {
                     send(send, num + "高了", chatId);
@@ -251,7 +247,7 @@ public class Robot {
          */
         private boolean isLive = true;
         private long lastLiveTime;
-        private Object liveLock = new Object();
+        private final Object liveLock = new Object();
 
         private void checkLive() {
             lastLiveTime = System.currentTimeMillis();

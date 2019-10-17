@@ -70,14 +70,18 @@ public class RobotHelper {
             throw new Exception("httpServer不存在");
         }
         try {
-            httpServer.stop(0);
-            httpServer = null;
+            if (httpServer != null) {
+                httpServer.stop(0);
+                httpServer = null;
+            }
         } catch (Exception e) {
             throw new Exception("httpServer关闭失败");
         }
         try {
-            httpServer2.stop(0);
-            httpServer2 = null;
+            if (httpServer2 != null) {
+                httpServer2.stop(0);
+                httpServer2 = null;
+            }
         } catch (Exception e) {
             throw new Exception("httpServer关闭失败");
         }
@@ -91,15 +95,9 @@ public class RobotHelper {
             if (event.getMessage().equals("测试回复")) {
                 event.respond("回复消息");
             }
-
             if (event.getMessage().equals("🐎")) {
                 event.respond("🐎");
             }
-
-            if (event.getMessage().equals("测试私聊")) {
-                // event.getHttpApi().sendPrivateMsg(0, "私聊消息");
-            }
-
             if (event.getMessage().equals("测试图片")) {
                 event.respond(new MessageBuilder().add("图片前面的消息").newLine().add(new ComponentImageBase64("iVBORw0KGgoAAAANSUhEUgAAABQAAAAVCAIAAADJt1n/AAAAKElEQVQ4EWPk5+RmIBcwkasRpG9UM4mhNxpgowFGMARGEwnBIEJVAAAdBgBNAZf+QAAAAABJRU5ErkJggg==")).newLine().add("图片后面的").newLine().add("换行之后的消息").toString());
             }

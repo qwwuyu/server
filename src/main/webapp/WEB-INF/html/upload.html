@@ -28,7 +28,7 @@
     $(function () {
         //初始化上传插件
         $('#fileupload').fileupload({
-            url: '/test/upload',
+            url: '/file/upload',
             dataType: 'text',
             progressall: function (e, data) {
                 $('#progress').text(data.loaded + "/" + data.total);

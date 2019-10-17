@@ -1,12 +1,11 @@
 package com.qwwuyu.server.ctrl;
 
 import com.qwwuyu.server.bean.Flag;
-import com.qwwuyu.server.bean.ResponseBean;
 import com.qwwuyu.server.bean.User;
+import com.qwwuyu.server.configs.Constant;
+import com.qwwuyu.server.filter.AuthRequired;
 import com.qwwuyu.server.service.IFlagService;
-import com.qwwuyu.server.service.IUserService;
 import com.qwwuyu.server.utils.J2EEUtil;
-import com.qwwuyu.server.utils.ResponseUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -18,8 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/i/flag")
 public class FlagCtrl {
     @Resource
-    private IUserService userService;
-    @Resource
     private IFlagService service;
 
     @RequestMapping("/get")
@@ -30,29 +27,20 @@ public class FlagCtrl {
             page = page > 0 ? page : 1;
         } catch (Exception ignored) {
         }
-        ResponseUtil.render(response, ResponseBean.getSuccessBean().setData(service.getFlag(page)));
+        J2EEUtil.render(response, J2EEUtil.getSuccessBean().setData(service.getFlag(page)));
     }
 
+    @AuthRequired(permit = Constant.PERMIT_ADMIN)
     @RequestMapping("/send")
     public void sendFlag(HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getParameter("auth");
+        User user = (User) request.getAttribute(Constant.KEY_USER);
         String title = request.getParameter("title");
-        if (J2EEUtil.isNull(response, token)) return;
-        User user = userService.selectByUser(new User().setToken(token));
-        if (user == null) {
-            J2EEUtil.renderInfo(response, "请先登录");
-            return;
-        }
-        if (user.getAuth() != 5) {
-            J2EEUtil.renderInfo(response, "权限不足");
-            return;
-        }
         if (title == null || !title.matches(".{1,50}") || !title.matches(".*[\\S]+.*")) {
             J2EEUtil.renderInfo(response, "内容不能为空");
             return;
         }
         Flag flag = new Flag().setNick(user.getNick()).setTime(System.currentTimeMillis()).setTitle(title).setUserId(user.getId());
         service.insert(flag);
-        ResponseUtil.render(response, ResponseBean.getSuccessBean());
+        J2EEUtil.render(response, J2EEUtil.getSuccessBean());
     }
 }

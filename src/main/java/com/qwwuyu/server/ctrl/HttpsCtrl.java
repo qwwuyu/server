@@ -1,42 +1,43 @@
 package com.qwwuyu.server.ctrl;
 
-import com.qwwuyu.server.bean.ResponseBean;
-import com.qwwuyu.server.service.IUserService;
+import com.qwwuyu.server.bean.User;
+import com.qwwuyu.server.configs.Constant;
+import com.qwwuyu.server.filter.AuthRequired;
 import com.qwwuyu.server.utils.J2EEUtil;
-import com.qwwuyu.server.utils.ResponseUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@AuthRequired(permit = Constant.PERMIT_ADMIN)
 @Controller
 public class HttpsCtrl {
     private static Map<String, String> map = new HashMap<>();
-    @Resource
-    private IUserService userService;
 
     @RequestMapping("/https/set")
-    public void getNote(HttpServletRequest request, HttpServletResponse response) {
+    public void setKey(HttpServletRequest request, HttpServletResponse response) {
+        User user = (User) request.getAttribute(Constant.KEY_USER);
+        if (user == null) throw new RuntimeException("user is null");
         String key = request.getParameter("key");
         String value = request.getParameter("value");
         if (J2EEUtil.isNull(response, key, value)) return;
-        if (null == J2EEUtil.checkPermit(5, userService, request, response)) return;
         map.put(key, value);
-        ResponseUtil.render(response, ResponseBean.getSuccessBean());
+        J2EEUtil.render(response, J2EEUtil.getSuccessBean());
     }
 
     @RequestMapping("/https/clear")
-    public void sendCard(HttpServletRequest request, HttpServletResponse response) {
-        if (null == J2EEUtil.checkPermit(5, userService, request, response)) return;
+    public void clearKey(HttpServletRequest request, HttpServletResponse response) {
+        User user = (User) request.getAttribute(Constant.KEY_USER);
+        if (user == null) throw new RuntimeException("user is null");
         map.clear();
-        ResponseUtil.render(response, ResponseBean.getSuccessBean());
+        J2EEUtil.render(response, J2EEUtil.getSuccessBean());
     }
 
+    @AuthRequired(anth = false)
     @RequestMapping("/.well-known/acme-challenge/*")
     public void ssl1(HttpServletRequest request, HttpServletResponse response) {
         String requestURI = request.getRequestURI();

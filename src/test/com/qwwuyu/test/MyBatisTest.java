@@ -1,7 +1,6 @@
 package com.qwwuyu.test;
 
 import com.qwwuyu.server.service.INoteService;
-import com.qwwuyu.server.service.IUserService;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,8 +14,6 @@ import javax.annotation.Resource;
 @ContextConfiguration(locations = {"classpath:spring-mybatis.xml"})
 public class MyBatisTest {
     private static Logger logger = Logger.getLogger(MyBatisTest.class);
-    @Resource
-    private IUserService userService;
     @Resource
     private INoteService noteService;
 

@@ -14,7 +14,6 @@
     <!-- 编码过滤器 -->
     <filter>
         <filter-name>encodingFilter</filter-name>
-        <!-- <filter-class>qw.hi.filter.MyEncodingFilter</filter-class> -->
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
         <async-supported>true</async-supported>
         <init-param>
@@ -29,23 +28,6 @@
     <filter-mapping>
         <filter-name>encodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <filter>
-        <description>ip过滤器</description>
-        <filter-name>IpFilter</filter-name>
-        <filter-class>com.qwwuyu.server.filter.IpFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>IpFilter</filter-name>
-        <url-pattern>/i/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>IpFilter</filter-name>
-        <url-pattern>/test/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>IpFilter</filter-name>
-        <url-pattern>/robot/*</url-pattern>
     </filter-mapping>
     <!-- 过滤器配置结束 -->
 
@@ -74,7 +56,6 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>SpringMVC</servlet-name>
-        <!-- 此处可以可以配置成*.do，对应struts的后缀习惯 -->
         <url-pattern>/</url-pattern>
     </servlet-mapping>
     <!-- Servlet配置结束 -->

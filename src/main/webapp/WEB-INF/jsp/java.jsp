@@ -1,83 +1,80 @@
-<%@page contentType="text/html; charset=UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@page contentType="text/html; charset=UTF-8" %>
+<!DOCTYPE html>
 <html>
 <head>
-<title>java</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-<link href="/tres/img/qwwuyu.ico" type="image/x-icon" rel="shortcut icon" />
-<meta name="keywords" content="qwwuyu,www.qwwuyu.com" />
-<meta name="description" content="qwwuyu" />
-<link href="/tres/css/ionicons.min.css" type="text/css" rel="stylesheet" media="screen" />
-<link href="/res/css/comm.css" type="text/css" rel="stylesheet" media="screen" />
-<script src="/tres/js/jquery-3.2.1.min.js"></script>
-<script src="/tres/js/template-web.js"></script>
-<script src="/tres/js/js.cookie.js"></script>
-<script src="/tres/js/jsencrypt.min.js"></script>
-<script src="/tres/js/bcrypt.min.js"></script>
-<script src="/tres/js/base64.min.js"></script>
-<script src="/res/js/util.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <link href="/tres/img/qwwuyu.ico" type="image/x-icon" rel="shortcut icon">
+    <meta name="keywords" content="qwwuyu,www.qwwuyu.com"/>
+    <meta name="description" content="qwwuyu"/>
+    <link href="/tres/css/textarea.css" type="text/css" rel="stylesheet"/>
+    <script src="/tres/js/jquery-3.2.1.min.js" type="text/javascript"></script>
+    <script src="/tres/js/editor.js" type="text/javascript"></script>
+    <script src="/tres/js/js-cookie.js" type="text/javascript"></script>
+    <title>java程序</title>
 </head>
 <body>
-	<div style="position: fixed; width: 100%; height: 100%; background-color: rgba(0, 0, 0, .05); z-index: -1000"></div>
-	<div class="header">
-		<div class="header-mask-wrp">
-			<div class="header-mask-bg"></div>
-			<div class="header-mask"></div>
-		</div>
-		<div class="w960 center">
-			<span class="top-h">网速超渣,不支持手机...</span>
-			<div class="header-anth top-h">
-				<ul>
-					<li id="login"><span>登录</span></li>
-					<li id="register"><span>注册</span></li>
-				</ul>
-			</div>
-			<div class="header-anth-y top-h">
-				<ul>
-					<li id="user"><span id="user_nick"></span>
-						<div id="user-menu" class="user-menu">
-							<ul>
-								<li><span>暂未开放</span></li>
-								<li id="offline"><span>注销</span></li>
-							</ul>
-						</div></li>
-				</ul>
-			</div>
-		</div>
-	</div>
-	<div class="content w960 center">
-		<div class="container"></div>
-	</div>
-	<div class="dialog dialog_anth">
-		<form class="content auth-form">
-			<i class="close ion-close-round"></i>
-			<div class="panel">
-				<span class="title">登录</span>
-				<div class="input-group">
-					<div class="input-box">
-						<input id="acc" class="input" maxlength="20" placeholder="帐号" />
-					</div>
-					<div class="input-box" style="display: none;">
-						<input id="nick" class="input" maxlength="20" placeholder="昵称" />
-					</div>
-					<div class="input-box">
-						<input id="pwd" class="input" maxlength="20" type="password" placeholder="密码" />
-					</div>
-					<div class="input-box" style="display: none;">
-						<input id="pwd2" class="input" maxlength="20" type="password" placeholder="重复密码" />
-					</div>
-				</div>
-				<button id="complete" class="btn">登录</button>
-				<div class="prompt-box">
-					<span>没有账号？</span> <span id="switch" class="clickable">注册</span> <a id="forget" class="right clickable">忘记密码</a>
-				</div>
-			</div>
-		</form>
-	</div>
-	<div class="alert-list"></div>
-	<div class="alert-list-succ"></div>
-	<script src="/res/js/auth.js"></script>
+<div class="container">
+    <div id="body" class="span-22 last">
+        <div id="submission">
+            <form accept-charset="UTF-8" action="/java/result" method="post">
+                <div class="field">
+                    <div class="rfloat">
+                        <input checked="checked" id="advanced_editor" name="advanced_editor" onchange="toggle_editor()"
+                               onclick="toggle_editor()" type="checkbox" value="1"/> 使用高级编辑器
+                    </div>
+                    <label for="code">代码</label><br/>
+                    <textarea id="code" name="code"></textarea>
+                </div>
+                <div class="actions">
+                    <input name="commit" type="submit" value="提交代码"/>
+                </div>
+            </form>
+        </div>
+        <script type="text/javascript">
+            $('input[name="commit"]').click(function (e) {
+                var link = "link_" + window.location.pathname;
+                var value = Cookies.getJSON(link);
+                if (value && (Date.now() - value.last_submit) < 5000) {
+                    alert('五秒内不得连续提交');
+                    return false;
+                }
+                Cookies.set(link, {
+                    last_submit: Date.now()
+                });
+                return true;
+            });
+
+            var editor;
+
+            function toggle_editor() {
+                var cm = $('.CodeMirror'), c = $('#code');
+                if ($('#advanced_editor').prop('checked')) {
+                    cm.show();
+                    editor.setValue(c.val());
+                    c.hide();
+                } else {
+                    c.val(editor.getValue()).show();
+                    cm.hide();
+                }
+                ;
+                return true;
+            }
+
+            $(document).ready(
+                function () {
+                    editor = CodeMirror.fromTextArea(document
+                        .getElementById("code"), {
+                        lineNumbers: true,
+                    });
+                    $('#code').blur(function () {
+                        editor.setValue($('#code').val());
+                    });
+                    toggle_editor();
+                });
+        </script>
+    </div>
+</div>
 </body>
 </html>

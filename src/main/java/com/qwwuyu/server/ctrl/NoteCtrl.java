@@ -1,12 +1,11 @@
 package com.qwwuyu.server.ctrl;
 
 import com.qwwuyu.server.bean.Note;
-import com.qwwuyu.server.bean.ResponseBean;
 import com.qwwuyu.server.bean.User;
+import com.qwwuyu.server.configs.Constant;
+import com.qwwuyu.server.filter.AuthRequired;
 import com.qwwuyu.server.service.INoteService;
-import com.qwwuyu.server.service.IUserService;
 import com.qwwuyu.server.utils.J2EEUtil;
-import com.qwwuyu.server.utils.ResponseUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -20,8 +19,6 @@ import java.util.Map;
 @RequestMapping("/i/note")
 public class NoteCtrl {
     @Resource
-    private IUserService userService;
-    @Resource
     private INoteService service;
 
     @RequestMapping("/get")
@@ -32,35 +29,29 @@ public class NoteCtrl {
             page = page > 0 ? page : 1;
         } catch (Exception ignored) {
         }
-        ResponseUtil.render(response, ResponseBean.getSuccessBean().setData(service.getNote(page)));
+        J2EEUtil.render(response, J2EEUtil.getSuccessBean().setData(service.getNote(page)));
     }
 
+    @AuthRequired(permit = Constant.PERMIT_ADMIN)
     @RequestMapping("/send")
     public void sendCard(HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getParameter("auth");
+        User user = (User) request.getAttribute(Constant.KEY_USER);
         String title = request.getParameter("title");
         String content = request.getParameter("content");
-        if (J2EEUtil.isNull(response, token, content)) return;
-        User user = userService.selectByUser(new User().setToken(token));
-        if (user == null) {
-            J2EEUtil.renderInfo(response, "请先登录");
-            return;
-        }
-        if (user.getAuth() != 5) {
-            J2EEUtil.renderInfo(response, "权限不足");
-            return;
-        }
+        if (J2EEUtil.isNull(response, content)) return;
         if (title == null || !title.matches(".{1,50}") || !title.matches(".*[\\S]+.*")) {
             J2EEUtil.renderInfo(response, "内容不能为空");
             return;
         }
         Note note = new Note().setUserId(user.getId()).setNick(user.getNick()).setTime(System.currentTimeMillis()).setTitle(title).setContent(content);
         service.insert(note);
-        ResponseUtil.render(response, ResponseBean.getSuccessBean());
+        J2EEUtil.render(response, J2EEUtil.getSuccessBean());
     }
 
+    @AuthRequired(permit = Constant.PERMIT_ADMIN)
     @RequestMapping("/rm")
     public void rmCard(HttpServletRequest request, HttpServletResponse response) {
+        User user = (User) request.getAttribute(Constant.KEY_USER);
         int note_id;
         try {
             note_id = Integer.parseInt(request.getParameter("id"));
@@ -68,24 +59,8 @@ public class NoteCtrl {
             J2EEUtil.renderInfo(response, "参数不正确");
             return;
         }
-        String token = request.getParameter("auth");
-        if (J2EEUtil.isNull(response, token)) return;
-        User user = userService.selectByUser(new User().setToken(token));
-        if (user == null) {
-            J2EEUtil.renderInfo(response, "请先登录");
-            return;
-        }
-        Note note = service.selectByPrimaryKey(note_id);
-        if (note == null) {
-            J2EEUtil.renderInfo(response, "note不存在");
-            return;
-        }
-        if (user.getAuth() != 5 && !note.getUserId().equals(user.getId())) {
-            J2EEUtil.renderInfo(response, "你没有这个权限");
-            return;
-        }
         service.deleteByPrimaryKey(note_id);
-        ResponseUtil.render(response, ResponseBean.getSuccessBean());
+        J2EEUtil.render(response, J2EEUtil.getSuccessBean());
     }
 
     @RequestMapping("/content")
@@ -105,6 +80,6 @@ public class NoteCtrl {
         Map<String, Object> map = new HashMap<>();
         map.put("note", note);
         map.put("sysTime", System.currentTimeMillis());
-        ResponseUtil.render(response, ResponseBean.getSuccessBean().setData(map));
+        J2EEUtil.render(response, J2EEUtil.getSuccessBean().setData(map));
     }
 }

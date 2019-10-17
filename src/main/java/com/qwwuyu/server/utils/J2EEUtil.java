@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.qwwuyu.server.bean.ResponseBean;
 import com.qwwuyu.server.bean.User;
+import com.qwwuyu.server.configs.Constant;
 import com.qwwuyu.server.service.IUserService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
@@ -36,10 +38,31 @@ public class J2EEUtil {
         return request.getRemoteAddr();
     }
 
+    /* ======================== 返回数据处理 ======================== */
+    public static ResponseBean getSuccessBean() {
+        return new ResponseBean(Constant.HTTP_SUC, "请求成功", null);
+    }
+
+    public static ResponseBean getErrorBean() {
+        return new ResponseBean(Constant.HTTP_ERR, "请求失败", null);
+    }
+
+    /** 输出JSON数据 */
+    public static void render(HttpServletResponse response, ResponseBean bean) {
+        response.setContentType("text/plain;charset=utf-8");
+        response.setHeader("Pragma", "No-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
+        try {
+            response.getWriter().write(JSON.toJSONString(bean));
+        } catch (IOException ignored) {
+        }
+    }
+
     public static boolean isNull(HttpServletResponse response, String... parame) {
         for (String s : parame) {
             if (null == s || "".equals(s)) {
-                ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo("参数不正确"));
+                render(response, getErrorBean().setInfo("参数不正确"));
                 return true;
             }
         }
@@ -52,15 +75,14 @@ public class J2EEUtil {
 
     public static boolean renderInfo(HttpServletResponse response, String info, int code) {
         if (info != null) {
-            if (code > 0) {
-                response.setStatus(code);
-            }
-            ResponseUtil.render(response, ResponseBean.getErrorBean().setInfo(info));
+            if (code > 0) response.setStatus(code);
+            render(response, getErrorBean().setInfo(info));
             return true;
         }
         return false;
     }
 
+    /* ======================== other ======================== */
     /** BCrypt固定格式加密密码 */
     public static String handPwd(String acc, String pwd) {
         int length = acc.length();

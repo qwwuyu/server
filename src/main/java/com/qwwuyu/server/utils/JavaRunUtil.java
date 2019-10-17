@@ -3,7 +3,12 @@ package com.qwwuyu.server.utils;
 import java.io.*;
 
 public class JavaRunUtil {
-    private static String baseCode = "public class %s {\npublic static void main(String[] args){\n%s\n}\n}";
+    private static String baseCode
+            = "public class %s {\n"
+            + "public static void main(String[] args){\n"
+            + "%s\n"
+            + "}\n"
+            + "}";
 
     public static String run(String code) {
         File file = null;
@@ -11,7 +16,8 @@ public class JavaRunUtil {
             file = FileUtil.nextFile();
             String handCode = handCode(code);
             writeFile(handCode, file);
-            return runFile(file);
+            String result = runFile(file);
+            return "code=\n" + handCode + "\nresult=\n" + result;
         } catch (Exception e) {
             return "服务器内部错误";
         } finally {
