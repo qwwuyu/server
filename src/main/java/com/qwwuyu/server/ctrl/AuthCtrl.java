@@ -41,11 +41,11 @@ public class AuthCtrl {
         }
         if (J2EEUtil.renderInfo(response, check(acc, nick, pwd))) return;
         if (userService.selectByUser(new User().setName(acc)) != null) {
-            J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("帐号已存在").setStatu(Constant.HTTP_ACC_EXIST));
+            J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("帐号已存在").setState(Constant.HTTP_ACC_EXIST));
             return;
         }
         if (userService.selectByUser(new User().setNick(nick)) != null) {
-            J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("昵称已存在").setStatu(Constant.HTTP_NIKE_EXIST));
+            J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("昵称已存在").setState(Constant.HTTP_NIKE_EXIST));
             return;
         }
         User user = new User(null, acc, J2EEUtil.handPwd(acc, pwd), nick, 2, J2EEUtil.getAddress(request), null, null, 0L, 0L);
@@ -59,10 +59,10 @@ public class AuthCtrl {
         if (J2EEUtil.isNull(response, token)) return;
         User user = userService.selectByUser(new User().setToken(token));
         if (null == user) {
-            J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("帐号在其他地方登录").setStatu(3));
+            J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("帐号在其他地方登录").setState(3));
             return;
         } else if (System.currentTimeMillis() - user.getTime() > Constant.expiresValue) {
-            J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("验证已过期").setStatu(2));
+            J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("验证已过期").setState(2));
             return;
         }
         user.setTime(System.currentTimeMillis());

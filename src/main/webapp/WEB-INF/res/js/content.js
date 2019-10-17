@@ -62,7 +62,7 @@ function handContent(path) {
 		}
 	});
 	request.then(function(data) {
-		if (1 == data.statu) {
+		if (1 == data.state) {
 			handPage(path, data.data);
 			handData(path, data.data);
 		} else if (typeof (data.info) != "undefined") {
@@ -140,7 +140,7 @@ function rmPosts(ts) {
 		},
 	});
 	request.then(function(data) {
-		if (1 == data.statu) {
+		if (1 == data.state) {
 			handContent(path);
 		} else {
 			showSucc(data.info, 5000);

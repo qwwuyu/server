@@ -32,7 +32,7 @@ function openRobot(auth) {
 		}
 	});
 	request.then(function(data) {
-		if (1 == data.statu) {
+		if (1 == data.state) {
 			showSucc("操作成功", 5000);
 		} else {
 			showErr(data.info);
@@ -55,7 +55,7 @@ function closeRobot(auth, tag) {
 		}
 	});
 	request.then(function(data) {
-		if (1 == data.statu) {
+		if (1 == data.state) {
 			showSucc("操作成功", 5000);
 		} else {
 			showErr(data.info);

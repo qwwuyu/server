@@ -58,7 +58,7 @@ function sendCard(auth, title) {
 		}
 	});
 	request.then(function(data) {
-		if (1 == data.statu) {
+		if (1 == data.state) {
 			$('#title').val("");
 			showSucc("发表成功", 5000);
 		} else {
@@ -84,7 +84,7 @@ function sendNote(auth, title, content) {
 		}
 	});
 	request.then(function(data) {
-		if (1 == data.statu) {
+		if (1 == data.state) {
 			$('#title').val("");
 			$('#content').val("");
 			showSucc("发表成功", 5000);
@@ -110,7 +110,7 @@ function sendFlag(auth, title) {
 		}
 	});
 	request.then(function(data) {
-		if (1 == data.statu) {
+		if (1 == data.state) {
 			$('#title').val("");
 			showSucc("发表成功", 5000);
 		} else {

@@ -37,7 +37,7 @@
 		});
 		request.then(function(data) {
 			L(data);
-			if (1 == data.statu) {
+			if (1 == data.state) {
 				var note = data.data.note;
 				var sysTime = data.data.sysTime;
 				note.time = showTime(sysTime, note.time);

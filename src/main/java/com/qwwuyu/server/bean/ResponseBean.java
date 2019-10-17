@@ -21,19 +21,19 @@ public class ResponseBean {
         super();
     }
 
-    public ResponseBean(int statu, String info, Object data) {
+    public ResponseBean(int state, String info, Object data) {
         super();
-        this.state = statu;
+        this.state = state;
         this.info = info;
         this.data = data;
     }
 
-    public int getStatu() {
+    public int getState() {
         return state;
     }
 
-    public ResponseBean setStatu(int statu) {
-        this.state = statu;
+    public ResponseBean setState(int state) {
+        this.state = state;
         return this;
     }
 

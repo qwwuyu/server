@@ -178,7 +178,7 @@ function handRegister(data) {
 }
 // 处理登录消息
 function handLogin(data) {
-	if (1 == data.statu) {
+	if (1 == data.state) {
 		Cookies.set('auth', data.data, {
 			expires : expiresValue
 		});
@@ -235,11 +235,11 @@ function handAuth() {
 			}
 		});
 		request.then(function(data) {
-			if (1 == data.statu) {
+			if (1 == data.state) {
 				Cookies.set('auth', auth, {
 					expires : expiresValue
 				});
-			} else if (2 == data.statu || 3 == data.statu) {
+			} else if (2 == data.state || 3 == data.state) {
 				showErr(data.info, 5000);
 				$('.header-anth').css("display", "block");
 				$('.header-anth-y').css("display", "none");
