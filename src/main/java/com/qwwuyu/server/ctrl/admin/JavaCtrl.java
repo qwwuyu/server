@@ -1,6 +1,7 @@
 package com.qwwuyu.server.ctrl.admin;
 
 import com.qwwuyu.server.bean.User;
+import com.qwwuyu.server.configs.Constant;
 import com.qwwuyu.server.filter.AuthRequired;
 import com.qwwuyu.server.utils.J2EEUtil;
 import com.qwwuyu.server.utils.JavaRunUtil;
@@ -13,7 +14,7 @@ import java.io.IOException;
 
 @Controller
 @RequestMapping("/java")
-@AuthRequired(permit = 5)
+@AuthRequired(permit = Constant.PERMIT_ADMIN)
 public class JavaCtrl {
     @RequestMapping("/result")
     public void toJavaResult(HttpServletRequest request, HttpServletResponse response) {

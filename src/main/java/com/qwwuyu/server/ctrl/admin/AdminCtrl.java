@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@AuthRequired(permit = 5, toAdmin = true)
+@AuthRequired(permit = Constant.PERMIT_ADMIN, toAdmin = true)
 @RequestMapping("/ad")
 public class AdminCtrl {
     private String hand(String path) {
