@@ -6,18 +6,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-public class IndexCtrl {
+public class HtmlCtrl {
     @RequestMapping("/robots.txt")
     public String robots(HttpServletRequest request) {
-        return "/WEB-INF/jsp/robots.jsp";
+        return "/html/robots.txt";
     }
 
     @RequestMapping("/")
     public String toWelcome(HttpServletRequest request) {
         if ("/".equals(request.getRequestURI())) {
-            return "/WEB-INF/jsp/empty.jsp";
+            return "/html/empty.html";
         } else {
-            return "/WEB-INF/jsp/404.jsp";
+            return "/html/404.html";
         }
     }
 
@@ -42,11 +42,11 @@ public class IndexCtrl {
 
     @RequestMapping("/error500")
     public String to500(HttpServletRequest request) {
-        return "/WEB-INF/jsp/500.jsp";
+        return "/html/500.html";
     }
 
     @RequestMapping("/error404")
     public String to404(HttpServletRequest request) {
-        return "/WEB-INF/jsp/404.jsp";
+        return "/html/404.html";
     }
 }

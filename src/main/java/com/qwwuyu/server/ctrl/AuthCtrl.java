@@ -76,7 +76,7 @@ public class AuthCtrl {
             J2EEUtil.renderInfo(response, "帐号不存在或密码错误");
             return;
         }
-        user.setToken(J2EEUtil.getToken(user));
+        user.setToken(J2EEUtil.makeToken(user));
         user.setTime(System.currentTimeMillis());
         userService.updateByPrimaryKeySelective(user);
         J2EEUtil.render(response, J2EEUtil.getSuccessBean().setData(user.getToken()));

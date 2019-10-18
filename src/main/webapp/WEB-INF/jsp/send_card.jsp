@@ -28,7 +28,7 @@
         <div class="header-mask"></div>
     </div>
     <div class="w960 center">
-        <span class="top-h">网速超渣,不支持手机...</span>
+        <span class="top-h">我就打打酱油...</span>
         <div class="header-anth top-h">
             <ul>
                 <li id="login"><span>登录</span></li>

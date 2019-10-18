@@ -5,7 +5,6 @@ import com.alibaba.fastjson.TypeReference;
 import com.qwwuyu.server.bean.ResponseBean;
 import com.qwwuyu.server.bean.User;
 import com.qwwuyu.server.configs.Constant;
-import com.qwwuyu.server.service.IUserService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -83,6 +82,7 @@ public class J2EEUtil {
     }
 
     /* ======================== other ======================== */
+
     /** BCrypt固定格式加密密码 */
     public static String handPwd(String acc, String pwd) {
         int length = acc.length();
@@ -96,7 +96,7 @@ public class J2EEUtil {
     }
 
     /** 获取token */
-    public static String getToken(User user) {
+    public static String makeToken(User user) {
         Map<String, Object> map = new HashMap<>();
         map.put("acc", user.getName());
         map.put("nick", user.getNick());
@@ -111,37 +111,18 @@ public class J2EEUtil {
         });
     }
 
-    public static User checkPermit(int minPermit, IUserService userService, HttpServletRequest request, HttpServletResponse response) {
-        return checkPermit(minPermit, 0, userService, request, response);
-    }
-
-    public static User checkPermit(int minPermit, int code, IUserService userService, HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getParameter("auth");
+    public static String getToken(HttpServletRequest request) {
+        String token = request.getParameter("token");
         if (token == null || token.length() == 0) {
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
-                    if ("auth".equals(cookie.getName())) {
+                    if ("token".equals(cookie.getName())) {
                         token = cookie.getValue();
                     }
                 }
             }
         }
-        if (token == null || token.length() == 0) {
-            J2EEUtil.renderInfo(response, "请先登录", code);
-            return null;
-        }
-        User user = userService.selectByUser(new User().setToken(token));
-        if (user == null) {
-            J2EEUtil.renderInfo(response, "请先登录", code);
-            return null;
-        } else if (user.getAuth() < minPermit) {
-            J2EEUtil.renderInfo(response, "权限不足", code);
-            return null;
-        } /*
-         * else if (System.currentTimeMillis() - user.getTime() > FieldConfig.expiresValue) { J2EEUtil.renderInfo(response, "验证已过期",
-         * HttpServletResponse.SC_UNAUTHORIZED); return null; }
-         */
-        return user;
+        return token;
     }
 }

@@ -4,13 +4,11 @@ import com.qwwuyu.server.bean.User;
 import com.qwwuyu.server.configs.Constant;
 import com.qwwuyu.server.service.IUserService;
 import com.qwwuyu.server.utils.J2EEUtil;
-import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -41,17 +39,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     private static User checkPermit(int permit, int code, boolean expire,
                                     IUserService userService, HttpServletRequest request, HttpServletResponse response) {
-        String token = request.getParameter("auth");
-        if (token == null || token.length() == 0) {
-            Cookie[] cookies = request.getCookies();
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    if ("auth".equals(cookie.getName())) {
-                        token = cookie.getValue();
-                    }
-                }
-            }
-        }
+        String token = J2EEUtil.getToken(request);
         if (token == null || token.length() == 0) {
             J2EEUtil.renderInfo(response, "请先登录", code);
             return null;
