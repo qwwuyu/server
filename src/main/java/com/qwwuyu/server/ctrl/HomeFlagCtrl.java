@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/i/flag")
-public class FlagCtrl {
+public class HomeFlagCtrl {
     @Resource
     private IFlagService service;
 
@@ -33,7 +33,7 @@ public class FlagCtrl {
     @AuthRequired(permit = Constant.PERMIT_ADMIN)
     @RequestMapping("/send")
     public void sendFlag(HttpServletRequest request, HttpServletResponse response) {
-        User user = (User) request.getAttribute(Constant.KEY_USER);
+        User user = J2EEUtil.getUser(request);
         String title = request.getParameter("title");
         if (title == null || !title.matches(".{1,50}") || !title.matches(".*[\\S]+.*")) {
             J2EEUtil.renderInfo(response, "内容不能为空");

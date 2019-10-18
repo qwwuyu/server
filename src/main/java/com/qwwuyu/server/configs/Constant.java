@@ -4,6 +4,15 @@ package com.qwwuyu.server.configs;
  * 常量管理
  */
 public class Constant {
+
+
+    /* ======================== 常量 ======================== */
+    /** 登录过期时间 */
+    public static final long expiresValue = 30L * 86400000;
+    /** 匹配前缀 */
+    public static final String PREFIX = "/html/";
+
+    /* ======================== 枚举 ======================== */
     /** 游客 */
     public static final int PERMIT_VISITOR = 1;
     /** 普通 */
@@ -14,10 +23,6 @@ public class Constant {
     public static final int PERMIT_MANAGE = 4;
     /** 管理 */
     public static final int PERMIT_ADMIN = 5;
-
-    /** 登录过期时间 */
-    public static final long expiresValue = 30L * 86400000;
-
     /* ======================== response code ======================== */
     /** 处理请求成功 */
     public static final int HTTP_SUC = 1;

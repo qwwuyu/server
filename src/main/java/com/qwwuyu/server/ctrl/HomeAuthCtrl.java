@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/i")
-public class AuthCtrl {
+public class HomeAuthCtrl {
     @Resource
     private IUserService userService;
 

@@ -29,30 +29,36 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (authRequired == null || !authRequired.anth()) {
             return true;
         }
-        User user = checkPermit(authRequired.permit(), authRequired.code(), authRequired.expire(), this.userService, request, response);
+        boolean toAdmin = authRequired.toAdmin();
+        User user = checkPermit(authRequired.permit(), authRequired.code(), authRequired.expire(), !toAdmin,
+                this.userService, request, response);
         if (user == null) {
+            if (toAdmin) {
+                response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
+                response.setHeader("Location", "/ad/login");
+            }
             return false;
         }
         request.setAttribute(Constant.KEY_USER, user);
         return true;
     }
 
-    private static User checkPermit(int permit, int code, boolean expire,
+    private static User checkPermit(int permit, int code, boolean expire, boolean render,
                                     IUserService userService, HttpServletRequest request, HttpServletResponse response) {
         String token = J2EEUtil.getToken(request);
         if (token == null || token.length() == 0) {
-            J2EEUtil.renderInfo(response, "请先登录", code);
+            if (render) J2EEUtil.renderInfo(response, "请先登录", code);
             return null;
         }
         User user = userService.selectByUser(new User().setToken(token));
         if (user == null) {
-            J2EEUtil.renderInfo(response, "请先登录", code);
+            if (render) J2EEUtil.renderInfo(response, "请先登录", code);
             return null;
         } else if (user.getAuth() < permit) {
-            J2EEUtil.renderInfo(response, "权限不足", code);
+            if (render) J2EEUtil.renderInfo(response, "权限不足", code);
             return null;
         } else if (expire && System.currentTimeMillis() - user.getTime() > Constant.expiresValue) {
-            J2EEUtil.renderInfo(response, "验证已过期", code);
+            if (render) J2EEUtil.renderInfo(response, "验证已过期", code);
             return null;
         }
         return user;

@@ -39,11 +39,9 @@
         <property name="maxInMemorySize" value="1048576"/>
     </bean>
 
-    <mvc:resources mapping="/favicon.ico" location="/WEB-INF/favicon.ico" cache-period="8640000" order="0"/>
+    <mvc:resources mapping="/favicon.ico" location="/WEB-INF/tres/img/favicon.ico" cache-period="8640000" order="0"/>
     <mvc:resources mapping="/html/**" location="/WEB-INF/html/" order="0"/>
     <mvc:resources mapping="/tres/**" location="/WEB-INF/tres/" cache-period="8640000" order="0"/>
     <mvc:resources mapping="/res/**" location="/WEB-INF/res/" cache-period="864000" order="0"/>
-    <mvc:resources mapping="/sres/**" location="/WEB-INF/sres/" order="0"/>
     <mvc:annotation-driven/>
-    <!-- <mvc:default-servlet-handler default-servlet-name="default"/> -->
 </beans>

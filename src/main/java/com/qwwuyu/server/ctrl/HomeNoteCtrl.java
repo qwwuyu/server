@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/i/note")
-public class NoteCtrl {
+public class HomeNoteCtrl {
     @Resource
     private INoteService service;
 
@@ -35,7 +35,7 @@ public class NoteCtrl {
     @AuthRequired(permit = Constant.PERMIT_ADMIN)
     @RequestMapping("/send")
     public void sendCard(HttpServletRequest request, HttpServletResponse response) {
-        User user = (User) request.getAttribute(Constant.KEY_USER);
+        User user = J2EEUtil.getUser(request);
         String title = request.getParameter("title");
         String content = request.getParameter("content");
         if (J2EEUtil.isNull(response, content)) return;
@@ -51,7 +51,7 @@ public class NoteCtrl {
     @AuthRequired(permit = Constant.PERMIT_ADMIN)
     @RequestMapping("/rm")
     public void rmCard(HttpServletRequest request, HttpServletResponse response) {
-        User user = (User) request.getAttribute(Constant.KEY_USER);
+        User user = J2EEUtil.getUser(request);
         int note_id;
         try {
             note_id = Integer.parseInt(request.getParameter("id"));

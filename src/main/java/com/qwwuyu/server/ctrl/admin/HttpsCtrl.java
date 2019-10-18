@@ -1,4 +1,4 @@
-package com.qwwuyu.server.ctrl;
+package com.qwwuyu.server.ctrl.admin;
 
 import com.qwwuyu.server.bean.User;
 import com.qwwuyu.server.configs.Constant;
@@ -20,8 +20,7 @@ public class HttpsCtrl {
 
     @RequestMapping("/https/set")
     public void setKey(HttpServletRequest request, HttpServletResponse response) {
-        User user = (User) request.getAttribute(Constant.KEY_USER);
-        if (user == null) throw new RuntimeException("user is null");
+        User user = J2EEUtil.getUser(request);
         String key = request.getParameter("key");
         String value = request.getParameter("value");
         if (J2EEUtil.isNull(response, key, value)) return;
@@ -31,8 +30,7 @@ public class HttpsCtrl {
 
     @RequestMapping("/https/clear")
     public void clearKey(HttpServletRequest request, HttpServletResponse response) {
-        User user = (User) request.getAttribute(Constant.KEY_USER);
-        if (user == null) throw new RuntimeException("user is null");
+        User user = J2EEUtil.getUser(request);
         map.clear();
         J2EEUtil.render(response, J2EEUtil.getSuccessBean());
     }

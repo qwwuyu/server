@@ -9,11 +9,11 @@ public class CommUtil {
     }
 
     public static boolean isExist(String str) {
-        return !isEmpty(str);
+        return str != null && str.length() != 0;
     }
 
     public static boolean isEmpty(String str) {
-        return str == null || str.equals("");
+        return str == null || str.length() == 0;
     }
 
     public static void sleep(long millis) {

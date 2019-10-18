@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/i/card")
-public class CardCtrl {
+public class HomeCardCtrl {
     @Resource
     private ICardService service;
 
@@ -34,7 +34,7 @@ public class CardCtrl {
     @AuthRequired
     @RequestMapping("/send")
     public void sendCard(HttpServletRequest request, HttpServletResponse response) {
-        User user = (User) request.getAttribute(Constant.KEY_USER);
+        User user = J2EEUtil.getUser(request);
         String title = request.getParameter("title");
         if (title == null || !title.matches(".{1,50}") || !title.matches(".*[\\S]+.*")) {
             J2EEUtil.renderInfo(response, "内容不能为空");
@@ -48,7 +48,7 @@ public class CardCtrl {
     @AuthRequired
     @RequestMapping("/rm")
     public void rmCard(HttpServletRequest request, HttpServletResponse response) {
-        User user = (User) request.getAttribute(Constant.KEY_USER);
+        User user = J2EEUtil.getUser(request);
         int card_id;
         try {
             card_id = Integer.parseInt(request.getParameter("id"));

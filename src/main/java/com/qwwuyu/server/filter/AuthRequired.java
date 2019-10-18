@@ -20,6 +20,9 @@ public @interface AuthRequired {
     /** 检验过期 */
     boolean expire() default true;
 
+    /** 是否跳转管理员登录 */
+    boolean toAdmin() default false;
+
     /** 检验失败返回的http状态码 */
     int code() default HttpServletResponse.SC_OK;
 }

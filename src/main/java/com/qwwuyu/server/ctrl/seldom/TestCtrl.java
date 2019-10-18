@@ -1,4 +1,4 @@
-package com.qwwuyu.server.ctrl;
+package com.qwwuyu.server.ctrl.seldom;
 
 import com.alibaba.fastjson.JSON;
 import com.qwwuyu.server.bean.ResponseBean;

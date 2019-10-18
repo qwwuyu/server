@@ -95,7 +95,7 @@ public class J2EEUtil {
         return BCrypt.hashpw(pwd, salt);
     }
 
-    /** 获取token */
+    /** 生成token */
     public static String makeToken(User user) {
         Map<String, Object> map = new HashMap<>();
         map.put("acc", user.getName());
@@ -106,11 +106,13 @@ public class J2EEUtil {
         return new String(Base64.getEncoder().encode(JSON.toJSONString(map).getBytes(StandardCharsets.UTF_8)));
     }
 
+    /** 解析token */
     public static Map<String, Object> parseToken(String token) {
         return JSON.parseObject(new String(Base64.getDecoder().decode(token.getBytes()), StandardCharsets.UTF_8), new TypeReference<Map<String, Object>>() {
         });
     }
 
+    /** 从请求中获取token */
     public static String getToken(HttpServletRequest request) {
         String token = request.getParameter("token");
         if (token == null || token.length() == 0) {
@@ -124,5 +126,11 @@ public class J2EEUtil {
             }
         }
         return token;
+    }
+
+    public static User getUser(HttpServletRequest request) {
+        User user = (User) request.getAttribute(Constant.KEY_USER);
+        if (user == null) throw new RuntimeException("user is null");
+        return user;
     }
 }

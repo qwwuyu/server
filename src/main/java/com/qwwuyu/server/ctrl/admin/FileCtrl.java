@@ -1,4 +1,4 @@
-package com.qwwuyu.server.ctrl;
+package com.qwwuyu.server.ctrl.admin;
 
 import com.qwwuyu.server.bean.User;
 import com.qwwuyu.server.configs.Constant;
@@ -29,8 +29,7 @@ public class FileCtrl {
     @AuthRequired(permit = Constant.PERMIT_ADMIN)
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public void upload(HttpServletRequest request, HttpServletResponse response) throws IllegalStateException, IOException {
-        User user = (User) request.getAttribute(Constant.KEY_USER);
-        if (user == null) throw new RuntimeException("user is null");
+        User user = J2EEUtil.getUser(request);
         // 将当前上下文初始化给 CommonsMutipartResolver
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
         // 检查form中是否有enctype="multipart/form-data"
@@ -57,8 +56,7 @@ public class FileCtrl {
     @AuthRequired(permit = Constant.PERMIT_ADMIN, code = HttpServletResponse.SC_UNAUTHORIZED)
     @RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public void download(HttpServletRequest request, @RequestParam(value = "name", required = false) String name, HttpServletResponse response) throws IOException {
-        User user = (User) request.getAttribute(Constant.KEY_USER);
-        if (user == null) throw new RuntimeException("user is null");
+        User user = J2EEUtil.getUser(request);
         String range = request.getHeader("range");
         if (J2EEUtil.isNull(response, name)) {
             response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
