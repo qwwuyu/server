@@ -66,7 +66,7 @@ public class JavaRunUtil {
     private static String streamToString(InputStream ins, String charsetName) throws Exception {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         byte[] bs = new byte[1024];
-        int read = 0;
+        int read;
         while ((read = ins.read(bs)) != -1) {
             stream.write(bs, 0, read);
             if (stream.size() > 1024 * 100) {

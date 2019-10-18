@@ -1,26 +1,26 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!doctype html>
 <html>
 <head>
-<title>welcome</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<link href="/tres/img/qwwuyu.ico" type="image/x-icon" rel="shortcut icon" />
-<meta name="keywords" content="qwwuyu,www.qwwuyu.com" />
-<meta name="description" content="qwwuyu" />
-<script src="/tres/js/jquery-3.2.1.min.js"></script>
-<script src="/tres/js/bcrypt.min.js"></script>
-<script type="text/javascript">
-	$(function() {
-		$('#testme').click(function() {
-			var bcrypt = dcodeIO.bcrypt;
-			var salt = "$2a$10$qwwuyu3000000000000000";
-			var hash = bcrypt.hashSync("123456", salt);
-			alert(hash);
-		});
-	});
-</script>
+    <title>welcome</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <link href="/tres/img/qwwuyu.ico" type="image/x-icon" rel="shortcut icon"/>
+    <meta name="keywords" content="qwwuyu,www.qwwuyu.com"/>
+    <meta name="description" content="qwwuyu"/>
+    <script src="/tres/js/jquery-3.2.1.min.js"></script>
+    <script src="/tres/js/bcrypt.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#testme').click(function () {
+                var bcrypt = dcodeIO.bcrypt;
+                var salt = "$2a$10$qwwuyu3000000000000000";
+                var hash = bcrypt.hashSync("123456", salt);
+                alert(hash);
+            });
+        });
+    </script>
 </head>
 <body>
-	<input id="testme" type="button" value="Test Me!!!" />
+<input id="testme" type="button" value="Test Me!!!"/>
 </body>
 </html>

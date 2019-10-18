@@ -19,6 +19,6 @@ public class Util {
     @Test
     public static void formatHtmlTemp() throws Exception {
         String read = CommUtil.read("1.txt");
-        System.out.println(read.replaceAll("\t|\r|\n", "").replaceAll("\\s+", " "));
+        System.out.println(read.replaceAll("[\t\r\n]", "").replaceAll("\\s+", " "));
     }
 }

@@ -22,10 +22,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-@AuthRequired(permit = Constant.PERMIT_ADMIN, code = HttpServletResponse.SC_UNAUTHORIZED)
 @Controller
 @RequestMapping("/file")
 public class FileCtrl {
+
+    @AuthRequired(permit = Constant.PERMIT_ADMIN)
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public void upload(HttpServletRequest request, HttpServletResponse response) throws IllegalStateException, IOException {
         User user = (User) request.getAttribute(Constant.KEY_USER);
@@ -53,6 +54,7 @@ public class FileCtrl {
         J2EEUtil.render(response, J2EEUtil.getSuccessBean().setData(list));
     }
 
+    @AuthRequired(permit = Constant.PERMIT_ADMIN, code = HttpServletResponse.SC_UNAUTHORIZED)
     @RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public void download(HttpServletRequest request, @RequestParam(value = "name", required = false) String name, HttpServletResponse response) throws IOException {
         User user = (User) request.getAttribute(Constant.KEY_USER);

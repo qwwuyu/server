@@ -19,7 +19,7 @@ public class CommUtil {
     public static void sleep(long millis) {
         try {
             Thread.sleep(millis);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ignored) {
         }
     }
 
@@ -27,12 +27,12 @@ public class CommUtil {
         String path = CommUtil.class.getClassLoader().getResource(name).getPath();
         BufferedReader reader = new BufferedReader(new FileReader(new File(path)));
         StringBuilder builder = new StringBuilder();
-        String read = null;
+        String read;
         while ((read = reader.readLine()) != null) {
             builder.append(read).append("\n");
         }
         reader.close();
-        return builder.substring(0, builder.length() - 1).toString();
+        return builder.substring(0, builder.length() - 1);
     }
 
     public static String getStackTraceString(Throwable tr) {
