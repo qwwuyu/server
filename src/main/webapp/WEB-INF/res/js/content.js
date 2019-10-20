@@ -52,7 +52,7 @@ $(document).ready(function () {
 handContent(opt.attr("id"));
 
 function handContent(path) {
-    var params = GetRequest();
+    var params = getRequest();
     var request = $.ajax({
         url: "/i/" + path + "/get",
         data: {

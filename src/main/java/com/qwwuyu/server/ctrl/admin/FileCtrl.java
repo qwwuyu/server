@@ -1,9 +1,11 @@
 package com.qwwuyu.server.ctrl.admin;
 
+import com.qwwuyu.server.bean.FileBean;
 import com.qwwuyu.server.bean.User;
 import com.qwwuyu.server.configs.Constant;
-import com.qwwuyu.server.configs.SecretConfig;
 import com.qwwuyu.server.filter.AuthRequired;
+import com.qwwuyu.server.utils.CommUtil;
+import com.qwwuyu.server.utils.FileUtil;
 import com.qwwuyu.server.utils.J2EEUtil;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -23,13 +25,39 @@ import java.util.Iterator;
 import java.util.List;
 
 @Controller
-@RequestMapping("/file")
+@RequestMapping("/ad/file")
+@AuthRequired(permit = Constant.PERMIT_ADMIN, code = HttpServletResponse.SC_UNAUTHORIZED)
 public class FileCtrl {
+    private String hand(String path) {
+        return Constant.PREFIX + "file/" + path;
+    }
 
-    @AuthRequired(permit = Constant.PERMIT_ADMIN)
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public void upload(HttpServletRequest request, HttpServletResponse response) throws IllegalStateException, IOException {
+    @RequestMapping(value = "/query", method = RequestMethod.POST)
+    public void query(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IllegalStateException, IOException {
         User user = J2EEUtil.getUser(request);
+        File file = FileUtil.getFile(path);
+        if (file == null || !file.exists() || !file.isDirectory()) {
+            J2EEUtil.renderInfo(response, "文件路径格式不正确");
+            return;
+        }
+        List<FileBean> list = new ArrayList<>();
+        File[] files = file.listFiles();
+        if (files != null) {
+            for (File cf : files) {
+                list.add(new FileBean(cf.getName(), cf.isDirectory()));
+            }
+        }
+        J2EEUtil.render(response, J2EEUtil.getSuccessBean().setData(list));
+    }
+
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    public void upload(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IllegalStateException, IOException {
+        User user = J2EEUtil.getUser(request);
+        File parent = FileUtil.getFile(path);
+        if (parent == null || !parent.exists() || !parent.isDirectory()) {
+            J2EEUtil.renderInfo(response, "文件路径格式不正确");
+            return;
+        }
         // 将当前上下文初始化给 CommonsMutipartResolver
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
         // 检查form中是否有enctype="multipart/form-data"
@@ -39,13 +67,16 @@ public class FileCtrl {
             // 获取multiRequest 中所有的文件名
             Iterator<String> iterator = multiRequest.getFileNames();
             while (iterator.hasNext()) {
-                MultipartFile file = multiRequest.getFile(iterator.next());
-                if (file != null) {
-                    String oFilename = file.getOriginalFilename();
-                    String fileName = oFilename == null ? file.getName() : oFilename;
-                    if (fileName != null) {
-                        file.transferTo(new File(SecretConfig.fileDir, fileName));
-                        list.add(fileName);
+                MultipartFile multipartFile = multiRequest.getFile(iterator.next());
+                if (multipartFile != null) {
+                    String oFilename = multipartFile.getOriginalFilename();
+                    String fileName = oFilename == null ? multipartFile.getName() : oFilename;
+                    if (CommUtil.isExist(fileName)) {
+                        File file = FileUtil.getFile(parent, fileName);
+                        if (file != null && !file.exists()) {
+                            multipartFile.transferTo(file);
+                            list.add(fileName);
+                        }
                     }
                 }
             }
@@ -53,20 +84,16 @@ public class FileCtrl {
         J2EEUtil.render(response, J2EEUtil.getSuccessBean().setData(list));
     }
 
-    @AuthRequired(permit = Constant.PERMIT_ADMIN, code = HttpServletResponse.SC_UNAUTHORIZED)
-    @RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public void download(HttpServletRequest request, @RequestParam(value = "name", required = false) String name, HttpServletResponse response) throws IOException {
+    @RequestMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public void download(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IOException {
         User user = J2EEUtil.getUser(request);
         String range = request.getHeader("range");
-        if (J2EEUtil.isNull(response, name)) {
-            response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
+        File file = FileUtil.getFile(path);
+        if (file == null || !file.exists() || !file.isFile()) {
+            J2EEUtil.renderInfo(response, "文件路径格式不正确", HttpServletResponse.SC_PRECONDITION_FAILED);
             return;
         }
-        File file = new File(SecretConfig.fileDir, name);
-        if (!file.exists()) {
-            response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
-            return;
-        }
+        String name = file.getName();
         long left = 0, right = file.length() - 1, written = left;
         if (range != null) {
             try {
@@ -102,6 +129,35 @@ public class FileCtrl {
                 os.write(bytes, 0, read);
             }
             os.flush();
+        }
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public void delete(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IllegalStateException, IOException {
+        User user = J2EEUtil.getUser(request);
+        File file = FileUtil.getFile(path);
+        if (file == null || !file.exists() || !file.isFile()) {
+            J2EEUtil.renderInfo(response, "文件路径格式不正确");
+            return;
+        }
+        boolean delete = file.delete();
+        if (delete) {
+            J2EEUtil.render(response, J2EEUtil.getSuccessBean());
+        } else {
+            J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("删除失败"));
+        }
+    }
+
+    @RequestMapping("open")
+    public String toFileManager(HttpServletRequest request, @RequestParam("path") String path) {
+        User user = J2EEUtil.getUser(request);
+        String suffix = path.toLowerCase();
+        if (suffix.endsWith(".mp4") || suffix.endsWith(".flv") || suffix.endsWith(".avi") || suffix.endsWith(".rmvb")) {
+            return hand("video.html");
+        } else if (suffix.endsWith(".jpg") || suffix.endsWith(".png") || suffix.endsWith(".bmp") || suffix.endsWith(".gif") || suffix.endsWith(".jpeg") || suffix.endsWith(".webp")) {
+            return hand("pic.html");
+        } else {
+            return hand("unknown.html");
         }
     }
 }

@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+    <title>pic</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <link href="/favicon.ico" type="image/x-icon" rel="shortcut icon"/>
+    <script src="/tres/js/jquery-3.2.1.min.js"></script>
+    <script src="/res/js/util.js"></script>
+</head>
+<body>
+<div style="display: flex; align-items: center; flex-direction: column;">
+    <img id="pic"/>
+</div>
+<script type="application/javascript">
+    var src = location.pathname.replace("open", "download") + location.search;
+    $('#pic').attr("src", src);
+</script>
+</body>
+</html>

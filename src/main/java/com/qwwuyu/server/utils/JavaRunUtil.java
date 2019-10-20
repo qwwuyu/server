@@ -3,9 +3,9 @@ package com.qwwuyu.server.utils;
 import java.io.*;
 
 public class JavaRunUtil {
-    private static String baseCode
+    private static final String baseCode
             = "public class %s {\n"
-            + "public static void main(String[] args){\n"
+            + "public static void main(String[] args) throws Exception {\n"
             + "%s\n"
             + "}\n"
             + "}";
@@ -13,13 +13,13 @@ public class JavaRunUtil {
     public static String run(String code) {
         File file = null;
         try {
-            file = FileUtil.nextFile();
+            file = FileUtil.nextJavaFile();
             String handCode = handCode(code);
             writeFile(handCode, file);
             String result = runFile(file);
             return "code=\n" + handCode + "\nresult=\n" + result;
         } catch (Exception e) {
-            return "服务器内部错误";
+            return "服务器内部错误" + e.getMessage();
         } finally {
             if (file != null) {
                 delFile(file);
@@ -46,7 +46,7 @@ public class JavaRunUtil {
     }
 
     private static String getCharsetName() {
-        return "GBK";
+        return CommUtil.isWindows() ? "GBK" : "UTF-8";
     }
 
     private static Object[] runProcess(String command) throws Exception {

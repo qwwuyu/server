@@ -1,10 +1,4 @@
 var expiresValue = 7 * 86400;
-$.ajaxSetup({
-    timeout: 5000,
-    type: 'POST',
-    cache: false,
-    dataType: "json"
-});
 
 var isLogin = true;
 var login_pwd = "";
@@ -199,21 +193,6 @@ function handLogin(data) {
 function offline() {
     Cookies.remove('token');
     location.reload(true);
-}
-
-// 处理请求失败
-function handErr(textStatus) {
-    if ("timeout" == textStatus) {
-        showErr("请求超时");
-    } else if ("error" == textStatus) {
-        showErr("请求失败");
-    } else if ("abort" == textStatus) {
-        showErr("请求取消");
-    } else if ("parsererror" == textStatus) {
-        showErr("解析数据出错");
-    } else {
-        showErr("请求失败");
-    }
 }
 
 // rsa加密s

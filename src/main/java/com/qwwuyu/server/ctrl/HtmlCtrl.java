@@ -62,4 +62,9 @@ public class HtmlCtrl {
     public String to404(HttpServletRequest request) {
         return hand("404.html");
     }
+
+    @RequestMapping("/test")
+    public String test(HttpServletRequest request) {
+        return Constant.PREFIX + "test/test.html";
+    }
 }
