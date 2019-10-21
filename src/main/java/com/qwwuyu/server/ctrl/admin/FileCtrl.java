@@ -7,7 +7,6 @@ import com.qwwuyu.server.filter.AuthRequired;
 import com.qwwuyu.server.utils.CommUtil;
 import com.qwwuyu.server.utils.FileUtil;
 import com.qwwuyu.server.utils.J2EEUtil;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,15 +24,15 @@ import java.util.Iterator;
 import java.util.List;
 
 @Controller
-@RequestMapping("/ad/file")
+@RequestMapping("/ad/file/")
 @AuthRequired(permit = Constant.PERMIT_ADMIN, code = HttpServletResponse.SC_UNAUTHORIZED)
 public class FileCtrl {
     private String hand(String path) {
         return Constant.PREFIX + "file/" + path;
     }
 
-    @RequestMapping(value = "/query", method = RequestMethod.POST)
-    public void query(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IOException {
+    @RequestMapping(value = "query", method = RequestMethod.POST)
+    public void query(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) {
         User user = J2EEUtil.getUser(request);
         File file = FileUtil.getFile(path);
         if (!FileUtil.isDirectory(file)) {
@@ -50,7 +49,7 @@ public class FileCtrl {
         J2EEUtil.render(response, J2EEUtil.getSuccessBean().setData(list));
     }
 
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @RequestMapping(value = "upload", method = RequestMethod.POST)
     public void upload(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IOException {
         User user = J2EEUtil.getUser(request);
         File parent = FileUtil.getFile(path);
@@ -84,8 +83,8 @@ public class FileCtrl {
         J2EEUtil.render(response, J2EEUtil.getSuccessBean().setData(list));
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public void delete(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IOException {
+    @RequestMapping(value = "delete", method = RequestMethod.POST)
+    public void delete(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) {
         User user = J2EEUtil.getUser(request);
         File file = FileUtil.getFile(path);
         if (!FileUtil.isFile(file)) {
@@ -99,8 +98,8 @@ public class FileCtrl {
         }
     }
 
-    @RequestMapping(value = "/deleteDir", method = RequestMethod.POST)
-    public void deleteDir(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IOException {
+    @RequestMapping(value = "deleteDir", method = RequestMethod.POST)
+    public void deleteDir(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) {
         User user = J2EEUtil.getUser(request);
         File file = FileUtil.getFile(path);
         if (!FileUtil.isDirectory(file)) {
@@ -117,7 +116,7 @@ public class FileCtrl {
         }
     }
 
-    @RequestMapping("open/*")
+    @RequestMapping({"open", "open/*"})
     public String toFileManager(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IOException {
         User user = J2EEUtil.getUser(request);
         String suffix = path.toLowerCase();
@@ -130,7 +129,7 @@ public class FileCtrl {
         return null;
     }
 
-    @RequestMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @RequestMapping(path = {"download", "download/*"})
     public void download(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IOException {
         transferFile(request, response, path, true);
     }
@@ -143,29 +142,34 @@ public class FileCtrl {
             J2EEUtil.renderInfo(response, "文件格式不正确", HttpServletResponse.SC_PRECONDITION_FAILED);
             return;
         }
-        String name = file.getName();
-        long left = 0, right = file.length() - 1, written = left;
+        final String name = file.getName();
+        final long length = file.length();
+        long cLeft = 0, cRight = length;
         if (range != null) {
             try {
-                written = left = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)-([\\d]*)", "$1"));
-                right = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)-([\\d]*)", "$2"));
+                cLeft = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)-([\\d]*)", "$1"));
+                cRight = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)-([\\d]*)", "$2")) + 1;
             } catch (Exception ignored) {
             }
         }
-        if (0 > left || right >= file.length() || right < left) {
+        final long left = cLeft;
+        final long right = cRight;
+        long written = left;
+
+        if (0 > left || right > length || right < left) {
             response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
             return;
         }
         if (range != null) {
             response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-            response.setHeader("Content-Range", String.format("bytes %d-%d/%d", left, right, file.length()));
+            response.setHeader("Content-Range", String.format("bytes %d-%d/%d", left, right - 1, length));
         }
         if (download) {
             response.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(name, "utf-8") + "\"");
         } else {
             response.setHeader("Content-Disposition", "inline; filename=\"" + URLEncoder.encode(name, "utf-8") + "\"");
         }
-        response.setHeader("Content-Length", String.valueOf(right - left + 1));
+        response.setHeader("Content-Length", String.valueOf(right - left));
         response.setHeader("Accept-Ranges", "bytes");
         try (InputStream is = new FileInputStream(file); OutputStream os = response.getOutputStream()) {
             if (left != 0) {
@@ -175,8 +179,8 @@ public class FileCtrl {
             byte[] bytes = new byte[1024 * 1024];
             while ((read = is.read(bytes)) != -1) {
                 written += read;
-                if (written > right) {
-                    read = (int) (right + 1 + read - written);
+                if (written > right - 1) {
+                    read = (int) (right + read - written);
                     os.write(bytes, 0, read);
                     break;
                 }
@@ -186,8 +190,8 @@ public class FileCtrl {
         }
     }
 
-    @RequestMapping(value = "/rename", method = RequestMethod.POST)
-    public void rename(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path, @RequestParam("dest") String newPath) throws IOException {
+    @RequestMapping(value = "rename", method = RequestMethod.POST)
+    public void rename(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path, @RequestParam("dest") String newPath) {
         User user = J2EEUtil.getUser(request);
         File file = FileUtil.getFile(path);
         if (!FileUtil.exists(file)) {
@@ -206,8 +210,8 @@ public class FileCtrl {
         }
     }
 
-    @RequestMapping(value = "/createDir", method = RequestMethod.POST)
-    public void createDir(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IOException {
+    @RequestMapping(value = "createDir", method = RequestMethod.POST)
+    public void createDir(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) {
         User user = J2EEUtil.getUser(request);
         if (path.matches(".*[\\\\/:*?\"<>|]+.*")) {
             J2EEUtil.renderInfo(response, "不能包含特殊字符\\/:*?\"<>|");

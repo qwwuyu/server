@@ -1,11 +1,11 @@
-const isHistoryApi = !!(window.history && history.pushState);
-const info = tokenInfo();
-const token = Cookies.get('token');
+var isHistoryApi = !!(window.history && history.pushState);
+var info = tokenInfo();
+var token = Cookies.get('token');
 
-let opt = getOpt().addClass("nav-active");
+var opt = getOpt().addClass("nav-active");
 
 function getOpt() {
-    let path = location.pathname == "/" ? "card" : location.pathname.substr(1);
+    var path = location.pathname == "/" ? "card" : location.pathname.substr(1);
     return $('#' + path);
 }
 
@@ -14,7 +14,7 @@ $(document).ready(function () {
         $(window).on("popstate", function (event) {
             opt.removeClass("nav-active");
             opt = getOpt().addClass("nav-active");
-            let path = opt.attr("id");
+            var path = opt.attr("id");
             document.title = path;
             handContent(path);
         });
@@ -28,7 +28,7 @@ $(document).ready(function () {
         }
         opt.removeClass("nav-active");
         opt = $(this).addClass("nav-active");
-        let path = opt.attr("id");
+        var path = opt.attr("id");
         document.title = path;
         history.pushState(null, path, path);
         handContent(path);
@@ -38,8 +38,8 @@ $(document).ready(function () {
         if (!isHistoryApi) {
             return true;
         }
-        let type = opt.attr("id");
-        let path = type + "?page=" + $(this).attr("id");
+        var type = opt.attr("id");
+        var path = type + "?page=" + $(this).attr("id");
         history.pushState(null, path, path);
         handContent(type);
         return false;
@@ -52,8 +52,8 @@ $(document).ready(function () {
 handContent(opt.attr("id"));
 
 function handContent(path) {
-    let params = getRequest();
-    let request = $.ajax({
+    var params = getRequest();
+    var request = $.ajax({
         url: "/i/" + path + "/get",
         data: {
             "token": token,
@@ -78,7 +78,7 @@ function handContent(path) {
 
 // 处理分页
 function handPage(path, data) {
-    let send = false;// card|note
+    var send = false;// card|note
     if ("card" == path) {
         send = true;
     } else if ("note" == path && info.auth == 5) {
@@ -86,11 +86,11 @@ function handPage(path, data) {
     } else if ("flag" == path && info.auth == 5) {
         send = true;
     }
-    let page = data.page;
-    let count = data.count;
-    let select = data.select;
-    let start = select < 5 ? 1 : select - 4;
-    let end = select > page - 5 ? page : select + 4;
+    var page = data.page;
+    var count = data.count;
+    var select = data.select;
+    var start = select < 5 ? 1 : select - 4;
+    var end = select > page - 5 ? page : select + 4;
     if (select < 5) {
         end = end + 5 - select;
         end = end > page ? page : end;
@@ -98,11 +98,11 @@ function handPage(path, data) {
         start = start - select + page - 4;
         start = start < 1 ? 1 : start;
     }
-    let pages = [];
-    for (let i = start; i <= end; i++) {
+    var pages = [];
+    for (var i = start; i <= end; i++) {
         pages[i - start] = i;
     }
-    let temp_page = template('temp_page', {
+    var temp_page = template('temp_page', {
         path: path,
         send: send,
         page: page,
@@ -115,12 +115,12 @@ function handPage(path, data) {
 
 // 处理列表数据
 function handData(path, data) {
-    let list = data.datas;
-    let sysTime = data.sysTime;
-    for (let i = 0; i < list.length; i++) {
+    var list = data.datas;
+    var sysTime = data.sysTime;
+    for (var i = 0; i < list.length; i++) {
         list[i].time = showTime(sysTime, list[i].time);
     }
-    let temp_page = template('temp_' + path, {
+    var temp_page = template('temp_' + path, {
         datas: data.datas,
         userId: info.id,
         auth: info.auth
@@ -130,9 +130,9 @@ function handData(path, data) {
 
 // 删除帖子
 function rmPosts(ts) {
-    let path = opt.attr("id");
-    let id = ts.attr("id");
-    let request = $.ajax({
+    var path = opt.attr("id");
+    var id = ts.attr("id");
+    var request = $.ajax({
         url: "/i/" + path + "/rm",
         data: {
             "token": token,
@@ -143,7 +143,7 @@ function rmPosts(ts) {
         },
         complete: function () {
             ts.removeAttr("disabled");
-        },
+        }
     });
     request.then(function (data) {
         if (1 == data.state) {

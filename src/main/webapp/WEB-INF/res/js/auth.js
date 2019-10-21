@@ -1,8 +1,8 @@
-const expiresValue = 7 * 86400;
+var expiresValue = 7 * 86400;
 
-let isLogin = true;
-let login_pwd = "";
-let register_nick = "";
+var isLogin = true;
+var login_pwd = "";
+var register_nick = "";
 $(document).ready(function () {
     // 处理认证dialog关闭
     $('.dialog_anth .close').bind("click", function (event) {
@@ -43,8 +43,7 @@ $(document).ready(function () {
     // 用户菜单
     $('#user').mouseover(function () {
         $("#user-menu").stop().fadeIn(300);
-    });
-    $('#user').mouseout(function () {
+    }).mouseout(function () {
         $("#user-menu").stop().fadeOut(300);
     });
     $('#offline').bind("click", function (event) {
@@ -58,16 +57,20 @@ function toRegister() {
         "height": "330px",
         "margin-top": "-185px"
     });
-    $('#nick').parent().css("display", "block");
-    $('#pwd2').parent().css("display", "block");
+    var nick = $('#nick');
+    var pwd = $('#pwd');
+    var pwd2 = $('#pwd2');
+    var prompt_box = $('.prompt-box');
+    nick.parent().css("display", "block");
+    pwd2.parent().css("display", "block");
     $('.dialog_anth .title').text("注册");
     $('#complete').text("注册");
-    $('.prompt-box').children().not('#switch').css("display", "none");
-    $('.prompt-box').children().eq(1).text("已有账号登录");
-    login_pwd = $('#pwd').val();
-    $('#nick').val(register_nick);
-    $('#pwd').val("");
-    $('#pwd2').val("");
+    prompt_box.children().not('#switch').css("display", "none");
+    prompt_box.children().eq(1).text("已有账号登录");
+    login_pwd = pwd.val();
+    nick.val(register_nick);
+    pwd.val("");
+    pwd2.val("");
 }
 
 // 转为登录dialog
@@ -76,13 +79,15 @@ function toLogin() {
         "height": "230px",
         "margin-top": "-135px"
     });
-    $('#nick').parent().css("display", "none");
+    var nick = $('#nick');
+    var prompt_box = $('.prompt-box');
+    nick.parent().css("display", "none");
     $('#pwd2').parent().css("display", "none");
     $('.dialog_anth .title').text("登录");
     $('#complete').text("登录");
-    $('.prompt-box').children().not('#switch').css("display", "inline");
-    $('.prompt-box').children().eq(1).text("注册");
-    register_nick = $('#nick').val();
+    prompt_box.children().not('#switch').css("display", "inline");
+    prompt_box.children().eq(1).text("注册");
+    register_nick = nick.val();
     $('#pwd').val(login_pwd);
 }
 
@@ -98,12 +103,12 @@ function clearAnth() {
 
 // 登录请求
 function login() {
-    let acc = $('#acc').val();
-    let pwd = $('#pwd').val();
+    var acc = $('#acc').val();
+    var pwd = $('#pwd').val();
     if (!check(acc, "aa", pwd, pwd))
         return;
     pwd = bcrypt(acc, pwd);
-    let request = $.ajax({
+    var request = $.ajax({
         url: '/i/login',
         data: {
             "acc": acc,
@@ -127,14 +132,14 @@ function login() {
 
 // 注册请求
 function register() {
-    let acc = $('#acc').val();
-    let nick = $('#nick').val().replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
-    let pwd = $('#pwd').val();
-    let pwd2 = $('#pwd2').val();
+    var acc = $('#acc').val();
+    var nick = $('#nick').val().replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
+    var pwd = $('#pwd').val();
+    var pwd2 = $('#pwd2').val();
     if (!check(acc, nick, pwd, pwd2))
         return;
     pwd = rsaEncrypt(pwd);
-    let request = $.ajax({
+    var request = $.ajax({
         url: '/i/register',
         data: {
             "acc": acc,
@@ -197,15 +202,15 @@ function offline() {
 
 // rsa加密s
 function rsaEncrypt(str) {
-    let encrypt = new JSEncrypt();
+    var encrypt = new JSEncrypt();
     encrypt.setPublicKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCOVmjkpQZsb3F8TYz/M9W3ltco5tGnrktIlTvV9c4w+b5kbt+qMKnbKl11Y4Rk0w706AnnZO+9jW8w3snWhJVrJ9wxwJq+rBZJvn8Egi6npXFehRyOEO5lZYIWLNHHN6mB7QIOcQQMGblH0/A6SQdt1LStGuoZ7n2hEcI2V0/cyQIDAQAB");
     return encrypt.encrypt(str);
 }
 
 // BCrypt固定格式加密密码
 function bcrypt(acc, pwd) {
-    let salt = acc;
-    for (let i = acc.length; i < 22; i++) {
+    var salt = acc;
+    for (var i = acc.length; i < 22; i++) {
         salt = salt + "0";
     }
     salt = "$2a$10$" + salt.replace("_", "/");
@@ -214,12 +219,12 @@ function bcrypt(acc, pwd) {
 
 // 处理认证
 function handToken() {
-    let token = Cookies.get('token');
+    var token = Cookies.get('token');
     if ('string' == typeof (token)) {
-        let info = JSON.parse(BASE64.decode(token));
+        var info = JSON.parse(BASE64.decode(token));
         $('.header-anth-y').css("display", "block");
         $('#user_nick').text(info.nick);
-        let request = $.ajax({
+        var request = $.ajax({
             url: '/i/checkToken',
             data: {
                 "token": token
@@ -246,8 +251,9 @@ function handToken() {
 handToken();
 
 function handUI() {
-    let left = ($("#user-menu").parent().width() - $("#user-menu").width()) / 2;
-    $("#user-menu").css("left", left);
+    var user_menu = $("#user-menu");
+    var left = (user_menu.parent().width() - user_menu.width()) / 2;
+    user_menu.css("left", left);
 }
 
 handUI();

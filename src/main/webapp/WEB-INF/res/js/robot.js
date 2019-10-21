@@ -1,6 +1,6 @@
 $(document).ready(function () {
     $('#qqopen').bind("click", function (event) {
-        const token = Cookies.get('token');
+        var token = Cookies.get('token');
         if ('string' != typeof (token)) {
             showErr("请先登录");
         } else {
@@ -9,7 +9,7 @@ $(document).ready(function () {
         return false;
     });
     $('#qqclose').bind("click", function (event) {
-        const token = Cookies.get('token');
+        var token = Cookies.get('token');
         if ('string' != typeof (token)) {
             showErr("请先登录");
         } else {
@@ -20,7 +20,7 @@ $(document).ready(function () {
 });
 
 function openRobot(token) {
-    let request = $.ajax({
+    var request = $.ajax({
         url: '/robot/open',
         data: {
             "token": token
@@ -44,7 +44,7 @@ function openRobot(token) {
 }
 
 function closeRobot(token, tag) {
-    let request = $.ajax({
+    var request = $.ajax({
         url: '/robot/close',
         data: {
             "token": token

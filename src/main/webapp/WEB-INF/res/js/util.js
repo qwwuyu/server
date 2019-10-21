@@ -33,12 +33,12 @@ function getUrl() {
 
 // 获取url所有参数
 function getRequest() {
-    let url = location.search;
-    let theRequest = {};
+    var url = location.search;
+    var theRequest = {};
     if (url.indexOf("?") != -1) {
-        let str = url.substr(1);
-        let strs = str.split("&");
-        for (let i = 0; i < strs.length; i++) {
+        var str = url.substr(1);
+        var strs = str.split("&");
+        for (var i = 0; i < strs.length; i++) {
             theRequest[strs[i].split("=")[0]] = (strs[i].split("=")[1]);
         }
     }
@@ -47,12 +47,12 @@ function getRequest() {
 
 // 获取url某个参数
 function getParam(key) {
-    let url = location.search;
+    var url = location.search;
     if (url.indexOf("?") != -1) {
-        let str = url.substr(1);
-        let strs = str.split("&");
-        for (let i = 0; i < strs.length; i++) {
-            let split = strs[i].split("=");
+        var str = url.substr(1);
+        var strs = str.split("&");
+        for (var i = 0; i < strs.length; i++) {
+            var split = strs[i].split("=");
             if (key == split[0]) {
                 return (split[1]) ? split[1] : "";
             }
@@ -62,7 +62,7 @@ function getParam(key) {
 }
 
 Date.prototype.format = function (format) {
-    let date = {
+    var date = {
         "M+": this.getMonth() + 1,
         "d+": this.getDate(),
         "h+": this.getHours(),
@@ -75,7 +75,7 @@ Date.prototype.format = function (format) {
         format = format.replace(RegExp.$1, (this.getFullYear() + '')
             .substr(4 - RegExp.$1.length));
     }
-    for (let k in date) {
+    for (var k in date) {
         if (new RegExp("(" + k + ")").test(format)) {
             format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? date[k]
                 : ("00" + date[k]).substr(("" + date[k]).length));
@@ -85,9 +85,9 @@ Date.prototype.format = function (format) {
 };
 
 function showTime(sysTime, time) {
-    let now = new Date(sysTime);
-    let date = new Date(time);
-    let diff = sysTime - time;
+    var now = new Date(sysTime);
+    var date = new Date(time);
+    var diff = sysTime - time;
     if (diff < 180000) {
         return "刚刚";
     } else if (diff < 3600000) {
@@ -103,7 +103,7 @@ function showTime(sysTime, time) {
 
 // 提醒
 function showErr(err, time) {
-    let alertTxt = $('<div class="alert"></div>').text(err);
+    var alertTxt = $('<div class="alert"></div>').text(err);
     $('.alert-list').append(alertTxt);
     setTimeout(function () {
         alertTxt.remove();
@@ -112,7 +112,7 @@ function showErr(err, time) {
 
 // 提醒
 function showSucc(err, time) {
-    let alertTxt = $('<div class="alert"></div>').text(err);
+    var alertTxt = $('<div class="alert"></div>').text(err);
     $('.alert-list-succ').append(alertTxt);
     setTimeout(function () {
         alertTxt.remove();
@@ -121,7 +121,7 @@ function showSucc(err, time) {
 
 // 获取认证信息
 function tokenInfo() {
-    let token = Cookies.get('token');
+    var token = Cookies.get('token');
     if ('string' == typeof (token)) {
         return JSON.parse(BASE64.decode(token));
     }

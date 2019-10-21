@@ -1,4 +1,4 @@
-const expiresValue = 7 * 86400;
+var expiresValue = 7 * 86400;
 
 $(document).ready(function () {
     // 注册or登录
@@ -13,12 +13,12 @@ $(document).ready(function () {
 
 // 登录请求
 function login() {
-    const acc = $('#acc').val();
-    let pwd = $('#pwd').val();
+    var acc = $('#acc').val();
+    var pwd = $('#pwd').val();
     if (!check(acc, pwd))
         return;
     pwd = bcrypt(acc, pwd);
-    const request = $.ajax({
+    var request = $.ajax({
         url: '/i/login',
         data: {
             "acc": acc,
@@ -56,7 +56,7 @@ function handLogin(data) {
         Cookies.set('token', data.data, {
             expires: expiresValue
         });
-        if (location.pathname.endsWith("/login")) {
+        if (location.pathname.lastIndexOf("/login") == location.pathname.length - "/login".length) {
             window.open(location.pathname.substr(0, location.pathname.length - 6), "_self");
         } else {
             location.reload();
@@ -73,8 +73,8 @@ function offline() {
 
 // BCrypt固定格式加密密码
 function bcrypt(acc, pwd) {
-    let salt = acc;
-    for (let i = acc.length; i < 22; i++) {
+    var salt = acc;
+    for (var i = acc.length; i < 22; i++) {
         salt = salt + "0";
     }
     salt = "$2a$10$" + salt.replace("_", "/");
@@ -83,12 +83,12 @@ function bcrypt(acc, pwd) {
 
 // 处理认证
 function handToken() {
-    const token = Cookies.get('token');
+    var token = Cookies.get('token');
     if ('string' == typeof (token)) {
-        const info = JSON.parse(BASE64.decode(token));
+        var info = JSON.parse(BASE64.decode(token));
         $('.header-anth-y').css("display", "block");
         $('#user_nick').text(info.nick);
-        const request = $.ajax({
+        var request = $.ajax({
             url: '/i/checkToken',
             data: {
                 "token": token
