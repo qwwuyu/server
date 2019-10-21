@@ -59,4 +59,16 @@ public class FileUtil {
             return childFile.getPath().startsWith(parentFile.getPath());
         }
     }
+
+    public static boolean isFile(File file) {
+        return exists(file) && file.isFile();
+    }
+
+    public static boolean isDirectory(File file) {
+        return exists(file) && file.isDirectory();
+    }
+
+    public static boolean exists(File file) {
+        return file != null && file.exists();
+    }
 }

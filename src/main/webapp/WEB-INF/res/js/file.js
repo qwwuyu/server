@@ -6,6 +6,8 @@ template(
 
 $(document).ready(function () {
     initUpload(getParam("path"));
+    $("#progress").hide();
+    $("#result").hide();
     if (isHistoryApi) {
         $(window).on("popstate", function (event) {
             let path = getParam("path");
@@ -40,23 +42,16 @@ $(document).ready(function () {
         let oldPath = getParam("path");
         let name = $(this).parent().data("name");
         let path = oldPath + ("" != oldPath ? "/" : "") + name;
-        if (confirm("你确认要删除" + name + "?")) {
+        if (confirm("你确认要删除文件：" + name + "?")) {
             deleteFile(path, $(this))
         }
     }).on('click', '#back', function (e) {
         let oldPath = getParam("path");
-        if (oldPath != "") {
-            let path;
-            let url;
-            if (oldPath.lastIndexOf("/") != -1) {
-                path = oldPath.substring(0, oldPath.lastIndexOf("/"));
-                url = location.pathname + "?path=" + path;
-            } else {
-                path = "";
-                url = location.pathname;
-            }
-            history.pushState(null, name, url);
-            initUpload(path);
+        goBack(oldPath)
+    }).on('click', '#deleteDir', function (e) {
+        let oldPath = getParam("path");
+        if ("" != oldPath && confirm("你确认要删除目录：" + oldPath + "?")) {
+            deleteDir(oldPath)
         }
     });
 });
@@ -93,15 +88,25 @@ function handFileData(list) {
         datas: list
     });
     $('.content').html(temp_file);
+    setDeleteDir();
+}
+
+function setDeleteDir() {
+    if ($('.content').find("li").length != 0) {
+        $("#deleteDir").hide();
+    } else {
+        $("#deleteDir").show();
+    }
 }
 
 function initUpload(path) {
+    $("#deleteDir").hide();
     if (path == "") {
         $("#back").hide();
-        $("#all").show();
+        $("#dir").text("全部文件");
     } else {
         $("#back").show();
-        $("#all").hide();
+        $("#dir").text(path);
     }
     requestFile(path);
     //初始化上传插件
@@ -113,6 +118,10 @@ function initUpload(path) {
         dataType: 'text',
         progressall: function (e, data) {
             $('#progress').text(data.loaded + "/" + data.total);
+        },
+        start: function (e) {
+            $("#progress").show();
+            $("#result").show();
         },
         done: function (e, data) {
             $('#result').text("done:" + data.result);
@@ -140,11 +149,52 @@ function deleteFile(path, obj) {
     request.then(function (data) {
         if (1 == data.state) {
             showSucc("删除成功");
-            obj.parent().parent().remove()
+            obj.parent().parent().remove();
+            setDeleteDir();
         } else if (data.info) {
             showErr(data.info);
         }
     }, function (jqXHR, textStatus, errorThrown) {
         handErr(textStatus);
     });
+}
+
+function deleteDir(path) {
+    let params = getRequest();
+    let request = $.ajax({
+        url: location.pathname + "/deleteDir",
+        data: {
+            "path": path
+        },
+        beforeSend: function () {
+        },
+        complete: function () {
+        }
+    });
+    request.then(function (data) {
+        if (1 == data.state) {
+            showSucc("删除成功");
+            goBack(path)
+        } else if (data.info) {
+            showErr(data.info);
+        }
+    }, function (jqXHR, textStatus, errorThrown) {
+        handErr(textStatus);
+    });
+}
+
+function goBack(oldPath) {
+    if (oldPath != "") {
+        let path;
+        let url;
+        if (oldPath.lastIndexOf("/") != -1) {
+            path = oldPath.substring(0, oldPath.lastIndexOf("/"));
+            url = location.pathname + "?path=" + path;
+        } else {
+            path = "";
+            url = location.pathname;
+        }
+        history.pushState(null, name, url);
+        initUpload(path);
+    }
 }

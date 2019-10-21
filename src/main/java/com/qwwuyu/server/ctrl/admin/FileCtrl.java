@@ -33,11 +33,11 @@ public class FileCtrl {
     }
 
     @RequestMapping(value = "/query", method = RequestMethod.POST)
-    public void query(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IllegalStateException, IOException {
+    public void query(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IOException {
         User user = J2EEUtil.getUser(request);
         File file = FileUtil.getFile(path);
-        if (file == null || !file.exists() || !file.isDirectory()) {
-            J2EEUtil.renderInfo(response, "文件路径格式不正确");
+        if (!FileUtil.isDirectory(file)) {
+            J2EEUtil.renderInfo(response, "目录格式不正确");
             return;
         }
         List<FileBean> list = new ArrayList<>();
@@ -51,11 +51,11 @@ public class FileCtrl {
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public void upload(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IllegalStateException, IOException {
+    public void upload(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IOException {
         User user = J2EEUtil.getUser(request);
         File parent = FileUtil.getFile(path);
-        if (parent == null || !parent.exists() || !parent.isDirectory()) {
-            J2EEUtil.renderInfo(response, "文件路径格式不正确");
+        if (!FileUtil.isDirectory(parent)) {
+            J2EEUtil.renderInfo(response, "目录格式不正确");
             return;
         }
         // 将当前上下文初始化给 CommonsMutipartResolver
@@ -85,16 +85,33 @@ public class FileCtrl {
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public void delete(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IllegalStateException, IOException {
+    public void delete(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IOException {
         User user = J2EEUtil.getUser(request);
         File file = FileUtil.getFile(path);
-        if (file == null || !file.exists() || !file.isFile()) {
-            J2EEUtil.renderInfo(response, "文件路径格式不正确");
+        if (!FileUtil.isFile(file)) {
+            J2EEUtil.renderInfo(response, "文件格式不正确");
             return;
         }
-        boolean delete = file.delete();
-        if (delete) {
-            J2EEUtil.render(response, J2EEUtil.getSuccessBean());
+        if (file.delete()) {
+            J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("删除成功"));
+        } else {
+            J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("删除失败"));
+        }
+    }
+
+    @RequestMapping(value = "/deleteDir", method = RequestMethod.POST)
+    public void deleteDir(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IOException {
+        User user = J2EEUtil.getUser(request);
+        File file = FileUtil.getFile(path);
+        if (!FileUtil.isDirectory(file)) {
+            J2EEUtil.renderInfo(response, "目录格式不正确");
+            return;
+        }
+        File[] files = file.listFiles();
+        if (files != null && files.length > 0) {
+            J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("无法删除非空目录"));
+        } else if (file.delete()) {
+            J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("删除成功"));
         } else {
             J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("删除失败"));
         }
@@ -122,8 +139,8 @@ public class FileCtrl {
         User user = J2EEUtil.getUser(request);
         String range = request.getHeader("range");
         File file = FileUtil.getFile(path);
-        if (file == null || !file.exists() || !file.isFile()) {
-            J2EEUtil.renderInfo(response, "文件路径格式不正确", HttpServletResponse.SC_PRECONDITION_FAILED);
+        if (!FileUtil.isFile(file)) {
+            J2EEUtil.renderInfo(response, "文件格式不正确", HttpServletResponse.SC_PRECONDITION_FAILED);
             return;
         }
         String name = file.getName();
@@ -145,6 +162,8 @@ public class FileCtrl {
         }
         if (download) {
             response.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(name, "utf-8") + "\"");
+        } else {
+            response.setHeader("Content-Disposition", "inline; filename=\"" + URLEncoder.encode(name, "utf-8") + "\"");
         }
         response.setHeader("Content-Length", String.valueOf(right - left + 1));
         response.setHeader("Accept-Ranges", "bytes");
@@ -164,6 +183,45 @@ public class FileCtrl {
                 os.write(bytes, 0, read);
             }
             os.flush();
+        }
+    }
+
+    @RequestMapping(value = "/rename", method = RequestMethod.POST)
+    public void rename(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path, @RequestParam("dest") String newPath) throws IOException {
+        User user = J2EEUtil.getUser(request);
+        File file = FileUtil.getFile(path);
+        if (!FileUtil.exists(file)) {
+            J2EEUtil.renderInfo(response, "文件格式不正确");
+            return;
+        }
+        File dest = FileUtil.getFile(newPath);
+        if (dest == null || dest.exists()) {
+            J2EEUtil.renderInfo(response, "文件格式不正确");
+            return;
+        }
+        if (file.renameTo(dest)) {
+            J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("操作成功"));
+        } else {
+            J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("操作失败"));
+        }
+    }
+
+    @RequestMapping(value = "/createDir", method = RequestMethod.POST)
+    public void createDir(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IOException {
+        User user = J2EEUtil.getUser(request);
+        if (path.matches(".*[\\\\/:*?\"<>|]+.*")) {
+            J2EEUtil.renderInfo(response, "不能包含特殊字符\\/:*?\"<>|");
+            return;
+        }
+        File file = FileUtil.getFile(path);
+        if (file == null || file.exists() || file.getParentFile() == null || !file.getParentFile().exists()) {
+            J2EEUtil.renderInfo(response, "文件格式不正确");
+            return;
+        }
+        if (file.mkdir()) {
+            J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("创建文件夹成功"));
+        } else {
+            J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("创建文件夹失败"));
         }
     }
 }

@@ -16,18 +16,21 @@
     <script src="/res/js/util.js"></script>
 </head>
 <body>
-<input type="file" id="fileupload" multiple="multiple" style="margin-left: 8px; margin-top: 8px;">
-<div style="display: flex;">
-    <span id="progress" style="margin-left: 8px; margin-top: 8px; font-size: 14px;">progress</span>
-</div>
-<div style="display: flex;">
-    <span id="result" style="margin-left: 8px; margin-top: 8px; margin-bottom: 8px; font-size: 14px;">result</span>
-</div>
+<button style="display :block; width:80px; height:24px; margin-left: 8px; margin-top: 8px;"
+        onclick="document.getElementById('fileupload').click()">上传文件
+</button>
+<input type="file" id="fileupload" multiple="multiple" style="display: none;">
+<span id="progress" style="display: flex; margin-left: 8px; margin-top: 8px; font-size: 14px;">progress</span>
+<span id="result" style="display: flex; margin-left: 8px; margin-top: 8px; font-size: 14px;">result</span>
+<span style="display: flex; height: 8px;"></span>
 <div style="height: 1px; width: 100%; background-color: #ccc;"></div>
 <div style="display: flex;">
-    <span id="all" style="margin-left: 8px; margin-top: 8px; margin-bottom: 8px;  font-size: 16px; color: #333;">全部文件</span>
-    <span id="back" style="margin-left: 8px; margin-top: 8px; margin-bottom: 8px;  font-size: 16px; color: #007bff;">返回上一级</span>
+    <span id="back" class="dir-ctrl" style="color: #007bff;">返回上一级</span>
+    <span id="dir" class="dir-ctrl" style="color: #333;">全部文件</span>
+    <span id="deleteDir" class="dir-ctrl" style="color: #909090;">删除</span>
 </div>
+
+<div style="height: 1px; width: 100%; background-color: #ccc;"></div>
 <div class="content"></div>
 <div class="alert-list"></div>
 <div class="alert-list-succ"></div>
