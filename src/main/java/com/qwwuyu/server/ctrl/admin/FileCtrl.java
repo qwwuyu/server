@@ -84,8 +84,41 @@ public class FileCtrl {
         J2EEUtil.render(response, J2EEUtil.getSuccessBean().setData(list));
     }
 
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public void delete(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IllegalStateException, IOException {
+        User user = J2EEUtil.getUser(request);
+        File file = FileUtil.getFile(path);
+        if (file == null || !file.exists() || !file.isFile()) {
+            J2EEUtil.renderInfo(response, "文件路径格式不正确");
+            return;
+        }
+        boolean delete = file.delete();
+        if (delete) {
+            J2EEUtil.render(response, J2EEUtil.getSuccessBean());
+        } else {
+            J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("删除失败"));
+        }
+    }
+
+    @RequestMapping("open/*")
+    public String toFileManager(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IOException {
+        User user = J2EEUtil.getUser(request);
+        String suffix = path.toLowerCase();
+        if (suffix.endsWith(".mp4") || suffix.endsWith(".flv")) {
+            return hand("video.html");
+        } /*else if (suffix.endsWith(".jpg") || suffix.endsWith(".png") || suffix.endsWith(".bmp") || suffix.endsWith(".gif") || suffix.endsWith(".jpeg") || suffix.endsWith(".webp")) {
+            return hand("pic.html");
+        }*/
+        transferFile(request, response, path, false);
+        return null;
+    }
+
     @RequestMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public void download(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IOException {
+        transferFile(request, response, path, true);
+    }
+
+    private void transferFile(HttpServletRequest request, HttpServletResponse response, String path, boolean download) throws IOException {
         User user = J2EEUtil.getUser(request);
         String range = request.getHeader("range");
         File file = FileUtil.getFile(path);
@@ -110,7 +143,9 @@ public class FileCtrl {
             response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
             response.setHeader("Content-Range", String.format("bytes %d-%d/%d", left, right, file.length()));
         }
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(name, "utf-8") + "\"");
+        if (download) {
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(name, "utf-8") + "\"");
+        }
         response.setHeader("Content-Length", String.valueOf(right - left + 1));
         response.setHeader("Accept-Ranges", "bytes");
         try (InputStream is = new FileInputStream(file); OutputStream os = response.getOutputStream()) {
@@ -129,35 +164,6 @@ public class FileCtrl {
                 os.write(bytes, 0, read);
             }
             os.flush();
-        }
-    }
-
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public void delete(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) throws IllegalStateException, IOException {
-        User user = J2EEUtil.getUser(request);
-        File file = FileUtil.getFile(path);
-        if (file == null || !file.exists() || !file.isFile()) {
-            J2EEUtil.renderInfo(response, "文件路径格式不正确");
-            return;
-        }
-        boolean delete = file.delete();
-        if (delete) {
-            J2EEUtil.render(response, J2EEUtil.getSuccessBean());
-        } else {
-            J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("删除失败"));
-        }
-    }
-
-    @RequestMapping("open")
-    public String toFileManager(HttpServletRequest request, @RequestParam("path") String path) {
-        User user = J2EEUtil.getUser(request);
-        String suffix = path.toLowerCase();
-        if (suffix.endsWith(".mp4") || suffix.endsWith(".flv") || suffix.endsWith(".avi") || suffix.endsWith(".rmvb")) {
-            return hand("video.html");
-        } else if (suffix.endsWith(".jpg") || suffix.endsWith(".png") || suffix.endsWith(".bmp") || suffix.endsWith(".gif") || suffix.endsWith(".jpeg") || suffix.endsWith(".webp")) {
-            return hand("pic.html");
-        } else {
-            return hand("unknown.html");
         }
     }
 }

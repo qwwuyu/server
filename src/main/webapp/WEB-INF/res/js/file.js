@@ -1,4 +1,4 @@
-var isHistoryApi = !!(window.history && history.pushState);
+const isHistoryApi = !!(window.history && history.pushState);
 // temp_file模版
 template(
     'temp_file',
@@ -8,7 +8,7 @@ $(document).ready(function () {
     initUpload(getParam("path"));
     if (isHistoryApi) {
         $(window).on("popstate", function (event) {
-            var path = getParam("path");
+            let path = getParam("path");
             initUpload(path);
         });
     }
@@ -16,38 +16,38 @@ $(document).ready(function () {
         if (!isHistoryApi) {
             return true;
         }
-        var oldPath = getParam("path");
-        var name = $(this).data("name");
-        var path = oldPath + ("" != oldPath ? "/" : "") + name;
-        var url = location.pathname + "?path=" + path;
+        let oldPath = getParam("path");
+        let name = $(this).data("name");
+        let path = oldPath + ("" != oldPath ? "/" : "") + name;
+        let url = location.pathname + "?path=" + path;
         history.pushState(null, name, url);
         initUpload(path);
         return false;
     }).on('click', '.file-open', function (e) {
-        var oldPath = getParam("path");
-        var name = $(this).parent().data("name");
-        var path = oldPath + ("" != oldPath ? "/" : "") + name;
-        var url = location.pathname + "/open" + "?path=" + path;
-        var win = window.open(url, '_blank');
+        let oldPath = getParam("path");
+        let name = $(this).parent().data("name");
+        let path = oldPath + ("" != oldPath ? "/" : "") + name;
+        let url = location.pathname + "/open/" + name + "?path=" + path;
+        let win = window.open(url, '_blank');
         win.focus();
     }).on('click', '.file-download', function (e) {
-        var oldPath = getParam("path");
-        var name = $(this).parent().data("name");
-        var path = oldPath + ("" != oldPath ? "/" : "") + name;
-        var url = location.pathname + "/download" + "?path=" + path;
+        let oldPath = getParam("path");
+        let name = $(this).parent().data("name");
+        let path = oldPath + ("" != oldPath ? "/" : "") + name;
+        let url = location.pathname + "/download" + "?path=" + path;
         window.open(url, "_self");
     }).on('click', '.file-delete', function (e) {
-        var oldPath = getParam("path");
-        var name = $(this).parent().data("name");
-        var path = oldPath + ("" != oldPath ? "/" : "") + name;
+        let oldPath = getParam("path");
+        let name = $(this).parent().data("name");
+        let path = oldPath + ("" != oldPath ? "/" : "") + name;
         if (confirm("你确认要删除" + name + "?")) {
             deleteFile(path, $(this))
         }
     }).on('click', '#back', function (e) {
-        var oldPath = getParam("path");
+        let oldPath = getParam("path");
         if (oldPath != "") {
-            var path;
-            var url;
+            let path;
+            let url;
             if (oldPath.lastIndexOf("/") != -1) {
                 path = oldPath.substring(0, oldPath.lastIndexOf("/"));
                 url = location.pathname + "?path=" + path;
@@ -62,7 +62,7 @@ $(document).ready(function () {
 });
 
 function requestFile(path) {
-    var request = $.ajax({
+    let request = $.ajax({
         url: location.pathname + "/query",
         data: {
             "path": path
@@ -89,7 +89,7 @@ function requestFile(path) {
 
 // 处理列表数据
 function handFileData(list) {
-    var temp_file = template('temp_file', {
+    let temp_file = template('temp_file', {
         datas: list
     });
     $('.content').html(temp_file);
@@ -116,7 +116,7 @@ function initUpload(path) {
         },
         done: function (e, data) {
             $('#result').text("done:" + data.result);
-            var path = getParam("path");
+            let path = getParam("path");
             requestFile(path);
         },
         fail: function (e, data) {
@@ -126,8 +126,8 @@ function initUpload(path) {
 }
 
 function deleteFile(path, obj) {
-    var params = getRequest();
-    var request = $.ajax({
+    let params = getRequest();
+    let request = $.ajax({
         url: location.pathname + "/delete",
         data: {
             "path": path

@@ -20,7 +20,7 @@ $(document).ready(function () {
 });
 
 function openRobot(token) {
-    var request = $.ajax({
+    let request = $.ajax({
         url: '/robot/open',
         data: {
             "token": token
@@ -44,7 +44,7 @@ function openRobot(token) {
 }
 
 function closeRobot(token, tag) {
-    var request = $.ajax({
+    let request = $.ajax({
         url: '/robot/close',
         data: {
             "token": token

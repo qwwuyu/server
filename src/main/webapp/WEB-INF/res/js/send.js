@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $('#send_card').bind("click", function (event) {
-        var title = $('#title').val();
-        var token = Cookies.get('token');
+        let title = $('#title').val();
+        let token = Cookies.get('token');
         if ('string' != typeof (token)) {
             showErr("请先登录");
         } else if (!new RegExp(".{1,50}").test(title)) {
@@ -14,9 +14,9 @@ $(document).ready(function () {
         return false;
     });
     $('#send_note').bind("click", function (event) {
-        var title = $('#title').val();
-        var content = $('#content').val();
-        var token = Cookies.get('token');
+        let title = $('#title').val();
+        let content = $('#content').val();
+        let token = Cookies.get('token');
         if ('string' != typeof (token)) {
             showErr("请先登录");
         } else if (!new RegExp(".{1,50}").test(title)) {
@@ -29,8 +29,8 @@ $(document).ready(function () {
         return false;
     });
     $('#send_flag').bind("click", function (event) {
-        var title = $('#title').val();
-        var token = Cookies.get('token');
+        let title = $('#title').val();
+        let token = Cookies.get('token');
         if ('string' != typeof (token)) {
             showErr("请先登录");
         } else if (!new RegExp(".{1,50}").test(title)) {
@@ -45,7 +45,7 @@ $(document).ready(function () {
 });
 
 function sendCard(token, title) {
-    var request = $.ajax({
+    let request = $.ajax({
         url: '/i/card/send',
         data: {
             "token": token,
@@ -71,7 +71,7 @@ function sendCard(token, title) {
 }
 
 function sendNote(token, title, content) {
-    var request = $.ajax({
+    let request = $.ajax({
         url: '/i/note/send',
         data: {
             "token": token,
@@ -99,7 +99,7 @@ function sendNote(token, title, content) {
 }
 
 function sendFlag(token, title) {
-    var request = $.ajax({
+    let request = $.ajax({
         url: '/i/flag/send',
         data: {
             "token": token,

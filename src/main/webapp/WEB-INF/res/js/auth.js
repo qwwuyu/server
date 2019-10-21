@@ -1,8 +1,8 @@
-var expiresValue = 7 * 86400;
+const expiresValue = 7 * 86400;
 
-var isLogin = true;
-var login_pwd = "";
-var register_nick = "";
+let isLogin = true;
+let login_pwd = "";
+let register_nick = "";
 $(document).ready(function () {
     // 处理认证dialog关闭
     $('.dialog_anth .close').bind("click", function (event) {
@@ -64,7 +64,7 @@ function toRegister() {
     $('#complete').text("注册");
     $('.prompt-box').children().not('#switch').css("display", "none");
     $('.prompt-box').children().eq(1).text("已有账号登录");
-    login_pwd = $('#pwd').val()
+    login_pwd = $('#pwd').val();
     $('#nick').val(register_nick);
     $('#pwd').val("");
     $('#pwd2').val("");
@@ -98,12 +98,12 @@ function clearAnth() {
 
 // 登录请求
 function login() {
-    var acc = $('#acc').val();
-    var pwd = $('#pwd').val();
+    let acc = $('#acc').val();
+    let pwd = $('#pwd').val();
     if (!check(acc, "aa", pwd, pwd))
         return;
     pwd = bcrypt(acc, pwd);
-    var request = $.ajax({
+    let request = $.ajax({
         url: '/i/login',
         data: {
             "acc": acc,
@@ -127,14 +127,14 @@ function login() {
 
 // 注册请求
 function register() {
-    var acc = $('#acc').val();
-    var nick = $('#nick').val().replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
-    var pwd = $('#pwd').val();
-    var pwd2 = $('#pwd2').val();
+    let acc = $('#acc').val();
+    let nick = $('#nick').val().replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
+    let pwd = $('#pwd').val();
+    let pwd2 = $('#pwd2').val();
     if (!check(acc, nick, pwd, pwd2))
         return;
     pwd = rsaEncrypt(pwd);
-    var request = $.ajax({
+    let request = $.ajax({
         url: '/i/register',
         data: {
             "acc": acc,
@@ -184,7 +184,7 @@ function handLogin(data) {
         Cookies.set('token', data.data, {
             expires: expiresValue
         });
-        location.reload(true);
+        location.reload();
     } else if (typeof (data.info) != "undefined") {
         showErr(data.info);
     }
@@ -192,20 +192,20 @@ function handLogin(data) {
 
 function offline() {
     Cookies.remove('token');
-    location.reload(true);
+    location.reload();
 }
 
 // rsa加密s
 function rsaEncrypt(str) {
-    var encrypt = new JSEncrypt();
+    let encrypt = new JSEncrypt();
     encrypt.setPublicKey("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCOVmjkpQZsb3F8TYz/M9W3ltco5tGnrktIlTvV9c4w+b5kbt+qMKnbKl11Y4Rk0w706AnnZO+9jW8w3snWhJVrJ9wxwJq+rBZJvn8Egi6npXFehRyOEO5lZYIWLNHHN6mB7QIOcQQMGblH0/A6SQdt1LStGuoZ7n2hEcI2V0/cyQIDAQAB");
     return encrypt.encrypt(str);
 }
 
 // BCrypt固定格式加密密码
 function bcrypt(acc, pwd) {
-    var salt = acc;
-    for (var i = acc.length; i < 22; i++) {
+    let salt = acc;
+    for (let i = acc.length; i < 22; i++) {
         salt = salt + "0";
     }
     salt = "$2a$10$" + salt.replace("_", "/");
@@ -214,12 +214,12 @@ function bcrypt(acc, pwd) {
 
 // 处理认证
 function handToken() {
-    var token = Cookies.get('token');
+    let token = Cookies.get('token');
     if ('string' == typeof (token)) {
-        var info = JSON.parse(BASE64.decode(token));
+        let info = JSON.parse(BASE64.decode(token));
         $('.header-anth-y').css("display", "block");
         $('#user_nick').text(info.nick);
-        var request = $.ajax({
+        let request = $.ajax({
             url: '/i/checkToken',
             data: {
                 "token": token
@@ -246,7 +246,7 @@ function handToken() {
 handToken();
 
 function handUI() {
-    var left = ($("#user-menu").parent().width() - $("#user-menu").width()) / 2;
+    let left = ($("#user-menu").parent().width() - $("#user-menu").width()) / 2;
     $("#user-menu").css("left", left);
 }
 
