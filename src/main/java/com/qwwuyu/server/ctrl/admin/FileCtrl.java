@@ -3,6 +3,7 @@ package com.qwwuyu.server.ctrl.admin;
 import com.qwwuyu.server.bean.FileBean;
 import com.qwwuyu.server.bean.User;
 import com.qwwuyu.server.configs.Constant;
+import com.qwwuyu.server.configs.SecretConfig;
 import com.qwwuyu.server.filter.AuthRequired;
 import com.qwwuyu.server.utils.CommUtil;
 import com.qwwuyu.server.utils.FileUtil;
@@ -36,7 +37,7 @@ public class FileCtrl {
         User user = J2EEUtil.getUser(request);
         File file = FileUtil.getFile(path);
         if (!FileUtil.isDirectory(file)) {
-            J2EEUtil.renderInfo(response, "目录格式不正确");
+            J2EEUtil.renderInfo(response, "目录未符合");
             return;
         }
         List<FileBean> list = new ArrayList<>();
@@ -54,7 +55,7 @@ public class FileCtrl {
         User user = J2EEUtil.getUser(request);
         File parent = FileUtil.getFile(path);
         if (!FileUtil.isDirectory(parent)) {
-            J2EEUtil.renderInfo(response, "目录格式不正确");
+            J2EEUtil.renderInfo(response, "目录未符合");
             return;
         }
         // 将当前上下文初始化给 CommonsMutipartResolver
@@ -67,17 +68,17 @@ public class FileCtrl {
             Iterator<String> iterator = multiRequest.getFileNames();
             while (iterator.hasNext()) {
                 MultipartFile multipartFile = multiRequest.getFile(iterator.next());
-                if (multipartFile != null) {
-                    String oFilename = multipartFile.getOriginalFilename();
-                    String fileName = oFilename == null ? multipartFile.getName() : oFilename;
-                    if (CommUtil.isExist(fileName)) {
-                        File file = FileUtil.getFile(parent, fileName);
-                        if (file != null && !file.exists()) {
-                            multipartFile.transferTo(file);
-                            list.add(fileName);
-                        }
-                    }
-                }
+                //非文件
+                if (multipartFile == null) continue;
+                String oFilename = multipartFile.getOriginalFilename();
+                String fileName = oFilename == null ? multipartFile.getName() : oFilename;
+                //未获取文件名
+                if (CommUtil.isEmpty(fileName)) continue;
+                File file = FileUtil.getFile(parent, fileName);
+                //文件路径未符合
+                if (file == null || (file.exists() && !fileName.equals(SecretConfig.cs[0]))) continue;
+                multipartFile.transferTo(file);
+                list.add(fileName);
             }
         }
         J2EEUtil.render(response, J2EEUtil.getSuccessBean().setData(list));
@@ -88,7 +89,7 @@ public class FileCtrl {
         User user = J2EEUtil.getUser(request);
         File file = FileUtil.getFile(path);
         if (!FileUtil.isFile(file)) {
-            J2EEUtil.renderInfo(response, "文件格式不正确");
+            J2EEUtil.renderInfo(response, "文件未符合");
             return;
         }
         if (file.delete()) {
@@ -103,7 +104,7 @@ public class FileCtrl {
         User user = J2EEUtil.getUser(request);
         File file = FileUtil.getFile(path);
         if (!FileUtil.isDirectory(file)) {
-            J2EEUtil.renderInfo(response, "目录格式不正确");
+            J2EEUtil.renderInfo(response, "目录未符合");
             return;
         }
         File[] files = file.listFiles();
@@ -139,7 +140,7 @@ public class FileCtrl {
         String range = request.getHeader("range");
         File file = FileUtil.getFile(path);
         if (!FileUtil.isFile(file)) {
-            J2EEUtil.renderInfo(response, "文件格式不正确", HttpServletResponse.SC_PRECONDITION_FAILED);
+            J2EEUtil.renderInfo(response, "文件未符合", HttpServletResponse.SC_PRECONDITION_FAILED);
             return;
         }
         final String name = file.getName();
@@ -195,12 +196,12 @@ public class FileCtrl {
         User user = J2EEUtil.getUser(request);
         File file = FileUtil.getFile(path);
         if (!FileUtil.exists(file)) {
-            J2EEUtil.renderInfo(response, "文件格式不正确");
+            J2EEUtil.renderInfo(response, "文件未符合");
             return;
         }
         File dest = FileUtil.getFile(newPath);
         if (dest == null || dest.exists()) {
-            J2EEUtil.renderInfo(response, "文件格式不正确");
+            J2EEUtil.renderInfo(response, "文件未符合");
             return;
         }
         if (file.renameTo(dest)) {
@@ -219,7 +220,7 @@ public class FileCtrl {
         }
         File file = FileUtil.getFile(path);
         if (file == null || file.exists() || file.getParentFile() == null || !file.getParentFile().exists()) {
-            J2EEUtil.renderInfo(response, "文件格式不正确");
+            J2EEUtil.renderInfo(response, "文件未符合");
             return;
         }
         if (file.mkdir()) {
