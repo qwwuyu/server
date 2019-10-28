@@ -1,22 +1,22 @@
 package com.qwwuyu.server.configs;
 
-import java.io.File;
-
 import com.qwwuyu.server.utils.SystemUtils;
 
+import java.io.File;
+
 public class SecretConfig {
-	public static String privateKey = null;
-	public static String publicKey = null;
+    public static String privateKey = "input-input";
+    public static String publicKey = "input-input";
 
-	private final static String p = File.separator;
-	private static String baseDir = (SystemUtils.IS_OS_WINDOWS ? "D:" : "") + p;
-	public static File fileDir = new File(baseDir + p + "file" + p);
-	public static File javaDir = new File(baseDir + p + "java" + p);
+    private static final String p = File.separator;
+    public static File baseDir = new File((SystemUtils.IS_OS_WINDOWS ? "D:" : "") + p + "qwwuyu" + p);
+    public static File javaDir = new File(baseDir, "files" + p + "java" + p);
 
-	static {
-		if (!javaDir.exists())
-			javaDir.mkdirs();
-		if (!fileDir.exists())
-			fileDir.mkdirs();
-	}
+    public static String[] cs = {"input-input"};
+    public static final int coolqPort = 0;
+
+    static {
+        if (!baseDir.exists()) baseDir.mkdirs();
+        if (!javaDir.exists()) javaDir.mkdirs();
+    }
 }

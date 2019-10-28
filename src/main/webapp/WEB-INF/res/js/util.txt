@@ -29,6 +29,7 @@
 {{if send}}
 	<a href="/{{path}}/send" target="_blank" class="page-send">发帖</a>
 {{/if}}
+
 //card原始代码
 <ul>
 	<li>
@@ -51,6 +52,7 @@
 		</li>
 	{{/each}}
 </ul>
+
 //note原始代码
 <ul>
 	<li>
@@ -77,6 +79,7 @@
 		</li>
 	{{/each}}
 </ul>
+
 //temp_flag  flag模版代码
 <ul>
 	{{each datas}}
@@ -92,3 +95,45 @@
 <span class="main-content-info">{{note.nick}}</span>
 <span class="main-content-info">{{note.time}}</span>
 <span class="main-content-title">{{note.content}}</span>
+
+//file原始代码
+<ul>
+    <li>
+        <a class="file-folder flex-center" data-name="$myFolder">
+            <i class="ion-icon ion-folder"></i>
+            <span class="file-text file-text-folder">$myFolder</span>
+        </a>
+        <div class="flex-center">
+            <i class="ion-icon ion-document"></i>
+            <span class="file-text file-text-file">$myFile</span>
+        </div>
+        <div data-name="$myFile" class="flex-center file-ctrl">
+            <span class="file-open">打开</span>
+            <span class="file-download">下载</span>
+            <span class="file-delete">删除</span>
+        </div>
+    </li>
+</ul>
+//temp_file  file模版代码
+<ul>
+    {{each datas}}
+    <li>
+        {{if $value.dir == true}}
+        <a class="file-folder flex-center" data-name="{{$value.name}}">
+            <i class="ion-icon ion-folder"></i>
+            <span class="file-text file-text-folder">{{$value.name}}</span>
+        </a>
+        {{else if $value.dir != true}}
+        <div class="flex-center">
+            <i class="ion-icon ion-document"></i>
+            <span class="file-text file-text-file">{{$value.name}}</span>
+        </div>
+        <div data-name="{{$value.name}}" class="flex-center file-ctrl">
+            <span class="file-open">打开</span>
+            <span class="file-download">下载</span>
+            <span class="file-delete">删除</span>
+        </div>
+        {{/if}}
+    </li>
+    {{/each}}
+</ul>

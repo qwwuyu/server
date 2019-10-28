@@ -1,0 +1,22 @@
+<ul>
+    {{each datas}}
+    <li>
+        {{if $value.dir == true}}
+        <a class="file-folder flex-center" data-name="{{$value.name}}">
+            <i class="ion-icon ion-folder"></i>
+            <span class="file-text file-text-folder">{{$value.name}}</span>
+        </a>
+        {{else if $value.dir != true}}
+        <div class="flex-center">
+            <i class="ion-icon ion-document"></i>
+            <span class="file-text file-text-file">{{$value.name}}</span>
+        </div>
+        <div data-name="{{$value.name}}" class="flex-center file-ctrl">
+            <span class="file-open">打开</span>
+            <span class="file-download">下载</span>
+            <span class="file-delete">删除</span>
+        </div>
+        {{/if}}
+    </li>
+    {{/each}}
+</ul>

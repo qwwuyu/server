@@ -3,9 +3,9 @@ package com.qwwuyu.server.dao;
 import com.qwwuyu.server.bean.User;
 
 public interface UserMapper {
-	int insert(User record);
+    int insert(User record);
 
-	int updateByPrimaryKeySelective(User record);
+    int updateByPrimaryKeySelective(User record);
 
-	User selectByUser(User user);
+    User selectByUser(User user);
 }

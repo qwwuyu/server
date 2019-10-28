@@ -1,132 +1,131 @@
 package com.qwwuyu.server.bean;
 
 public class User {
-	private Integer id = -1;
+    private Integer id = -1;
 
-	private String name;
+    private String name;
 
-	private String pwd;
+    private String pwd;
 
-	private String nick;
+    private String nick;
 
-	private Integer auth = -1;
+    private Integer auth = -1;
 
-	private String ip;
+    private String ip;
 
-	private String token;
+    private String token;
 
-	private String apptoken;
+    private String apptoken;
 
-	private Long time;
+    private Long time;
 
-	private Long apptime;
+    private Long apptime;
 
-	public User() {
-		super();
-	}
+    public User() {
+        super();
+    }
 
-	public User(Integer id, String name, String pwd, String nick, Integer auth, String ip, String token, String apptoken, Long time,
-			Long apptime) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.pwd = pwd;
-		this.nick = nick;
-		this.auth = auth;
-		this.ip = ip;
-		this.token = token;
-		this.apptoken = apptoken;
-		this.time = time;
-		this.apptime = apptime;
-	}
+    public User(Integer id, String name, String pwd, String nick, Integer auth, String ip, String token, String apptoken, Long time, Long apptime) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.pwd = pwd;
+        this.nick = nick;
+        this.auth = auth;
+        this.ip = ip;
+        this.token = token;
+        this.apptoken = apptoken;
+        this.time = time;
+        this.apptime = apptime;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public User setId(Integer id) {
-		this.id = id;
-		return this;
-	}
+    public User setId(Integer id) {
+        this.id = id;
+        return this;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public User setName(String name) {
-		this.name = name == null ? null : name.trim();
-		return this;
-	}
+    public User setName(String name) {
+        this.name = name == null ? null : name.trim();
+        return this;
+    }
 
-	public String getPwd() {
-		return pwd;
-	}
+    public String getPwd() {
+        return pwd;
+    }
 
-	public User setPwd(String pwd) {
-		this.pwd = pwd == null ? null : pwd.trim();
-		return this;
-	}
+    public User setPwd(String pwd) {
+        this.pwd = pwd == null ? null : pwd.trim();
+        return this;
+    }
 
-	public String getNick() {
-		return nick;
-	}
+    public String getNick() {
+        return nick;
+    }
 
-	public User setNick(String nick) {
-		this.nick = nick == null ? null : nick.trim();
-		return this;
-	}
+    public User setNick(String nick) {
+        this.nick = nick == null ? null : nick.trim();
+        return this;
+    }
 
-	public Integer getAuth() {
-		return auth;
-	}
+    public Integer getAuth() {
+        return auth;
+    }
 
-	public User setAuth(Integer auth) {
-		this.auth = auth;
-		return this;
-	}
+    public User setAuth(Integer auth) {
+        this.auth = auth;
+        return this;
+    }
 
-	public String getIp() {
-		return ip;
-	}
+    public String getIp() {
+        return ip;
+    }
 
-	public User setIp(String ip) {
-		this.ip = ip == null ? null : ip.trim();
-		return this;
-	}
+    public User setIp(String ip) {
+        this.ip = ip == null ? null : ip.trim();
+        return this;
+    }
 
-	public String getToken() {
-		return token;
-	}
+    public String getToken() {
+        return token;
+    }
 
-	public User setToken(String token) {
-		this.token = token == null ? null : token.trim();
-		return this;
-	}
+    public User setToken(String token) {
+        this.token = token == null ? null : token.trim();
+        return this;
+    }
 
-	public String getApptoken() {
-		return apptoken;
-	}
+    public String getApptoken() {
+        return apptoken;
+    }
 
-	public User setApptoken(String apptoken) {
-		this.apptoken = apptoken == null ? null : apptoken.trim();
-		return this;
-	}
+    public User setApptoken(String apptoken) {
+        this.apptoken = apptoken == null ? null : apptoken.trim();
+        return this;
+    }
 
-	public Long getTime() {
-		return time;
-	}
+    public Long getTime() {
+        return time;
+    }
 
-	public User setTime(Long time) {
-		this.time = time;
-		return this;
-	}
+    public User setTime(Long time) {
+        this.time = time;
+        return this;
+    }
 
-	public Long getApptime() {
-		return apptime;
-	}
+    public Long getApptime() {
+        return apptime;
+    }
 
-	public User setApptime(Long apptime) {
-		this.apptime = apptime;
-		return this;
-	}
+    public User setApptime(Long apptime) {
+        this.apptime = apptime;
+        return this;
+    }
 }
