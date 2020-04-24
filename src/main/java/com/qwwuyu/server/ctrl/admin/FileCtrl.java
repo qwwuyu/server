@@ -8,6 +8,7 @@ import com.qwwuyu.server.filter.AuthRequired;
 import com.qwwuyu.server.utils.CommUtil;
 import com.qwwuyu.server.utils.FileUtil;
 import com.qwwuyu.server.utils.J2EEUtil;
+import com.qwwuyu.server.utils.MultipartFileSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,8 +19,8 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.URLEncoder;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -140,55 +141,10 @@ public class FileCtrl {
         String range = request.getHeader("range");
         File file = FileUtil.getFile(path);
         if (!FileUtil.isFile(file)) {
-            J2EEUtil.renderInfo(response, "文件未符合", HttpServletResponse.SC_PRECONDITION_FAILED);
+            J2EEUtil.renderInfo(response, "文件未符合", HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-        final String name = file.getName();
-        final long length = file.length();
-        long cLeft = 0, cRight = length;
-        if (range != null) {
-            try {
-                cLeft = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)-([\\d]*)", "$1"));
-                cRight = Long.parseLong(range.replaceAll("[^=]+=([\\d]+)-([\\d]*)", "$2")) + 1;
-            } catch (Exception ignored) {
-            }
-        }
-        final long left = cLeft;
-        final long right = cRight;
-        long written = left;
-
-        if (0 > left || right > length || right < left) {
-            response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
-            return;
-        }
-        if (range != null) {
-            response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-            response.setHeader("Content-Range", String.format("bytes %d-%d/%d", left, right - 1, length));
-        }
-        if (download) {
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(name, "utf-8") + "\"");
-        } else {
-            response.setHeader("Content-Disposition", "inline; filename=\"" + URLEncoder.encode(name, "utf-8") + "\"");
-        }
-        response.setHeader("Content-Length", String.valueOf(right - left));
-        response.setHeader("Accept-Ranges", "bytes");
-        try (InputStream is = new FileInputStream(file); OutputStream os = response.getOutputStream()) {
-            if (left != 0) {
-                is.skip(left);
-            }
-            int read;
-            byte[] bytes = new byte[1024 * 1024];
-            while ((read = is.read(bytes)) != -1) {
-                written += read;
-                if (written > right - 1) {
-                    read = (int) (right + read - written);
-                    os.write(bytes, 0, read);
-                    break;
-                }
-                os.write(bytes, 0, read);
-            }
-            os.flush();
-        }
+        new MultipartFileSender(file.toPath(), request, response, download).serveResource();
     }
 
     @RequestMapping(value = "rename", method = RequestMethod.POST)
