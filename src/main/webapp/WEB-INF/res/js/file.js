@@ -2,7 +2,7 @@ var isHistoryApi = !!(window.history && history.pushState);
 // temp_file模版
 template(
     'temp_file',
-    '<ul> {{each datas}} <li> {{if $value.dir == true}} <a class="file-folder flex-center" data-name="{{$value.name}}"> <i class="ion-icon ion-folder"></i> <span class="file-text file-text-folder">{{$value.name}}</span> </a> {{else if $value.dir != true}} <div class="flex-center"> <i class="ion-icon ion-document"></i> <span class="file-text file-text-file">{{$value.name}}</span> </div> <div data-name="{{$value.name}}" class="flex-center file-ctrl"> <span class="file-open">打开</span> <span class="file-download">下载</span> <span class="file-delete">删除</span> </div> {{/if}} </li> {{/each}}</ul>');
+    '<ul> {{each datas}} <li> {{if $value.dir == true}} <a class="file-folder flex-center" href="{{dirPath}}{{$value.name}}" data-name="{{$value.name}}"> <i class="ion-icon ion-folder"></i> <span class="file-text file-text-folder">{{$value.name}}</span> </a> {{else if $value.dir != true}} <div class="flex-center"> <i class="ion-icon ion-document"></i> <span class="file-text file-text-file">{{$value.name}}</span> </div> <div class="flex-center file-ctrl"> <a class="file-open" href="{{openPath}}{{$value.name}}" target="_blank">打开</a> <a class="file-download" href="{{downloadPath}}{{$value.name}}">下载</a> <a class="file-delete" href="javascript:;" data-name="{{$value.name}}">删除</a> </div> {{/if}} </li> {{/each}}</ul>');
 
 $(document).ready(function () {
     initUpload(getParam("path"));
@@ -25,22 +25,9 @@ $(document).ready(function () {
         history.pushState(null, name, url);
         initUpload(path);
         return false;
-    }).on('click', '.file-open', function (e) {
-        var oldPath = getParam("path");
-        var name = $(this).parent().data("name");
-        var path = oldPath + ("" != oldPath ? "/" : "") + name;
-        var url = location.pathname + "/open/" + name + "?path=" + path;
-        var win = window.open(url, '_blank');
-        win.focus();
-    }).on('click', '.file-download', function (e) {
-        var oldPath = getParam("path");
-        var name = $(this).parent().data("name");
-        var path = oldPath + ("" != oldPath ? "/" : "") + name;
-        var url = location.pathname + "/download" + "?path=" + path;
-        window.open(url, "_self");
     }).on('click', '.file-delete', function (e) {
         var oldPath = getParam("path");
-        var name = $(this).parent().data("name");
+        var name = $(this).data("name");
         var path = oldPath + ("" != oldPath ? "/" : "") + name;
         if (confirm("你确认要删除文件：" + name + "?")) {
             deleteFile(path, $(this))
@@ -84,8 +71,13 @@ function requestFile(path) {
 
 // 处理列表数据
 function handFileData(list) {
+    var oldPath = getParam("path");
+    oldPath = oldPath + ("" != oldPath ? "/" : "");
     var temp_file = template('temp_file', {
-        datas: list
+        datas: list,
+        dirPath: location.pathname + "?path=" + oldPath,
+        downloadPath: location.pathname + "/download?path=" + oldPath,
+        openPath: location.pathname + "/open?path=" + oldPath
     });
     $('.content').html(temp_file);
     setDeleteDir();

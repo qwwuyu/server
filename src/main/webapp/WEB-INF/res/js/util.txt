@@ -96,30 +96,12 @@
 <span class="main-content-info">{{note.time}}</span>
 <span class="main-content-title">{{note.content}}</span>
 
-//file原始代码
-<ul>
-    <li>
-        <a class="file-folder flex-center" data-name="$myFolder">
-            <i class="ion-icon ion-folder"></i>
-            <span class="file-text file-text-folder">$myFolder</span>
-        </a>
-        <div class="flex-center">
-            <i class="ion-icon ion-document"></i>
-            <span class="file-text file-text-file">$myFile</span>
-        </div>
-        <div data-name="$myFile" class="flex-center file-ctrl">
-            <span class="file-open">打开</span>
-            <span class="file-download">下载</span>
-            <span class="file-delete">删除</span>
-        </div>
-    </li>
-</ul>
 //temp_file  file模版代码
 <ul>
     {{each datas}}
     <li>
         {{if $value.dir == true}}
-        <a class="file-folder flex-center" data-name="{{$value.name}}">
+        <a class="file-folder flex-center" href="{{dirPath}}{{$value.name}}" data-name="{{$value.name}}">
             <i class="ion-icon ion-folder"></i>
             <span class="file-text file-text-folder">{{$value.name}}</span>
         </a>
@@ -128,10 +110,10 @@
             <i class="ion-icon ion-document"></i>
             <span class="file-text file-text-file">{{$value.name}}</span>
         </div>
-        <div data-name="{{$value.name}}" class="flex-center file-ctrl">
-            <span class="file-open">打开</span>
-            <span class="file-download">下载</span>
-            <span class="file-delete">删除</span>
+        <div class="flex-center file-ctrl">
+            <a class="file-open" href="{{openPath}}{{$value.name}}" target="_blank">打开</a>
+            <a class="file-download" href="{{downloadPath}}{{$value.name}}">下载</a>
+            <a class="file-delete" href="javascript:;" data-name="{{$value.name}}">删除</a>
         </div>
         {{/if}}
     </li>
