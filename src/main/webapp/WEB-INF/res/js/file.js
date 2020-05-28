@@ -33,12 +33,24 @@ $(document).ready(function () {
             deleteFile(path, $(this))
         }
     }).on('click', '#back', function (e) {
-        var oldPath = getParam("path");
-        goBack(oldPath)
+        var path = getParam("path");
+        goBack(path)
     }).on('click', '#deleteDir', function (e) {
-        var oldPath = getParam("path");
-        if ("" != oldPath && confirm("你确认要删除目录：" + oldPath + "?")) {
-            deleteDir(oldPath)
+        var path = getParam("path");
+        if ("" != path && confirm("你确认要删除目录：" + path + "?")) {
+            deleteDir(path)
+        }
+    }).on('click', '#newDir', function (e) {
+        var word = prompt("输入文件夹名称");
+        if (word && "" != word) {
+            var path = getParam("path");
+            createDir(word, path)
+        }
+    }).on('click', '#downloadFile', function (e) {
+        var word = prompt("输入下载地址");
+        if (word && "" != word) {
+            var path = getParam("path");
+            downloadFile(word, path)
         }
     });
 });
@@ -113,16 +125,20 @@ function initUpload(path) {
         },
         start: function (e) {
             $("#progress").show();
+            $("#result").text("");
             $("#result").show();
         },
         done: function (e, data) {
-            $('#result').text("done:" + data.result);
+            $('#result').text($('#result').text() + " #done# " + data.result);
+        },
+        fail: function (e, data) {
+            $('#result').text($('#result').text() + " #fail# " + data.result);
+        },
+        stop: function (e) {
+            $('#result').text("end>>" + $('#result').text());
             var path = getParam("path");
             requestFile(path);
         },
-        fail: function (e, data) {
-            $('#result').text("fail:" + data.result);
-        }
     });
 }
 
@@ -132,10 +148,6 @@ function deleteFile(path, obj) {
         url: location.pathname + "/delete",
         data: {
             "path": path
-        },
-        beforeSend: function () {
-        },
-        complete: function () {
         }
     });
     request.then(function (data) {
@@ -157,16 +169,56 @@ function deleteDir(path) {
         url: location.pathname + "/deleteDir",
         data: {
             "path": path
-        },
-        beforeSend: function () {
-        },
-        complete: function () {
         }
     });
     request.then(function (data) {
         if (1 == data.state) {
             showSucc("删除成功");
             goBack(path)
+        } else if (data.info) {
+            showErr(data.info);
+        }
+    }, function (jqXHR, textStatus, errorThrown) {
+        handErr(textStatus);
+    });
+}
+
+function createDir(dirName, path) {
+    var params = getRequest();
+    var request = $.ajax({
+        url: location.pathname + "/createDir",
+        data: {
+            "path": path,
+            "dirName": dirName
+        }
+    });
+    request.then(function (data) {
+        if (1 == data.state) {
+            showSucc("创建成功");
+            var path = getParam("path");
+            requestFile(path);
+        } else if (data.info) {
+            showErr(data.info);
+        }
+    }, function (jqXHR, textStatus, errorThrown) {
+        handErr(textStatus);
+    });
+}
+
+function downloadFile(downloadUrl, path) {
+    var params = getRequest();
+    var request = $.ajax({
+        url: location.pathname + "/downloadFile",
+        data: {
+            "path": path,
+            "downloadUrl": downloadUrl
+        }
+    });
+    request.then(function (data) {
+        if (data.state == 1) {
+            showSucc(data.info);
+            var path = getParam("path");
+            requestFile(path);
         } else if (data.info) {
             showErr(data.info);
         }

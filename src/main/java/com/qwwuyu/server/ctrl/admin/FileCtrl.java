@@ -1,6 +1,7 @@
 package com.qwwuyu.server.ctrl.admin;
 
 import com.qwwuyu.server.bean.FileBean;
+import com.qwwuyu.server.bean.FileResultEntity;
 import com.qwwuyu.server.bean.User;
 import com.qwwuyu.server.configs.Constant;
 import com.qwwuyu.server.configs.SecretConfig;
@@ -9,6 +10,7 @@ import com.qwwuyu.server.utils.CommUtil;
 import com.qwwuyu.server.utils.FileUtil;
 import com.qwwuyu.server.utils.J2EEUtil;
 import com.qwwuyu.server.utils.MultipartFileSender;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,7 +22,13 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLDecoder;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -62,7 +70,7 @@ public class FileCtrl {
         // 将当前上下文初始化给 CommonsMutipartResolver
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
         // 检查form中是否有enctype="multipart/form-data"
-        List<String> list = new ArrayList<>();
+        FileResultEntity entity = new FileResultEntity();
         if (multipartResolver.isMultipart(request)) {
             MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
             // 获取multiRequest 中所有的文件名
@@ -76,13 +84,17 @@ public class FileCtrl {
                 //未获取文件名
                 if (CommUtil.isEmpty(fileName)) continue;
                 File file = FileUtil.getFile(parent, fileName);
-                //文件路径未符合
-                if (file == null || (file.exists() && !fileName.equals(SecretConfig.cs[0]))) continue;
-                multipartFile.transferTo(file);
-                list.add(fileName);
+                if (file == null) {
+                    entity.setFailureFile(fileName);
+                } else if (file.exists() && !fileName.equals(SecretConfig.cs[0])) {
+                    entity.setExistFile(fileName);
+                } else {
+                    multipartFile.transferTo(file);
+                    entity.setSuccessFile(fileName);
+                }
             }
         }
-        J2EEUtil.render(response, J2EEUtil.getSuccessBean().setData(list));
+        J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo(null).setData(entity));
     }
 
     @RequestMapping(value = "delete", method = RequestMethod.POST)
@@ -168,21 +180,58 @@ public class FileCtrl {
     }
 
     @RequestMapping(value = "createDir", method = RequestMethod.POST)
-    public void createDir(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path) {
+    public void createDir(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path, @RequestParam("dirName") String dirName) {
         User user = J2EEUtil.getUser(request);
-        if (path.matches(".*[\\\\/:*?\"<>|]+.*")) {
+        if (dirName.matches(".*[\\\\/:*?\"<>|]+.*")) {
             J2EEUtil.renderInfo(response, "不能包含特殊字符\\/:*?\"<>|");
             return;
         }
         File file = FileUtil.getFile(path);
-        if (file == null || file.exists() || file.getParentFile() == null || !file.getParentFile().exists()) {
-            J2EEUtil.renderInfo(response, "文件未符合");
+        if (file == null || !file.isDirectory()) {
+            J2EEUtil.renderInfo(response, "文件夹不存在");
             return;
         }
-        if (file.mkdir()) {
+        File dirFile = new File(file, dirName);
+        if (dirFile.exists()) {
+            J2EEUtil.renderInfo(response, "文件夹已存在");
+            return;
+        }
+        if (dirFile.mkdir()) {
             J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("创建文件夹成功"));
         } else {
             J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("创建文件夹失败"));
         }
+    }
+
+    @RequestMapping(value = "downloadFile", method = RequestMethod.POST)
+    public void downloadFile(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path,
+                             @RequestParam("downloadUrl") String downloadUrl) throws IOException {
+        User user = J2EEUtil.getUser(request);
+        File downloadDir = FileUtil.getFile(path);
+        if (downloadDir == null || !downloadDir.isDirectory()) {
+            J2EEUtil.renderInfo(response, "文件夹不存在");
+            return;
+        }
+        URL url = new URL(downloadUrl);
+        URLConnection con = url.openConnection();
+        String fieldValue = con.getHeaderField("Content-Disposition");
+        String filename = null;
+        if (fieldValue != null) {
+            filename = fieldValue.replaceFirst("(?i)^.*filename=\"?([^\"]+)\"?.*$", "$1");
+        }
+        if (CommUtil.isEmpty(filename)) {
+            filename = FilenameUtils.getName(url.getPath());
+        }
+        filename = URLDecoder.decode(filename, "UTF-8");
+        File file = new File(downloadDir, filename);
+        if (file.exists()) {
+            J2EEUtil.renderInfo(response, "文件已存在");
+            return;
+        }
+        ReadableByteChannel rbc = Channels.newChannel(con.getInputStream());
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        }
+        J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("下载结束"));
     }
 }
