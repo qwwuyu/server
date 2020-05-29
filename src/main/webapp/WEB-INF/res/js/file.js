@@ -129,13 +129,12 @@ function initUpload(path) {
             $("#result").show();
         },
         done: function (e, data) {
-            $('#result').text($('#result').text() + " #done# " + data.result);
+            $('#result').text($('#result').text() + "done>>" + data.result + "\n");
         },
         fail: function (e, data) {
-            $('#result').text($('#result').text() + " #fail# " + data.result);
+            $('#result').text($('#result').text() + "fail>>" + data.result + "\n");
         },
         stop: function (e) {
-            $('#result').text("end>>" + $('#result').text());
             var path = getParam("path");
             requestFile(path);
         },

@@ -222,7 +222,10 @@ public class FileCtrl {
         if (CommUtil.isEmpty(filename)) {
             filename = FilenameUtils.getName(url.getPath());
         }
-        filename = URLDecoder.decode(filename, "UTF-8");
+        try {
+            filename = URLDecoder.decode(filename, "UTF-8");
+        } catch (Exception ignored) {
+        }
         File file = new File(downloadDir, filename);
         if (file.exists()) {
             J2EEUtil.renderInfo(response, "文件已存在");
