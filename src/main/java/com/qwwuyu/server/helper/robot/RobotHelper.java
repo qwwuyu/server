@@ -1,4 +1,4 @@
-package com.qwwuyu.server.robot;
+package com.qwwuyu.server.helper.robot;
 
 import cc.moecraft.icq.PicqBotX;
 import cc.moecraft.icq.PicqConfig;

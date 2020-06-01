@@ -1,4 +1,4 @@
-package com.qwwuyu.server.robot;
+package com.qwwuyu.server.helper.robot;
 
 import java.util.HashMap;
 import java.util.Map;

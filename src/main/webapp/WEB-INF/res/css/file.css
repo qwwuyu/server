@@ -50,11 +50,16 @@ a, a:link, a:visited, a:hover, a:active {
     font-size: 16px;
 }
 
-.file-folder, #back, #deleteDir, #newDir, #downloadFile {
+.dir-ctrl-all {
+    padding: 8px;
+    font-size: 16px;
+}
+
+.file-folder, .dir-ctrl {
     cursor: pointer;
 }
 
-.file-folder:hover, #back:hover, #deleteDir:hover, #newDir:hover, #downloadFile:hover {
+.file-folder:hover, .dir-ctrl:hover {
     background: #F7F7F7;
 }
 

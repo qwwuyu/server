@@ -45,4 +45,26 @@ public class CommUtil {
     public static byte[] file2bs(File file) throws IOException {
         return Files.readAllBytes(file.toPath());
     }
+
+    /** close */
+    public static void closeStream(Object... streams) {
+        for (Object stream : streams) {
+            try {
+                if (stream instanceof Closeable) ((Closeable) stream).close();
+            } catch (IOException ignored) {
+            }
+        }
+    }
+
+    public static String getFileSize(long size) {
+        if (size < 1024L) {
+            return size + "B";
+        } else if (size < 1024L * 1024) {
+            return String.format("%.1fKB", size / 1024f);
+        } else if (size < 1024L * 1024 * 1024) {
+            return String.format("%.1fMB", size / 1024 / 1024f);
+        } else {
+            return String.format("%.1fGB", size / 1024 / 1024 / 1024f);
+        }
+    }
 }

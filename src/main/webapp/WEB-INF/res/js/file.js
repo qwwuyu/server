@@ -52,6 +52,8 @@ $(document).ready(function () {
             var path = getParam("path");
             downloadFile(word, path)
         }
+    }).on('click', '#checkDownloadFile', function (e) {
+        checkDownloadFile(getParam("path"));
     });
 });
 
@@ -218,6 +220,25 @@ function downloadFile(downloadUrl, path) {
             showSucc(data.info);
             var path = getParam("path");
             requestFile(path);
+        } else if (data.state == 2) {
+            showSucc(data.info);
+        } else if (data.info) {
+            showErr(data.info);
+        }
+    }, function (jqXHR, textStatus, errorThrown) {
+        handErr(textStatus);
+    });
+}
+
+function checkDownloadFile(path) {
+    var params = getRequest();
+    var request = $.ajax({
+        type: 'GET',
+        url: location.pathname + "/checkDownloadFile"
+    });
+    request.then(function (data) {
+        if (data.state == 1) {
+            showSucc(data.info);
         } else if (data.info) {
             showErr(data.info);
         }

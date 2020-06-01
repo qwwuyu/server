@@ -3,7 +3,7 @@ package com.qwwuyu.server.ctrl.admin;
 import com.qwwuyu.server.bean.User;
 import com.qwwuyu.server.configs.Constant;
 import com.qwwuyu.server.filter.AuthRequired;
-import com.qwwuyu.server.robot.RobotHelper;
+import com.qwwuyu.server.helper.robot.RobotHelper;
 import com.qwwuyu.server.utils.J2EEUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

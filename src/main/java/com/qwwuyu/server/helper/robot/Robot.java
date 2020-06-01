@@ -1,4 +1,4 @@
-package com.qwwuyu.server.robot;
+package com.qwwuyu.server.helper.robot;
 
 import com.qwwuyu.server.utils.CommUtil;
 import com.qwwuyu.server.utils.LimitQueue;

@@ -37,6 +37,8 @@ public class Constant {
     public static final int HTTP_AUTH_OTHER = 3;
     /** 验证过期 */
     public static final int HTTP_AUTH_EXPIRE = 2;
+    /** 下载中 */
+    public static final int HTTP_DOWNLOADING = 2;
 
     /* ======================== key ======================== */
     public static final String KEY_USER = "KEY_USER";

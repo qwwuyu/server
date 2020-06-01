@@ -6,11 +6,11 @@ import com.qwwuyu.server.bean.User;
 import com.qwwuyu.server.configs.Constant;
 import com.qwwuyu.server.configs.SecretConfig;
 import com.qwwuyu.server.filter.AuthRequired;
+import com.qwwuyu.server.helper.FileDHelper;
 import com.qwwuyu.server.utils.CommUtil;
 import com.qwwuyu.server.utils.FileUtil;
 import com.qwwuyu.server.utils.J2EEUtil;
 import com.qwwuyu.server.utils.MultipartFileSender;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,13 +22,10 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLDecoder;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -206,6 +203,7 @@ public class FileCtrl {
     @RequestMapping(value = "downloadFile", method = RequestMethod.POST)
     public void downloadFile(HttpServletRequest request, HttpServletResponse response, @RequestParam("path") String path,
                              @RequestParam("downloadUrl") String downloadUrl) throws IOException {
+        final long time = System.currentTimeMillis();
         User user = J2EEUtil.getUser(request);
         File downloadDir = FileUtil.getFile(path);
         if (downloadDir == null || !downloadDir.isDirectory()) {
@@ -214,27 +212,55 @@ public class FileCtrl {
         }
         URL url = new URL(downloadUrl);
         URLConnection con = url.openConnection();
-        String fieldValue = con.getHeaderField("Content-Disposition");
-        String filename = null;
-        if (fieldValue != null) {
-            filename = fieldValue.replaceFirst("(?i)^.*filename=\"?([^\"]+)\"?.*$", "$1");
-        }
-        if (CommUtil.isEmpty(filename)) {
-            filename = FilenameUtils.getName(url.getPath());
-        }
-        try {
-            filename = URLDecoder.decode(filename, "UTF-8");
-        } catch (Exception ignored) {
-        }
-        File file = new File(downloadDir, filename);
-        if (file.exists()) {
-            J2EEUtil.renderInfo(response, "文件已存在");
+        int code = ((HttpURLConnection) con).getResponseCode();
+        if (code != HttpServletResponse.SC_OK) {
+            CommUtil.closeStream(con.getInputStream());
+            J2EEUtil.renderInfo(response, "状态码错误:" + code);
             return;
         }
-        ReadableByteChannel rbc = Channels.newChannel(con.getInputStream());
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+        File file = new File(downloadDir, FileDHelper.getNameForDisposition(con, url));
+        if (file.exists()) {
+            CommUtil.closeStream(con.getInputStream());
+            J2EEUtil.renderInfo(response, "文件已存在:" + file.getName());
+            return;
         }
-        J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("下载结束"));
+        if (!FileDHelper.download(con, file, con)) {
+            CommUtil.closeStream(con.getInputStream());
+            J2EEUtil.renderInfo(response, "有正在进行的任务");
+            return;
+        }
+        final long diffTime = System.currentTimeMillis() - time;
+        if (diffTime < 3000) {
+            synchronized (con) {
+                try {
+                    con.wait(3000 - diffTime);
+                } catch (InterruptedException ignored) {
+                }
+            }
+        }
+        final FileDHelper.DownloadProgress progress = FileDHelper.getProgress();
+        if (progress.state == FileDHelper.DOWNLOADING) {
+            J2EEUtil.render(response, J2EEUtil.getErrorBean().setState(Constant.HTTP_DOWNLOADING).setInfo(progress.progressText()));
+        } else if (progress.state == FileDHelper.DOWNLOAD_ERROR) {
+            J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("下载失败:" + progress.errorText()));
+        } else {
+            J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("下载完毕"));
+        }
+    }
+
+
+    @RequestMapping(value = "checkDownloadFile", method = RequestMethod.GET)
+    public void checkDownloadFile(HttpServletRequest request, HttpServletResponse response, @RequestParam(name = "cancel", required = false) String cancel) throws IOException {
+        final FileDHelper.DownloadProgress progress = FileDHelper.getProgress();
+        if (progress == null) {
+            J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("没有任务"));
+        } else if (progress.state == FileDHelper.DOWNLOADING) {
+            J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo(progress.progressText()));
+        } else if (progress.state == FileDHelper.DOWNLOAD_ERROR) {
+            J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("下载失败:" + progress.errorText()));
+        } else {
+            J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("下载完毕"));
+        }
+        if ("true".equals(cancel)) FileDHelper.cancelDownload();
     }
 }
