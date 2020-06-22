@@ -119,7 +119,7 @@ public class FileDHelper {
         }
 
         public String progressText() {
-            return CommUtil.getFileSize(progress) + " - " + progress + "/" + (total > 0 ? String.valueOf(total) : "*");
+            return CommUtil.getFileSize(progress) + "/" + (total > 0 ? CommUtil.getFileSize(total) : "*");
         }
 
         public String errorText() {

@@ -2,15 +2,15 @@ var isHistoryApi = !!(window.history && history.pushState);
 // temp_file模版
 template(
     'temp_file',
-    '<ul> {{each datas}} <li> {{if $value.dir == true}} <a class="file-folder flex-center" href="{{dirPath}}{{$value.name}}" data-name="{{$value.name}}"> <i class="ion-icon ion-folder"></i> <span class="file-text file-text-folder">{{$value.name}}</span> </a> {{else if $value.dir != true}} <div class="flex-center"> <i class="ion-icon ion-document"></i> <span class="file-text file-text-file">{{$value.name}}</span> </div> <div class="flex-center file-ctrl"> <a class="file-open" href="{{openPath}}{{$value.name}}" target="_blank">打开</a> <a class="file-download" href="{{downloadPath}}{{$value.name}}">下载</a> <a class="file-delete" href="javascript:;" data-name="{{$value.name}}">删除</a> </div> {{/if}} </li> {{/each}}</ul>');
+    '<ul> {{each datas}} <li> {{if $value.dir == true}} <a class="file-folder flex-center" href="{{dirPath}}{{$value.path}}" data-name="{{$value.name}}"> <i class="ion-icon ion-folder"></i> <span class="file-text file-text-folder">{{$value.name}}</span> </a> {{else if $value.dir != true}} <div class="flex-center"> <i class="ion-icon ion-document"></i> <span class="file-text file-text-file">{{$value.name}}</span> </div> <div class="flex-center file-ctrl"> <a class="file-open" href="{{openPath}}{{$value.path}}" target="_blank">打开</a> <a class="file-download" href="{{downloadPath}}{{$value.path}}">下载</a> <a class="file-delete" href="javascript:;" data-name="{{$value.name}}">删除</a> <span class="file-size">{{$value.size}}</span> </div> {{/if}} </li> {{/each}}</ul>');
 
 $(document).ready(function () {
-    initUpload(getParam("path"));
+    initUpload(decodeURI(getParam("path")));
     $("#progress").hide();
     $("#result").hide();
     if (isHistoryApi) {
         $(window).on("popstate", function (event) {
-            var path = getParam("path");
+            var path = decodeURI(getParam("path"));
             initUpload(path);
         });
     }
@@ -18,42 +18,42 @@ $(document).ready(function () {
         if (!isHistoryApi) {
             return true;
         }
-        var oldPath = getParam("path");
+        var oldPath = decodeURI(getParam("path"));
         var name = $(this).data("name");
         var path = oldPath + ("" != oldPath ? "/" : "") + name;
-        var url = location.pathname + "?path=" + path;
+        var url = location.pathname + "?path=" + path.replace(/\[/g, "%5B").replace(/]/g, "%5D").replace(/{/g, "%7B").replace(/}/g, "%7D");
         history.pushState(null, name, url);
         initUpload(path);
         return false;
     }).on('click', '.file-delete', function (e) {
-        var oldPath = getParam("path");
+        var oldPath = decodeURI(getParam("path"));
         var name = $(this).data("name");
         var path = oldPath + ("" != oldPath ? "/" : "") + name;
         if (confirm("你确认要删除文件：" + name + "?")) {
             deleteFile(path, $(this))
         }
     }).on('click', '#back', function (e) {
-        var path = getParam("path");
+        var path = decodeURI(getParam("path"));
         goBack(path)
     }).on('click', '#deleteDir', function (e) {
-        var path = getParam("path");
+        var path = decodeURI(getParam("path"));
         if ("" != path && confirm("你确认要删除目录：" + path + "?")) {
             deleteDir(path)
         }
     }).on('click', '#newDir', function (e) {
         var word = prompt("输入文件夹名称");
         if (word && "" != word) {
-            var path = getParam("path");
+            var path = decodeURI(getParam("path"));
             createDir(word, path)
         }
     }).on('click', '#downloadFile', function (e) {
         var word = prompt("输入下载地址");
         if (word && "" != word) {
-            var path = getParam("path");
+            var path = decodeURI(getParam("path"));
             downloadFile(word, path)
         }
     }).on('click', '#checkDownloadFile', function (e) {
-        checkDownloadFile(getParam("path"));
+        checkDownloadFile();
     });
 });
 
@@ -85,8 +85,11 @@ function requestFile(path) {
 
 // 处理列表数据
 function handFileData(list) {
-    var oldPath = getParam("path");
+    var oldPath = decodeURI(getParam("path"));
     oldPath = oldPath + ("" != oldPath ? "/" : "");
+    for (let i = 0; i < list.length; i++) {
+        list[i].path = list[i].name.replace(/\[/g, "%5B").replace(/]/g, "%5D").replace(/{/g, "%7B").replace(/}/g, "%7D")
+    }
     var temp_file = template('temp_file', {
         datas: list,
         dirPath: location.pathname + "?path=" + oldPath,
@@ -119,7 +122,7 @@ function initUpload(path) {
     $('#fileupload').fileupload({
         url: location.pathname + '/upload',
         formData: {
-            "path": getParam("path")
+            "path": decodeURI(getParam("path"))
         },
         dataType: 'text',
         progressall: function (e, data) {
@@ -137,7 +140,7 @@ function initUpload(path) {
             $('#result').text($('#result').text() + "fail>>" + data.result + "\n");
         },
         stop: function (e) {
-            var path = getParam("path");
+            var path = decodeURI(getParam("path"));
             requestFile(path);
         },
     });
@@ -196,7 +199,7 @@ function createDir(dirName, path) {
     request.then(function (data) {
         if (1 == data.state) {
             showSucc("创建成功");
-            var path = getParam("path");
+            var path = decodeURI(getParam("path"));
             requestFile(path);
         } else if (data.info) {
             showErr(data.info);
@@ -218,8 +221,7 @@ function downloadFile(downloadUrl, path) {
     request.then(function (data) {
         if (data.state == 1) {
             showSucc(data.info);
-            var path = getParam("path");
-            requestFile(path);
+            requestFile(decodeURI(getParam("path")));
         } else if (data.state == 2) {
             showSucc(data.info);
         } else if (data.info) {
@@ -230,7 +232,7 @@ function downloadFile(downloadUrl, path) {
     });
 }
 
-function checkDownloadFile(path) {
+function checkDownloadFile() {
     var params = getRequest();
     var request = $.ajax({
         type: 'GET',
@@ -253,7 +255,7 @@ function goBack(oldPath) {
         var url;
         if (oldPath.lastIndexOf("/") != -1) {
             path = oldPath.substring(0, oldPath.lastIndexOf("/"));
-            url = location.pathname + "?path=" + path;
+            url = location.pathname + "?path=" + path.replace(/\[/g, "%5B").replace(/]/g, "%5D").replace(/{/g, "%7B").replace(/}/g, "%7D");
         } else {
             path = "";
             url = location.pathname;

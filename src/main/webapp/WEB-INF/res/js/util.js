@@ -54,7 +54,7 @@ function getParam(key) {
         for (var i = 0; i < strs.length; i++) {
             var split = strs[i].split("=");
             if (key == split[0]) {
-                return (split[1]) ? split[1] : "";
+                return (split[1]) ? split[1].replace("[", "%5B").replace("]", "%5D").replace("{", "%7B").replace("}", "%7D") : "";
             }
         }
     }

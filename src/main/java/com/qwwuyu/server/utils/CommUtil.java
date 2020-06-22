@@ -60,11 +60,11 @@ public class CommUtil {
         if (size < 1024L) {
             return size + "B";
         } else if (size < 1024L * 1024) {
-            return String.format("%.1fKB", size / 1024f);
+            return String.format("%.2fKB", size / 1024f);
         } else if (size < 1024L * 1024 * 1024) {
-            return String.format("%.1fMB", size / 1024 / 1024f);
+            return String.format("%.2fMB", size / 1024 / 1024f);
         } else {
-            return String.format("%.1fGB", size / 1024 / 1024 / 1024f);
+            return String.format("%.2fGB", size / 1024 / 1024 / 1024f);
         }
     }
 }

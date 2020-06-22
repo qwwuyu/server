@@ -80,7 +80,7 @@ a, a:link, a:visited, a:hover, a:active {
     height: 24px;
 }
 
-.file-open, .file-download, .file-delete {
+.file-open, .file-download, .file-delete .file-size{
     font-size: 12px;
     cursor: pointer;
 }
@@ -92,6 +92,11 @@ a, a:link, a:visited, a:hover, a:active {
 
 .file-delete {
     color: #909090;
+    margin-left: 24px;
+}
+
+.file-size {
+    color: #333;
     margin-left: 24px;
 }
 

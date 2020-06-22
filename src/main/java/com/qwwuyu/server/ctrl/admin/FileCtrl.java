@@ -50,7 +50,8 @@ public class FileCtrl {
         File[] files = file.listFiles();
         if (files != null) {
             for (File cf : files) {
-                list.add(new FileBean(cf.getName(), cf.isDirectory()));
+                final boolean directory = cf.isDirectory();
+                list.add(new FileBean(cf.getName(), directory, directory ? "" : CommUtil.getFileSize(cf.length())));
             }
         }
         J2EEUtil.render(response, J2EEUtil.getSuccessBean().setData(list));
@@ -242,9 +243,9 @@ public class FileCtrl {
         if (progress.state == FileDHelper.DOWNLOADING) {
             J2EEUtil.render(response, J2EEUtil.getErrorBean().setState(Constant.HTTP_DOWNLOADING).setInfo(progress.progressText()));
         } else if (progress.state == FileDHelper.DOWNLOAD_ERROR) {
-            J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("下载失败:" + progress.errorText()));
+            J2EEUtil.render(response, J2EEUtil.getErrorBean().setInfo("下载失败:" + progress.errorText()));
         } else {
-            J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("下载完毕"));
+            J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("结束:" + progress.progressText()));
         }
     }
 
@@ -259,7 +260,7 @@ public class FileCtrl {
         } else if (progress.state == FileDHelper.DOWNLOAD_ERROR) {
             J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("下载失败:" + progress.errorText()));
         } else {
-            J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("下载完毕"));
+            J2EEUtil.render(response, J2EEUtil.getSuccessBean().setInfo("结束:" + progress.progressText()));
         }
         if ("true".equals(cancel)) FileDHelper.cancelDownload();
     }
