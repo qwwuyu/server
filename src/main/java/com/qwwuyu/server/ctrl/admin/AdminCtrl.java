@@ -40,10 +40,4 @@ public class AdminCtrl {
         User user = J2EEUtil.getUser(request);
         return hand("java.html");
     }
-
-    @RequestMapping("/robot")
-    public String toRobot(HttpServletRequest request) {
-        User user = J2EEUtil.getUser(request);
-        return hand("robot.html");
-    }
 }
