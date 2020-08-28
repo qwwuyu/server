@@ -26,9 +26,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 @RequestMapping("/ad/file/")
@@ -46,14 +45,24 @@ public class FileCtrl {
             J2EEUtil.renderInfo(response, "目录未符合");
             return;
         }
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
         List<FileBean> list = new ArrayList<>();
         File[] files = file.listFiles();
         if (files != null) {
             for (File cf : files) {
+                final String date = dateFormat.format(new Date(cf.lastModified()));
                 final boolean directory = cf.isDirectory();
-                list.add(new FileBean(cf.getName(), directory, directory ? "" : CommUtil.getFileSize(cf.length())));
+                final String[] listFiles = directory ? cf.list() : null;
+                int child = listFiles == null ? 0 : listFiles.length;
+                String info = directory ? child + "项" : CommUtil.getFileSize(cf.length());
+                list.add(new FileBean(cf.getName(), directory, directory ? null : date, directory ? null : info));
             }
         }
+        list.sort((lhs, rhs) -> {
+            if (lhs.dir && !rhs.dir) return -1;
+            if (!lhs.dir && rhs.dir) return 1;
+            return lhs.name.compareTo(rhs.name);
+        });
         J2EEUtil.render(response, J2EEUtil.getSuccessBean().setData(list));
     }
 

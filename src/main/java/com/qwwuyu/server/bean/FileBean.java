@@ -3,14 +3,14 @@ package com.qwwuyu.server.bean;
 public class FileBean {
     public String name;
     public boolean dir;
-    public String size;
+    public String date;
+    public String info;
+    public boolean apk;
 
-    public FileBean() {
-    }
-
-    public FileBean(String name, boolean dir, String size) {
+    public FileBean(String name, boolean dir, String date, String info) {
         this.name = name;
         this.dir = dir;
-        this.size = size;
+        this.date = date;
+        this.info = info;
     }
 }

@@ -101,21 +101,41 @@
     {{each datas}}
     <li>
         {{if $value.dir == true}}
-        <a class="file-folder flex-center" href="{{dirPath}}{{$value.path}}" data-name="{{$value.name}}">
-            <i class="ion-icon ion-folder"></i>
-            <span class="file-text file-text-folder">{{$value.name}}</span>
-        </a>
+            <a class="file-folder flex-center" href="{{dirPath}}{{$value.path}}" data-name="{{$value.name}}">
+                <i class="ion-icon ion-folder"></i>
+                <span class="file-text file-text-folder">{{$value.name}}</span>
+            </a>
+            {{if $value.date != null || $value.info != null}}
+             <div class="flex-center file-ctrl">
+                {{if $value.date != null}}
+                <span class="file-date ml12">{{$value.date}}</span>
+                {{/if}}
+                {{if $value.date != null && $value.info != null}}
+                <span class="file-info ml24">{{$value.info}}</span>
+                {{else $value.info != null}}
+                <span class="file-info ml12">{{$value.info}}</span>
+                {{/if}}
+             </div>
+            {{/if}}
         {{else if $value.dir != true}}
-        <div class="flex-center">
-            <i class="ion-icon ion-document"></i>
-            <span class="file-text file-text-file">{{$value.name}}</span>
-        </div>
-        <div class="flex-center file-ctrl">
-            <a class="file-open" href="{{openPath}}{{$value.path}}" target="_blank">打开</a>
-            <a class="file-download" href="{{downloadPath}}{{$value.path}}">下载</a>
-            <a class="file-delete" href="javascript:;" data-name="{{$value.name}}">删除</a>
-            <span class="file-size">{{$value.size}}</span>
-        </div>
+            <div class="flex-center">
+                <i class="ion-icon ion-document"></i>
+                <span class="file-text file-text-file">{{$value.name}}</span>
+            </div>
+            <div class="flex-center file-ctrl">
+                <a class="file-open ml12" href="{{openPath}}{{$value.path}}" target="_blank">打开</a>
+                <a class="file-download ml24" href="{{downloadPath}}{{$value.path}}">下载</a>
+                <a class="file-delete ml24" href="javascript:;" data-name="{{$value.name}}">删除</a>
+                {{if $value.apk == true}}
+                <a class="file-apk ml24" href="javascript:;" data-name="{{$value.name}}">安装</a>
+                {{/if}}
+                {{if $value.date != null}}
+                <span class="file-date ml24">{{$value.date}}</span>
+                {{/if}}
+                {{if $value.info != null}}
+                <span class="file-info ml24">{{$value.info}}</span>
+                {{/if}}
+            </div>
         {{/if}}
     </li>
     {{/each}}

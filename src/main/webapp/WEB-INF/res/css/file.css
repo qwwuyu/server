@@ -80,24 +80,30 @@ a, a:link, a:visited, a:hover, a:active {
     height: 24px;
 }
 
-.file-open, .file-download, .file-delete .file-size{
+.file-open, .file-download, .file-delete, .file-apk {
     font-size: 12px;
     cursor: pointer;
 }
 
-.file-open, .file-download {
-    margin-left: 12px;
+.file-open, .file-download, .file-apk {
     color: #2d64b3;
 }
 
 .file-delete {
     color: #909090;
+}
+
+.file-date, .file-info {
+    font-size: 12px;
+    color: #333;
+}
+
+.ml24 {
     margin-left: 24px;
 }
 
-.file-size {
-    color: #333;
-    margin-left: 24px;
+.ml12 {
+    margin-left: 12px;
 }
 
 /*---------- alert ---------*/
