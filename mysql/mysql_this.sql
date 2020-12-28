@@ -1,4 +1,4 @@
---修改编码
+-- 修改编码
 show variables like 'character_set_%';
 show variables like 'collation_%';
 SET NAMES 'utf8'; 
@@ -78,16 +78,16 @@ CREATE TABLE flag(
 DELETE FROM flag;
 INSERT INTO flag (user_id,nick,title,time) VALUES (1,'nick','title',500);
 SELECT * FROM flag;
---显示所有表
+-- 显示所有表
 show tables;
 
---基本结构
+-- 基本结构
 desc user;
---详细结构
+-- 详细结构
 show create table user;
---修改表名
+-- 修改表名
 alter table user rename user2;
---修改表结构
+-- 修改表结构
 alter table user change name name2 varchar(20);
 alter table user add tField varchar(20) after name;
 alter table user drop tField;
