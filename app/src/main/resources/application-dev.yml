@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://ip:port/server?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: input
+    password: input
+
+env:
+  private-key: input
+  public-key: input
+  file-dir-win: input
+  file-dir-linux: input
+  java-dir-win: input
+  java-dir-linux: input

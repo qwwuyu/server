@@ -1,0 +1,69 @@
+# 共有8个级别，按照从低到高为：all < trace < debug < info < warn < error < fatal < off。
+Configuration:
+  status: info
+
+  Properties: # 定义全局变量
+    Property:
+      - name: log.path
+        value: D:\qwwuyu\files\logs
+      - name: log.level.console
+        value: info
+      - name: project.name
+        value: server
+      - name: log.pattern
+        value: "%d{yyyy-MM-dd HH:mm:ss} %5p[%24.24F:%3L] - %-100m    at %l%n"
+      - name: log.pattern2
+        value: "%d{yyyy-MM-dd HH:mm:ss} %5p[%24.24F:%3L] - %m%n"
+
+  Appenders:
+    Console:
+      name: CONSOLE
+      target: SYSTEM_OUT
+      ThresholdFilter:
+        level: ${sys:log.level.console}
+        onMatch: ACCEPT
+        onMismatch: DENY
+      PatternLayout:
+        pattern: ${log.pattern}
+    RollingFile:
+      - name: ROLLING_FILE
+        ignoreExceptions: false
+        fileName: ${log.path}/${project.name}.log
+        filePattern: "${log.path}/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM}-%i.log.gz"
+        PatternLayout:
+          pattern: ${log.pattern2}
+        Policies:
+          TimeBasedTriggeringPolicy:
+            modulate: true
+            interval: 1
+          SizeBasedTriggeringPolicy:
+            size: "10 MB"
+        DefaultRolloverStrategy:
+          max: 100
+
+      - name: IP_FILE
+        ignoreExceptions: false
+        fileName: ${log.path}/ip.log
+        filePattern: "${log.path}/$${date:yyyy-MM}/ip-%d{yyyy-MM}-%i.log.gz"
+        PatternLayout:
+          pattern: ${log.pattern2}
+        Policies:
+          TimeBasedTriggeringPolicy:
+            modulate: true
+            interval: 1
+        DefaultRolloverStrategy:
+          max: 100
+
+  Loggers:
+    Root:
+      level: info
+      AppenderRef:
+        - ref: CONSOLE
+        - ref: ROLLING_FILE
+    Logger:
+      - name: ip
+        level: info
+        additivity: false
+        AppenderRef:
+          - ref: CONSOLE
+          - ref: IP_FILE
