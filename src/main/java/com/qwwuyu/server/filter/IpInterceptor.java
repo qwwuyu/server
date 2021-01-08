@@ -1,7 +1,6 @@
 package com.qwwuyu.server.filter;
 
 import com.qwwuyu.server.utils.J2EEUtil;
-import org.apache.log4j.Logger;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -13,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class IpInterceptor implements HandlerInterceptor {
     private Logger logger = Logger.getLogger("ip");
