@@ -1,20 +1,21 @@
 package com.qwwuyu.gs.configs
 
-import com.qwwuyu.lib.ext.tf
-import com.qwwuyu.lib.utils.CommUtil
 import org.springframework.core.env.Environment
 import java.io.File
 
+/**
+ * 环境变量
+ */
 class EnvConfig(env: Environment) {
     companion object {
         lateinit var instance: EnvConfig
         private fun isInit() = ::instance.isInitialized
     }
 
-    val privateKey = env.getProperty("env.private-key")
-    val publicKey = env.getProperty("env.public-key")
-    val fileDir = File(env.getProperty(CommUtil.isWindows().tf("env.file-dir-win", "env.file-dir-linux"))!!)
-    val javaDir = File(env.getProperty(CommUtil.isWindows().tf("env.java-dir-win", "env.java-dir-linux"))!!)
+    val privateKey = env.getProperty("env.private-key")!!
+    val publicKey = env.getProperty("env.public-key")!!
+    val fileDir = File(Constant.SYSTEM_PATH)
+    val javaDir = File(Constant.JAVA_PATH)
 
     init {
         if (!fileDir.isDirectory && !fileDir.mkdirs()) {

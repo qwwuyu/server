@@ -1,9 +1,22 @@
 package com.qwwuyu.gs.configs
 
+import com.qwwuyu.lib.ext.tf
+import com.qwwuyu.lib.utils.CommUtil
+
 /**
  * 常量管理
  */
 object Constant {
+    /* ======================== 环境常量 ======================== */
+    /** 基础目录(文件管理器、日志、java文件) */
+    val SYSTEM_PATH = CommUtil.isWindows().tf("D:\\qwwuyu\\", "/qwwuyu/")
+
+    /** 日志文件 */
+    val LOG_PATH = SYSTEM_PATH + CommUtil.isWindows().tf("files\\logs\\", "files/logs/")
+
+    /** java文件 */
+    val JAVA_PATH = SYSTEM_PATH + CommUtil.isWindows().tf("files\\java-run\\", "files/java-run/")
+
     /* ======================== 常量 ======================== */
     /** 登录过期时间  */
     const val expiresValue = 30L * 86400000

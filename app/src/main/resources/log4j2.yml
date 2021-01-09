@@ -1,15 +1,12 @@
-# 共有8个级别，按照从低到高为：all < trace < debug < info < warn < error < fatal < off。
 Configuration:
   status: info
 
   Properties: # 定义全局变量
     Property:
-      - name: log.path
-        value: D:\qwwuyu\files\logs
-      - name: log.level.console
-        value: info
-      - name: project.name
-        value: server
+      - name: LS
+        value: ${sys:file.separator}
+      - name: logPath
+        value: ${sys:log4j2Path}
       - name: log.pattern
         value: "%d{yyyy-MM-dd HH:mm:ss} %5p[%24.24F:%3L] - %-100m    at %l%n"
       - name: log.pattern2
@@ -20,7 +17,7 @@ Configuration:
       name: CONSOLE
       target: SYSTEM_OUT
       ThresholdFilter:
-        level: ${sys:log.level.console}
+        level: info
         onMatch: ACCEPT
         onMismatch: DENY
       PatternLayout:
@@ -28,8 +25,8 @@ Configuration:
     RollingFile:
       - name: ROLLING_FILE
         ignoreExceptions: false
-        fileName: ${log.path}/${project.name}.log
-        filePattern: "${log.path}/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM}-%i.log.gz"
+        fileName: ${logPath}server.log
+        filePattern: "${logPath}$${date:yyyy-MM}${LS}server-%d{yyyy-MM}-%i.log.gz"
         PatternLayout:
           pattern: ${log.pattern2}
         Policies:
@@ -43,8 +40,8 @@ Configuration:
 
       - name: IP_FILE
         ignoreExceptions: false
-        fileName: ${log.path}/ip.log
-        filePattern: "${log.path}/$${date:yyyy-MM}/ip-%d{yyyy-MM}-%i.log.gz"
+        fileName: ${logPath}ip.log
+        filePattern: "${logPath}$${date:yyyy-MM}${LS}ip-%d{yyyy-MM}-%i.log.gz"
         PatternLayout:
           pattern: ${log.pattern2}
         Policies:
