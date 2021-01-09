@@ -18,7 +18,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("commons-fileupload:commons-fileupload:1.4")
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.0")
-    implementation("mysql:mysql-connector-java:5.1.40")
+    implementation("mysql:mysql-connector-java:8.0.22")
 
     implementation(Libs.kotlinx_coroutines_core)
 

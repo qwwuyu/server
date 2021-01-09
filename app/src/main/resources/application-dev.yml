@@ -1,6 +1,6 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://inputIP:inputPORT/server?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: input
     password: input
