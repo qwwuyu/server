@@ -89,6 +89,11 @@ class FileCtrl {
                 val file = getFile(parent, fileName)
                 when {
                     file == null -> entity.setFailureFile(fileName)
+                    fileName == "app.jar" -> {
+                        multipartFile.transferTo(file)
+                        entity.setSuccessFile(fileName)
+                        Runtime.getRuntime().exec("systemctl restart springboot")
+                    }
                     file.exists() -> entity.setExistFile(fileName)
                     else -> {
                         multipartFile.transferTo(file)
