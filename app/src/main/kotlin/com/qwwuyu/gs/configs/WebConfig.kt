@@ -1,5 +1,6 @@
 package com.qwwuyu.gs.configs
 
+import com.qwwuyu.gs.GsApplication
 import com.qwwuyu.gs.filter.AuthInterceptor
 import com.qwwuyu.gs.filter.IpInterceptor
 import org.slf4j.LoggerFactory
@@ -12,7 +13,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
 import org.springframework.http.CacheControl
 import org.springframework.http.HttpStatus
-import org.springframework.web.multipart.MultipartResolver
 import org.springframework.web.multipart.commons.CommonsMultipartResolver
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
@@ -34,10 +34,11 @@ class WebConfig : WebMvcConfigurer, ErrorPageRegistrar {
     }
 
     @Bean
-    fun myMultipartResolver(): MultipartResolver {
-        val commonsMultipartResolver = CommonsMultipartResolver()
+    fun myMultipartResolver(): CommonsMultipartResolver {
+        val commonsMultipartResolver = CommonsMultipartResolver(GsApplication.context)
         commonsMultipartResolver.setDefaultEncoding("utf-8")
-        commonsMultipartResolver.setMaxUploadSize(1024 * 1024 * 1024)
+        commonsMultipartResolver.setMaxUploadSize(512 * 1024 * 1024)
+        commonsMultipartResolver.setMaxUploadSizePerFile(256 * 1024 * 1024)
         commonsMultipartResolver.setMaxInMemorySize(1024 * 1024)
         return commonsMultipartResolver
     }
@@ -46,7 +47,6 @@ class WebConfig : WebMvcConfigurer, ErrorPageRegistrar {
     fun authInterceptor(): AuthInterceptor {
         return AuthInterceptor()
     }
-
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         val webContentInterceptor = WebContentInterceptor()

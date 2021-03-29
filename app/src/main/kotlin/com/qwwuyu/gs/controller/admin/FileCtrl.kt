@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
+import javax.annotation.Resource
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import kotlin.concurrent.withLock
@@ -32,6 +33,9 @@ import kotlin.concurrent.withLock
 @RequestMapping("/ad/file/")
 @AuthRequired(permit = Constant.PERMIT_ADMIN, code = HttpServletResponse.SC_UNAUTHORIZED)
 class FileCtrl {
+    @Resource
+    private lateinit var multipartResolver: CommonsMultipartResolver
+
     private fun hand(path: String): String {
         return Constant.PREFIX + "file/" + path
     }
@@ -71,8 +75,6 @@ class FileCtrl {
             AppUtil.renderInfo(response, "目录未符合")
             return
         }
-        // 将当前上下文初始化给 CommonsMutipartResolver
-        val multipartResolver = CommonsMultipartResolver(request.session.servletContext)
         // 检查form中是否有enctype="multipart/form-data"
         val entity = FileResultEntity()
         if (multipartResolver.isMultipart(request)) {

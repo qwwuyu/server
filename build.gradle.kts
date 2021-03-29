@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
+        maven(url = "https://mirrors.huaweicloud.com/repository/maven")
         mavenLocal()
         jcenter()
         mavenCentral()
@@ -39,6 +40,7 @@ allprojects {
 
 subprojects {
     repositories {
+        maven(url = "https://mirrors.huaweicloud.com/repository/maven")
         mavenCentral()
     }
 
