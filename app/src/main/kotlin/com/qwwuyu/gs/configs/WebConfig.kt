@@ -14,6 +14,7 @@ import org.springframework.core.env.Environment
 import org.springframework.http.CacheControl
 import org.springframework.http.HttpStatus
 import org.springframework.web.multipart.commons.CommonsMultipartResolver
+import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
@@ -69,5 +70,13 @@ class WebConfig : WebMvcConfigurer, ErrorPageRegistrar {
         val e404 = ErrorPage(HttpStatus.NOT_FOUND, "/error404")
         val e500 = ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/error500")
         registry.addErrorPages(e404, e500)
+    }
+
+    override fun addCorsMappings(registry: CorsRegistry) {
+//        registry.addMapping("/test/**")
+//                .allowedOrigins("http://localhost:8081")
+//                .allowedMethods("*")
+//                .allowCredentials(false)
+//                .maxAge(3600)
     }
 }
