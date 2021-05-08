@@ -252,7 +252,7 @@ class FileCtrl {
     }
 
     @RequestMapping(value = ["checkDownloadFile"], method = [RequestMethod.GET])
-    fun checkDownloadFile(request: HttpServletRequest, response: HttpServletResponse, @RequestParam(name = "cancel", required = false) cancel: String) {
+    fun checkDownloadFile(request: HttpServletRequest, response: HttpServletResponse, @RequestParam(name = "cancel", required = false) cancel: String?) {
         val progress = FileDownloadHelper.progress
         when {
             progress == null -> AppUtil.render(response, AppUtil.getSuccessBean().info("没有任务"))
