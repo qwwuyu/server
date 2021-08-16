@@ -53,7 +53,7 @@
 	</update>
 	<select id="selectByNote" resultMap="BaseResultMap">
 		select
-		<include refid="List_NoContent" />
+		<include refid="Base_Column_List" />
 		from note
 		<where>
 			<if test="note.id != -1">

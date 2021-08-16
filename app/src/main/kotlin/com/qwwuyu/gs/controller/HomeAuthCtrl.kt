@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Controller
-@RequestMapping("/i")
+@RequestMapping("/i/auth")
 class HomeAuthCtrl {
     @Resource
     private lateinit var userService: UserService

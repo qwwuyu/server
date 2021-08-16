@@ -21,9 +21,6 @@ object Constant {
     /** 登录过期时间  */
     const val expiresValue = 30L * 86400000
 
-    /** 匹配前缀  */
-    const val PREFIX = "/html/"
-
     /* ======================== 枚举 ======================== */
     /** 游客  */
     const val PERMIT_VISITOR = 1

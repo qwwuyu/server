@@ -1,4 +1,4 @@
-package com.qwwuyu.gs.controller
+package com.qwwuyu.gs.controller.blog
 
 import com.qwwuyu.gs.configs.Constant
 import com.qwwuyu.gs.entity.Flag
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Controller
-@RequestMapping("/i/flag")
+@RequestMapping("/i/blog/flag")
 class HomeFlagCtrl {
     @Resource
     private lateinit var service: FlagService

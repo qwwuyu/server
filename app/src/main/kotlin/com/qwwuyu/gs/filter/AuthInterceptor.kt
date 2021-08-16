@@ -26,11 +26,19 @@ class AuthInterceptor : HandlerInterceptor {
             return true
         }
         val toAdmin = authRequired.toAdmin
-        val user = checkPermit(authRequired.permit, authRequired.code, authRequired.expire, !toAdmin, userService, request, response)
+        val user = checkPermit(
+            authRequired.permit,
+            authRequired.code,
+            authRequired.expire,
+            !toAdmin,
+            userService,
+            request,
+            response
+        )
         if (user == null) {
             if (toAdmin) {
                 response.status = HttpServletResponse.SC_MOVED_TEMPORARILY
-                response.setHeader("Location", "/ad/login")
+                response.setHeader("Location", "/")
             }
             return false
         }
@@ -38,8 +46,10 @@ class AuthInterceptor : HandlerInterceptor {
         return true
     }
 
-    private fun checkPermit(permit: Int, code: Int, expire: Boolean, render: Boolean,
-                            userService: UserService, request: HttpServletRequest, response: HttpServletResponse): User? {
+    private fun checkPermit(
+        permit: Int, code: Int, expire: Boolean, render: Boolean,
+        userService: UserService, request: HttpServletRequest, response: HttpServletResponse
+    ): User? {
         val token = AppUtil.getToken(request)
         if (token == null || token.isEmpty()) {
             if (render) AppUtil.renderInfo(response, "请先登录", code)

@@ -30,15 +30,11 @@ import javax.servlet.http.HttpServletResponse
 import kotlin.concurrent.withLock
 
 @Controller
-@RequestMapping("/ad/file/")
+@RequestMapping("/i/file/")
 @AuthRequired(permit = Constant.PERMIT_ADMIN, code = HttpServletResponse.SC_UNAUTHORIZED)
 class FileCtrl {
     @Resource
     private lateinit var multipartResolver: CommonsMultipartResolver
-
-    private fun hand(path: String): String {
-        return Constant.PREFIX + "file/" + path
-    }
 
     @RequestMapping(value = ["query"], method = [RequestMethod.POST])
     fun query(request: HttpServletRequest, response: HttpServletResponse, @RequestParam("path") path: String) {
@@ -139,13 +135,11 @@ class FileCtrl {
     }
 
     @RequestMapping(value = ["open", "open/*"])
-    fun toFileManager(request: HttpServletRequest, response: HttpServletResponse, @RequestParam("path") path: String): String? {
-        val suffix = path.toLowerCase()
-        if (suffix.endsWith(".mp4") || suffix.endsWith(".flv")) {
-            return hand("video.html")
-        } /*else if (suffix.endsWith(".jpg") || suffix.endsWith(".png") || suffix.endsWith(".bmp") || suffix.endsWith(".gif") || suffix.endsWith(".jpeg") || suffix.endsWith(".webp")) {
-            return hand("pic.html");
-        }*/
+    fun toFileManager(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        @RequestParam("path") path: String
+    ): String? {
         transferFile(request, response, path, false)
         return null
     }
@@ -155,7 +149,12 @@ class FileCtrl {
         transferFile(request, response, path, true)
     }
 
-    private fun transferFile(request: HttpServletRequest, response: HttpServletResponse, path: String, download: Boolean) {
+    private fun transferFile(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        path: String,
+        download: Boolean
+    ) {
         val file = getFile(path)
         if (!FileUtils.isFile(file)) {
             AppUtil.renderInfo(response, "文件未符合", HttpServletResponse.SC_NOT_FOUND)
@@ -168,7 +167,12 @@ class FileCtrl {
     }
 
     @RequestMapping(value = ["rename"], method = [RequestMethod.POST])
-    fun rename(request: HttpServletRequest, response: HttpServletResponse, @RequestParam("path") path: String, @RequestParam("dest") newPath: String) {
+    fun rename(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        @RequestParam("path") path: String,
+        @RequestParam("dest") newPath: String
+    ) {
         val file = getFile(path)
         if (!FileUtils.exists(file)) {
             AppUtil.renderInfo(response, "文件未符合")
@@ -187,7 +191,12 @@ class FileCtrl {
     }
 
     @RequestMapping(value = ["createDir"], method = [RequestMethod.POST])
-    fun createDir(request: HttpServletRequest, response: HttpServletResponse, @RequestParam("path") path: String, @RequestParam("dirName") dirName: String) {
+    fun createDir(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        @RequestParam("path") path: String,
+        @RequestParam("dirName") dirName: String
+    ) {
         if (dirName.matches(".*[\\\\/:*?\"<>|]+.*".toRegex())) {
             AppUtil.renderInfo(response, "不能包含特殊字符\\/:*?\"<>|")
             return
@@ -210,8 +219,12 @@ class FileCtrl {
     }
 
     @RequestMapping(value = ["downloadFile"], method = [RequestMethod.POST])
-    fun downloadFile(request: HttpServletRequest, response: HttpServletResponse, @RequestParam("path") path: String,
-                     @RequestParam("downloadUrl") downloadUrl: String?) {
+    fun downloadFile(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        @RequestParam("path") path: String,
+        @RequestParam("downloadUrl") downloadUrl: String?
+    ) {
         val time = System.currentTimeMillis()
         val downloadDir = getFile(path)
         if (!downloadDir.isDirectory) {
@@ -245,19 +258,35 @@ class FileCtrl {
         }
         val progress = FileDownloadHelper.progress
         when (progress?.state) {
-            FileDownloadHelper.DOWNLOADING -> AppUtil.render(response, ResponseBean(Constant.HTTP_DOWNLOADING, progress.progressText()))
-            FileDownloadHelper.DOWNLOAD_ERROR -> AppUtil.render(response, AppUtil.getErrorBean().info("下载失败:" + progress.errorText()))
+            FileDownloadHelper.DOWNLOADING -> AppUtil.render(
+                response,
+                ResponseBean(Constant.HTTP_DOWNLOADING, progress.progressText())
+            )
+            FileDownloadHelper.DOWNLOAD_ERROR -> AppUtil.render(
+                response,
+                AppUtil.getErrorBean().info("下载失败:" + progress.errorText())
+            )
             else -> AppUtil.render(response, AppUtil.getSuccessBean().info("结束:" + progress?.progressText()))
         }
     }
 
     @RequestMapping(value = ["checkDownloadFile"], method = [RequestMethod.GET])
-    fun checkDownloadFile(request: HttpServletRequest, response: HttpServletResponse, @RequestParam(name = "cancel", required = false) cancel: String?) {
+    fun checkDownloadFile(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        @RequestParam(name = "cancel", required = false) cancel: String?
+    ) {
         val progress = FileDownloadHelper.progress
         when {
             progress == null -> AppUtil.render(response, AppUtil.getSuccessBean().info("没有任务"))
-            progress.state == FileDownloadHelper.DOWNLOADING -> AppUtil.render(response, AppUtil.getSuccessBean().info(progress.progressText()))
-            progress.state == FileDownloadHelper.DOWNLOAD_ERROR -> AppUtil.render(response, AppUtil.getSuccessBean().info("下载失败:" + progress.errorText()))
+            progress.state == FileDownloadHelper.DOWNLOADING -> AppUtil.render(
+                response,
+                AppUtil.getSuccessBean().info(progress.progressText())
+            )
+            progress.state == FileDownloadHelper.DOWNLOAD_ERROR -> AppUtil.render(
+                response,
+                AppUtil.getSuccessBean().info("下载失败:" + progress.errorText())
+            )
             else -> AppUtil.render(response, AppUtil.getSuccessBean().info("结束:" + progress.progressText()))
         }
         if ("true" == cancel) FileDownloadHelper.cancelDownload()

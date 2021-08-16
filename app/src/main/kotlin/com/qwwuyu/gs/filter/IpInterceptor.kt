@@ -20,9 +20,9 @@ class IpInterceptor : HandlerInterceptor {
         val method = request.method
         logger.info("requestURI:$requestURI method:$method address:$address realAddress:$realAddress")
         return when (requestURI) {
-            "/i/register" -> limit(address + requestURI, response, 10L, 86400000L)
-            "/i/login" -> limit(address + requestURI, response, 5L, 60000L)
-            "/i/card/send" -> limit(address + requestURI, response, 10L, 43200000L)
+            "/i/auth/register" -> limit(address + requestURI, response, 10L, 86400000L)
+            "/i/auth/login" -> limit(address + requestURI, response, 5L, 60000L)
+            "/i/blog/card/send" -> limit(address + requestURI, response, 5L, 60000L)
             else -> true
         }
     }

@@ -16,7 +16,7 @@ class HttpsCtrl {
         private val map: MutableMap<String, String> = HashMap()
     }
 
-    @RequestMapping("/https/set")
+    @RequestMapping("/i/https/set")
     fun setKey(request: HttpServletRequest, response: HttpServletResponse) {
         val key = request.getParameter("key")
         val value = request.getParameter("value")
@@ -25,7 +25,7 @@ class HttpsCtrl {
         AppUtil.render(response, AppUtil.getSuccessBean())
     }
 
-    @RequestMapping("/https/clear")
+    @RequestMapping("/i/https/clear")
     fun clearKey(request: HttpServletRequest?, response: HttpServletResponse) {
         map.clear()
         AppUtil.render(response, AppUtil.getSuccessBean())

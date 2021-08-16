@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Controller
-@RequestMapping("/java")
+@RequestMapping("/i/java")
 @AuthRequired(permit = Constant.PERMIT_ADMIN)
 class JavaCtrl {
     @RequestMapping("/result")
