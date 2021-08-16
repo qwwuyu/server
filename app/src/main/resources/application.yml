@@ -20,6 +20,9 @@ server:
   port: 8081
   servlet:
     context-path: /
+  error:
+    whitelabel:
+      enabled: false
 
 logging:
   config: classpath:log4j2.yml

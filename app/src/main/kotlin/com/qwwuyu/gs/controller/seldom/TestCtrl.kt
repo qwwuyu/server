@@ -1,7 +1,9 @@
 package com.qwwuyu.gs.controller.seldom
 
 import com.google.gson.Gson
+import com.qwwuyu.gs.configs.Constant
 import com.qwwuyu.gs.entity.ResponseBean
+import com.qwwuyu.gs.filter.AuthRequired
 import com.qwwuyu.lib.utils.CommUtil
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
@@ -11,7 +13,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Controller
-@RequestMapping("/test")
+@RequestMapping("/i/test")
 class TestCtrl {
     @RequestMapping(value = ["/get"], method = [RequestMethod.GET])
     operator fun get(request: HttpServletRequest, response: HttpServletResponse) {
@@ -40,5 +42,11 @@ class TestCtrl {
     @RequestMapping(value = ["/error"], method = [RequestMethod.POST, RequestMethod.GET])
     fun error(request: HttpServletRequest?, response: HttpServletResponse?) {
         throw RuntimeException("err")
+    }
+
+    @AuthRequired(permit = Constant.PERMIT_ADMIN, code = HttpServletResponse.SC_UNAUTHORIZED)
+    @RequestMapping(value = ["/auth"], method = [RequestMethod.GET])
+    fun auth(request: HttpServletRequest, response: HttpServletResponse) {
+        post(request, response)
     }
 }

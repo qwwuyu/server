@@ -59,9 +59,11 @@ class WebConfig : WebMvcConfigurer, ErrorPageRegistrar {
     }
 
     override fun registerErrorPages(registry: ErrorPageRegistry) {
-        val e404 = ErrorPage(HttpStatus.NOT_FOUND, "/404")
-        val e500 = ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/500")
-        registry.addErrorPages(e404, e500)
+        val e401 = ErrorPage(HttpStatus.UNAUTHORIZED, "/error/401")
+        val e404 = ErrorPage(HttpStatus.NOT_FOUND, "/error/404")
+        val e405 = ErrorPage(HttpStatus.METHOD_NOT_ALLOWED, "/error/405")
+        val e500 = ErrorPage(HttpStatus.INTERNAL_SERVER_ERROR, "/error/500")
+        registry.addErrorPages(e401, e404, e405, e500)
     }
 
     override fun addCorsMappings(registry: CorsRegistry) {
