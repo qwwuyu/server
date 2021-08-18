@@ -20,8 +20,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
-import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
 import javax.annotation.Resource
@@ -43,17 +41,20 @@ class FileCtrl {
             AppUtil.renderInfo(response, "目录未符合")
             return
         }
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
         val list: MutableList<FileBean> = mutableListOf()
         val files = file.listFiles()
         if (files != null) {
             for (cf in files) {
-                val date = dateFormat.format(Date(cf.lastModified()))
                 val directory = cf.isDirectory
                 val listFiles = if (directory) cf.list() else null
                 val child = listFiles?.size ?: 0
                 val info = if (directory) child.toString() + "项" else FileUtils.getFileSize(cf.length())
-                list.add(FileBean(cf.name, directory, if (directory) null else date, if (directory) null else info))
+                list.add(
+                    FileBean(
+                        cf.name, directory, if (directory) null else cf.lastModified(),
+                        if (directory) null else info
+                    )
+                )
             }
         }
         list.sortWith(Comparator { lhs: FileBean, rhs: FileBean ->
