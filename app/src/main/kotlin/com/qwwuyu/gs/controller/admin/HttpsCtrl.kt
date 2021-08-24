@@ -11,31 +11,32 @@ import javax.servlet.http.HttpServletResponse
 
 @AuthRequired(permit = Constant.PERMIT_ADMIN)
 @Controller
+@RequestMapping("/.well-known")
 class HttpsCtrl {
     companion object {
         private val map: MutableMap<String, String> = HashMap()
     }
 
-    @RequestMapping("/i/https/set")
+    @RequestMapping("/set")
     fun setKey(request: HttpServletRequest, response: HttpServletResponse) {
         val key = request.getParameter("key")
         val value = request.getParameter("value")
         if (AppUtil.isNull(response, key, value)) return
-        map[key] = value
+        map[key] = value.replace("qwwuyu".toRegex(), "\n")
         AppUtil.render(response, AppUtil.getSuccessBean())
     }
 
-    @RequestMapping("/i/https/clear")
+    @RequestMapping("/clear")
     fun clearKey(request: HttpServletRequest?, response: HttpServletResponse) {
         map.clear()
         AppUtil.render(response, AppUtil.getSuccessBean())
     }
 
     @AuthRequired(anth = false)
-    @RequestMapping("/.well-known/acme-challenge/*")
+    @RequestMapping("/pki-validation/*")
     fun ssl1(request: HttpServletRequest, response: HttpServletResponse) {
         val requestURI = request.requestURI
-        val index = "/acme-challenge/"
+        val index = "/pki-validation/"
         val key = requestURI.substring(requestURI.indexOf(index) + index.length)
         val value = map[key]
         response.contentType = "text/plain;charset=utf-8"

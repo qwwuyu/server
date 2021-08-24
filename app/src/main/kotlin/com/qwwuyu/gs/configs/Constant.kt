@@ -17,6 +17,9 @@ object Constant {
     /** java文件 */
     val JAVA_PATH = SYSTEM_PATH + CommUtil.isWindows().tf("files\\java-run\\", "files/java-run/")
 
+    /** java文件 */
+    val TMP_PATH = SYSTEM_PATH + CommUtil.isWindows().tf("files\\tmp\\", "files/tmp/")
+
     /* ======================== 常量 ======================== */
     /** 登录过期时间  */
     const val expiresValue = 30L * 86400000

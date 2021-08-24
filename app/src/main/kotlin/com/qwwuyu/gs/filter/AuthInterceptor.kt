@@ -26,14 +26,14 @@ class AuthInterceptor : HandlerInterceptor {
             return true
         }
         val toAdmin = authRequired.toAdmin
-        val user = checkPermit(
-            authRequired.permit,
-            authRequired.code,
-            authRequired.expire,
-            !toAdmin,
-            userService,
-            request,
-            response
+        val user = AppUtil.checkPermit(
+            permit = authRequired.permit,
+            code = authRequired.code,
+            expire = authRequired.expire,
+            render = !toAdmin,
+            userService = userService,
+            request = request,
+            response = response
         )
         if (user == null) {
             if (toAdmin) {
@@ -44,28 +44,5 @@ class AuthInterceptor : HandlerInterceptor {
         }
         request.setAttribute(Constant.KEY_USER, user)
         return true
-    }
-
-    private fun checkPermit(
-        permit: Int, code: Int, expire: Boolean, render: Boolean,
-        userService: UserService, request: HttpServletRequest, response: HttpServletResponse
-    ): User? {
-        val token = AppUtil.getToken(request)
-        if (token == null || token.isEmpty()) {
-            if (render) AppUtil.renderInfo(response, "请先登录", code)
-            return null
-        }
-        val user = userService.selectByUser(User(token = token))
-        if (user == null) {
-            if (render) AppUtil.renderInfo(response, "请先登录", code)
-            return null
-        } else if (user.auth!! < permit) {
-            if (render) AppUtil.renderInfo(response, "权限不足", code)
-            return null
-        } else if (expire && System.currentTimeMillis() - user.time!! > Constant.expiresValue) {
-            if (render) AppUtil.renderInfo(response, "验证已过期", code)
-            return null
-        }
-        return user
     }
 }

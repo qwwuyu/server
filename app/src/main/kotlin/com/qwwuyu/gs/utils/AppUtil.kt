@@ -5,6 +5,7 @@ import com.qwwuyu.gs.configs.Constant
 import com.qwwuyu.gs.configs.EnvConfig
 import com.qwwuyu.gs.entity.ResponseBean
 import com.qwwuyu.gs.entity.User
+import com.qwwuyu.gs.service.UserService
 import com.qwwuyu.lib.gson.GsonHelper
 import com.qwwuyu.lib.utils.BCrypt
 import com.qwwuyu.lib.utils.CommUtil
@@ -84,8 +85,10 @@ object AppUtil {
 
     /** 解析token  */
     fun parseToken(token: String): Map<String, Any> {
-        return GsonHelper.fromType(String(Base64.getDecoder().decode(token.toByteArray()), StandardCharsets.UTF_8),
-                object : TypeToken<Map<String, Any>>() {}.type)!!
+        return GsonHelper.fromType(
+            String(Base64.getDecoder().decode(token.toByteArray()), StandardCharsets.UTF_8),
+            object : TypeToken<Map<String, Any>>() {}.type
+        )!!
     }
 
     /** 从请求中获取token  */
@@ -102,6 +105,30 @@ object AppUtil {
             }
         }
         return token
+    }
+
+    /** 检查认证信息 */
+    fun checkPermit(
+        permit: Int, code: Int, expire: Boolean, render: Boolean,
+        userService: UserService, request: HttpServletRequest, response: HttpServletResponse
+    ): User? {
+        val token = getToken(request)
+        if (token == null || token.isEmpty()) {
+            if (render) renderInfo(response, "请先登录", code)
+            return null
+        }
+        val user = userService.selectByUser(User(token = token))
+        if (user == null) {
+            if (render) renderInfo(response, "请先登录", code)
+            return null
+        } else if (user.auth!! < permit) {
+            if (render) renderInfo(response, "权限不足", code)
+            return null
+        } else if (expire && System.currentTimeMillis() - user.time!! > Constant.expiresValue) {
+            if (render) renderInfo(response, "验证已过期", code)
+            return null
+        }
+        return user
     }
 
     fun getUser(request: HttpServletRequest): User {

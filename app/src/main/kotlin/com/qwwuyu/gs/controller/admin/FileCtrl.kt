@@ -7,10 +7,12 @@ import com.qwwuyu.gs.entity.FileResultEntity
 import com.qwwuyu.gs.entity.ResponseBean
 import com.qwwuyu.gs.filter.AuthRequired
 import com.qwwuyu.gs.helper.FileDownloadHelper
+import com.qwwuyu.gs.service.UserService
 import com.qwwuyu.gs.utils.AppUtil
 import com.qwwuyu.lib.clazz.MultipartFileSender
 import com.qwwuyu.lib.utils.CommUtil
 import com.qwwuyu.lib.utils.FileUtils
+import com.qwwuyu.lib.utils.toMD5
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -32,6 +34,9 @@ import kotlin.concurrent.withLock
 @AuthRequired(permit = Constant.PERMIT_ADMIN, code = HttpServletResponse.SC_UNAUTHORIZED)
 class FileCtrl {
     @Resource
+    private lateinit var userService: UserService
+
+    @Resource
     private lateinit var multipartResolver: CommonsMultipartResolver
 
     @RequestMapping(value = ["query"], method = [RequestMethod.POST])
@@ -41,22 +46,15 @@ class FileCtrl {
             AppUtil.renderInfo(response, "目录未符合")
             return
         }
-        val list: MutableList<FileBean> = mutableListOf()
-        val files = file.listFiles()
-        if (files != null) {
-            for (cf in files) {
-                val directory = cf.isDirectory
-                val listFiles = if (directory) cf.list() else null
-                val child = listFiles?.size ?: 0
-                val info = if (directory) child.toString() + "项" else FileUtils.getFileSize(cf.length())
-                list.add(
-                    FileBean(
-                        cf.name, directory, if (directory) null else cf.lastModified(),
-                        if (directory) null else info
-                    )
-                )
+        val files = file.listFiles() ?: emptyArray()
+        val list = files.map { cf ->
+            if (cf.isDirectory) {
+                FileBean(cf.name, true, null, null, null)
+            } else {
+                val md5 = "${cf.name}${cf.length()}${cf.lastModified()}".toMD5().substring(0, 20)
+                FileBean(cf.name, false, cf.lastModified(), FileUtils.getFileSize(cf.length()), md5)
             }
-        }
+        }.toMutableList()
         list.sortWith(Comparator { lhs: FileBean, rhs: FileBean ->
             if (lhs.dir && !rhs.dir) return@Comparator -1
             if (!lhs.dir && rhs.dir) return@Comparator 1
@@ -88,11 +86,6 @@ class FileCtrl {
                 val file = getFile(parent, fileName)
                 when {
                     file == null -> entity.setFailureFile(fileName)
-                    fileName == "app.jar" -> {
-                        multipartFile.transferTo(file)
-                        entity.setSuccessFile(fileName)
-                        Runtime.getRuntime().exec("systemctl restart springboot")
-                    }
                     file.exists() -> entity.setExistFile(fileName)
                     else -> {
                         multipartFile.transferTo(file)
@@ -135,19 +128,39 @@ class FileCtrl {
         }
     }
 
+    @AuthRequired(anth = false)
     @RequestMapping(value = ["open", "open/*"])
-    fun toFileManager(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        @RequestParam("path") path: String
-    ): String? {
-        transferFile(request, response, path, false)
-        return null
+    fun open(request: HttpServletRequest, response: HttpServletResponse, @RequestParam("path") path: String) {
+        checkMd5(request, response, path, false)
     }
 
+    @AuthRequired(anth = false)
     @RequestMapping(path = ["download", "download/*"])
     fun download(request: HttpServletRequest, response: HttpServletResponse, @RequestParam("path") path: String) {
-        transferFile(request, response, path, true)
+        checkMd5(request, response, path, true)
+    }
+
+    private fun checkMd5(request: HttpServletRequest, response: HttpServletResponse, _path: String, download: Boolean) {
+        _path.let { path ->
+            if (!path.matches("/[\\dA-F]{20}/.+".toRegex())) return@let
+            val md5 = path.substring(1, 21)
+            val file = getFile(path.substring(21))
+            val pathStart = path.substring(21, path.lastIndexOf("/") + 1)
+            val parent = file.parentFile
+            if (!(parent != null && parent.isDirectory)) return@let
+            val filterFile = (parent.listFiles() ?: emptyArray()).filter { it.isFile }.firstOrNull { cf ->
+                md5 == "${cf.name}${cf.length()}${cf.lastModified()}".toMD5().substring(0, 20)
+            } ?: return@let
+            transferFile(request, response, pathStart + filterFile.name, download)
+            return
+        }
+        val user = AppUtil.checkPermit(
+            Constant.PERMIT_ADMIN, HttpServletResponse.SC_UNAUTHORIZED, expire = true, render = true,
+            userService = userService, request = request, response = response
+        )
+        if (user != null) {
+            transferFile(request, response, _path, download)
+        }
     }
 
     private fun transferFile(
