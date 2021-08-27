@@ -75,7 +75,7 @@ public class MultipartFileSender {
         // This header is ignored if any If-None-Match header is specified.
         long ifModifiedSince = request.getDateHeader("If-Modified-Since");
         if (ifNoneMatch == null && ifModifiedSince != -1 && ifModifiedSince + 1000 > lastModified) {
-            response.setHeader("ETag", fileName); // Required in 304.
+            response.setHeader("ETag", etag); // Required in 304.
             response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
             return null;
         }
@@ -112,7 +112,7 @@ public class MultipartFileSender {
             }
 
             String ifRange = request.getHeader("If-Range");
-            if (ifRange != null && !ifRange.equals(fileName)) {
+            if (ifRange != null && !ifRange.equals(etag)) {
                 try {
                     long ifRangeTime = request.getDateHeader("If-Range"); // Throws IAE if invalid.
                     if (ifRangeTime != -1) {

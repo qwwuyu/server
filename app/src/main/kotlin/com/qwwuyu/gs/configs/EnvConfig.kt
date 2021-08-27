@@ -1,20 +1,19 @@
 package com.qwwuyu.gs.configs
 
 import com.qwwuyu.lib.utils.FileUtils
-import org.springframework.core.env.Environment
 import java.io.File
 
 /**
  * 环境变量
  */
-class EnvConfig(env: Environment) {
+class EnvConfig(envProperties: EnvProperties) {
     companion object {
         lateinit var instance: EnvConfig
         private fun isInit() = ::instance.isInitialized
     }
 
-    val privateKey = env.getProperty("env.private-key")!!
-    val publicKey = env.getProperty("env.public-key")!!
+    val privateKey = envProperties.privateKey
+    val publicKey = envProperties.publicKey
     val fileDir = File(Constant.SYSTEM_PATH)
     val javaDir = File(Constant.JAVA_PATH)
     val tmpDir = File(Constant.TMP_PATH)

@@ -11,6 +11,7 @@ dependencies {
     implementation(project(":lib"))
     implementation(kotlin("reflect"))
     implementation(kotlin("stdlib-jdk8"))
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-log4j2")
