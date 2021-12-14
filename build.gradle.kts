@@ -52,5 +52,12 @@ subprojects {
         exclude("org.springframework.boot", "spring-boot-starter-logging")
         exclude(null, "logback-classic")
         exclude(null, "logback-core")
+        resolutionStrategy {
+            eachDependency {
+                when (requested.group) {
+                    "org.apache.logging.log4j" -> useVersion("2.15.0")
+                }
+            }
+        }
     }
 }
