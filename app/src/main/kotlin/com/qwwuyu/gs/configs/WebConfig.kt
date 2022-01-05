@@ -18,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.servlet.mvc.WebContentInterceptor
+import org.springframework.web.socket.server.standard.ServerEndpointExporter
 
 
 @Configuration
@@ -76,5 +77,10 @@ class WebConfig : WebMvcConfigurer, ErrorPageRegistrar {
 //            .allowedMethods("*")
 //            .allowCredentials(true)
 //            .maxAge(3600)
+    }
+
+    @Bean
+    fun serverEndpointExporter(): ServerEndpointExporter {
+        return ServerEndpointExporter()
     }
 }

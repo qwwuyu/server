@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class LogUtils {
+public class WLog {
     public static final int V = 2, D = 3, I = 4, W = 5, E = 6, A = 7;
     private static final char[] T    = new char[]{'V', 'D', 'I', 'W', 'E', 'A'};
     private static final int    JSON = 0x10, XML = 0x20;
@@ -49,37 +49,37 @@ public class LogUtils {
         }
 
         public Builder setLogDir(String dir) {
-            LogUtils.dir = dir;
+            WLog.dir = dir;
             return this;
         }
 
         public Builder setLogTag(String tag) {
-            LogUtils.logTag = tag;
+            WLog.logTag = tag;
             return this;
         }
 
         public Builder enableLogHead(boolean enable) {
-            LogUtils.logHead = enable;
+            WLog.logHead = enable;
             return this;
         }
 
         public Builder enableLogBorder(boolean enable) {
-            LogUtils.logBorder = enable;
+            WLog.logBorder = enable;
             return this;
         }
 
         public Builder setLogFilter(@TYPE final int level) {
-            LogUtils.logFilter = level;
+            WLog.logFilter = level;
             return this;
         }
 
         public Builder setHeadSep(String head_sep) {
-            LogUtils.head_sep = head_sep;
+            WLog.head_sep = head_sep;
             return this;
         }
 
         public Builder onErrorListener(OnErrorListener onErrorListener) {
-            LogUtils.onErrorListener = onErrorListener;
+            WLog.onErrorListener = onErrorListener;
             return this;
         }
     }
@@ -224,7 +224,7 @@ public class LogUtils {
         }
         final String content = time + T[type - V] + "/" + tag + msg + LINE_SEP;
         if (executor == null) {
-            synchronized (LogUtils.class) {
+            synchronized (WLog.class) {
                 if (executor == null) {
                     executor = Executors.newSingleThreadExecutor();
                 }

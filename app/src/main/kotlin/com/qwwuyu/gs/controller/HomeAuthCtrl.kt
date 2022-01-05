@@ -48,7 +48,7 @@ class HomeAuthCtrl {
             AppUtil.render(response, ResponseBean(Constant.HTTP_NIKE_EXIST, "昵称已存在"))
             return
         }
-        val user = User(null, acc, AppUtil.handPwd(acc, pwd), nick, 2, J2EEUtil.getAddress(request), null, null, 0L, 0L)
+        val user = User(null, acc, AppUtil.handPwd(acc, pwd), nick, 2, J2EEUtil.getLogAddress(request), null, null, 0L, 0L)
         userService.insert(user)
         login(response, acc, user.pwd!!)
     }

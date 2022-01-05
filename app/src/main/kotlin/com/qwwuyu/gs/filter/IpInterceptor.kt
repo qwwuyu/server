@@ -4,7 +4,6 @@ import com.qwwuyu.gs.utils.AppUtil
 import com.qwwuyu.lib.utils.J2EEUtil
 import org.slf4j.LoggerFactory
 import org.springframework.web.servlet.HandlerInterceptor
-import java.util.*
 import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -15,10 +14,10 @@ class IpInterceptor : HandlerInterceptor {
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         val requestURI = request.requestURI
-        val address = J2EEUtil.getAddress(request)
-        val realAddress = J2EEUtil.getRealAddress(request)
+        val logAddress = J2EEUtil.getLogAddress(request)
+        val address = J2EEUtil.getRealAddress(request)
         val method = request.method
-        logger.info("requestURI:$requestURI method:$method address:$address realAddress:$realAddress")
+        logger.info("requestURI:$requestURI method:$method address:$address >> $logAddress")
         return when (requestURI) {
             "/i/auth/register" -> limit(address + requestURI, response, 10L, 86400000L)
             "/i/auth/login" -> limit(address + requestURI, response, 5L, 60000L)
