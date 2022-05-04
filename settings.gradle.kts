@@ -3,7 +3,7 @@ pluginManagement {
         mavenLocal()
         gradlePluginPortal()
         mavenCentral()
-        jcenter()
+        maven(url = "https://mirrors.huaweicloud.com/repository/maven")
     }
 }
 

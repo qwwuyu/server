@@ -4,7 +4,6 @@ buildscript {
     repositories {
         maven(url = "https://mirrors.huaweicloud.com/repository/maven")
         mavenLocal()
-        jcenter()
         mavenCentral()
     }
 

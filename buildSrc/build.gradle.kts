@@ -6,5 +6,5 @@ plugins {
 
 repositories {
     mavenLocal()
-    jcenter()
+    maven(url = "https://mirrors.huaweicloud.com/repository/maven")
 }
