@@ -17,7 +17,7 @@ object J2EEUtil {
             return ip
         }
         ip = request.getHeader("x-forwarded-for")
-        if (ip.contains(",")) {
+        if (ip != null && ip.contains(",")) {
             val ips = ip.split(",")
             ip = ips[ips.size - 2]
         }
@@ -26,6 +26,7 @@ object J2EEUtil {
         ) {
             return ip
         }
+        if (realIp == null) return remoteAddr
         return realIp
     }
 
